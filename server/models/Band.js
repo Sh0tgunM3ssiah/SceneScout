@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema(
+const BandSchema = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -9,17 +9,12 @@ const UserSchema = new mongoose.Schema(
       min: 2,
       max: 100,
     },
-    firstName: {
+    name: {
       type: String,
       required: true,
+      unique: true,
       min: 2,
-      max: 50,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      min: 2,
-      max: 50,
+      max: 100,
     },
     email: {
       type: String,
@@ -31,14 +26,23 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    friends: {
+    scene: {
+      type: String,
+      required: true,
+    },
+    genre: {
+      type: String,
+      required: true,
+    },
+    members: {
       type: Array,
       default: [],
     },
     location: String,
-    scene: {
+    biography: {
       type: String,
-      required: true,
+      default: "",
+      max: 1000,
     },
     viewedProfile: Number,
     impressions: Number,
@@ -46,5 +50,5 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", UserSchema);
-export default User;
+const Band = mongoose.model("Band", BandSchema);
+export default Band;

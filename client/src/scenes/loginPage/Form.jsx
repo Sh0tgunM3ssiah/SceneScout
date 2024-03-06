@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -6,265 +6,262 @@ import {
   useMediaQuery,
   Typography,
   useTheme,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setLogin } from "state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
+import { useUser } from '../../../src/userContext';
 
-const registerSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
-  location: yup.string().required("required"),
-  occupation: yup.string().required("required"),
-  picture: yup.string().required("required"),
+const registerSchema = yup.object({
+  username: yup.string().required("Username is required"),
+  bandName: yup.string().when("accountType", {
+    is: "Band",
+    then: yup.string().required("Band name is required"),
+  }),
+  firstName: yup.string().when("accountType", {
+    is: "User",
+    then: yup.string().required("First name is required"),
+  }),
+  lastName: yup.string().when("accountType", {
+    is: "User",
+    then: yup.string().required("Last name is required"),
+  }),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  location: yup.string().required("Location is required"),
+  scene: yup.string().required("Scene is required"),
+  accountType: yup.string().required("Account type is required"),
+  genre: yup.string().when("accountType", {
+    is: "Band",
+    then: yup.string().required("Genre is required"),
+  }),
+  picture: yup.mixed().required("A profile picture is required"),
 });
 
-const loginSchema = yup.object().shape({
-  email: yup.string().email("invalid email").required("required"),
-  password: yup.string().required("required"),
-});
-
-const initialValuesRegister = {
+const initialValues = {
+  username: "",
+  bandName: "",
   firstName: "",
   lastName: "",
   email: "",
-  password: "",
   location: "",
-  occupation: "",
-  picture: "",
-};
-
-const initialValuesLogin = {
-  email: "",
-  password: "",
+  scene: "",
+  accountType: "",
+  genre: "",
+  picture: null,
 };
 
 const Form = () => {
-  const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const isLogin = pageType === "login";
-  const isRegister = pageType === "register";
+  const userContext = useUser();
+  console.log(userContext);
+  const [scenes, setScenes] = useState([]);
+  const [formValues, setFormValues] = useState({ ...initialValues, username: userContext?.username });
 
-  const register = async (values, onSubmitProps) => {
-    // this allows us to send form info with image
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
+  useEffect(() => {
+    const fetchScenes = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/scenes/');
+        if (!response.ok) throw new Error('Failed to fetch scenes');
+        const data = await response.json();
+        setScenes(data);
+      } catch (error) {
+        console.error('Error fetching scenes:', error);
+      }
+    };
+
+    fetchScenes();
+
+    if (userContext?.signInDetails?.loginId) {
+      setFormValues(prevValues => ({ ...prevValues, username: userContext.username }));
     }
-    formData.append("picturePath", values.picture.name);
+  }, [userContext]);
 
-    const savedUserResponse = await fetch(
-      "http://localhost:3001/auth/register",
-      {
+  const handleRegistration = async (values, { resetForm }) => {
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value instanceof Blob ? value : String(value));
+    });
+
+    try {
+      const response = await fetch("http://localhost:3001/auth/register", {
         method: "POST",
         body: formData,
-      }
-    );
-    const savedUser = await savedUserResponse.json();
-    onSubmitProps.resetForm();
+      });
 
-    if (savedUser) {
-      setPageType("login");
+      if (!response.ok) throw new Error("Failed to register.");
+
+      const result = await response.json();
+      console.log(result);
+      resetForm();
+    } catch (error) {
+      console.error("Error during registration:", error);
     }
-  };
-
-  const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-    const loggedIn = await loggedInResponse.json();
-    onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      navigate("/home");
-    }
-  };
-
-  const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps);
-    if (isRegister) await register(values, onSubmitProps);
   };
 
   return (
     <Formik
-      onSubmit={handleFormSubmit}
-      initialValues={isLogin ? initialValuesLogin : initialValuesRegister}
-      validationSchema={isLogin ? loginSchema : registerSchema}
+      initialValues={formValues}
+      validationSchema={registerSchema}
+      onSubmit={handleRegistration}
+      enableReinitialize
     >
       {({
         values,
         errors,
         touched,
-        handleBlur,
         handleChange,
+        handleBlur,
         handleSubmit,
         setFieldValue,
-        resetForm,
+        isValid,
+        dirty,
       }) => (
         <form onSubmit={handleSubmit}>
-          <Box
-            display="grid"
-            gap="30px"
-            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-            sx={{
-              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-            }}
-          >
-            {isRegister && (
+          <Box display="grid" gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="20px">
+            <TextField
+              label="Username"
+              name="username"
+              value={values.username}
+              disabled
+              sx={{ gridColumn: "span 4" }}
+            />
+            <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
+              <InputLabel>Scene</InputLabel>
+              <Select
+              label="Scene"
+              name="scene"
+              value={values.scene}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.scene && Boolean(errors.scene)}
+              helpertext={touched.scene && errors.scene}
+            >
+              {scenes.map((scene) => (
+                <MenuItem key={scene._id} value={scene._id}>
+                  {scene.name}
+                </MenuItem>
+              ))}
+            </Select>
+            </FormControl>
+            <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
+              <InputLabel>Account Type</InputLabel>
+              <Select
+                name="accountType"
+                value={values.accountType}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              >
+                <MenuItem value="User">User</MenuItem>
+                <MenuItem value="Band">Band</MenuItem>
+              </Select>
+            </FormControl>
+            {values.accountType === "Band" && (
+              <>
+                <TextField
+                  label="Band Name"
+                  name="bandName"
+                  value={values.bandName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={Boolean(touched.bandName) && Boolean(errors.bandName)}
+                  helpertext={touched.bandName && errors.bandName}
+                  sx={{ gridColumn: "span 4" }}
+                />
+                <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
+                  <InputLabel>Genre</InputLabel>
+                  <Select
+                    name="genre"
+                    value={values.genre}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={Boolean(touched.genre) && Boolean(errors.genre)}
+                    helpertext={touched.genre && errors.genre}
+                  >
+                    <MenuItem value="Rock">Rock</MenuItem>
+                    <MenuItem value="Metal">Metal</MenuItem>
+                    <MenuItem value="Jazz">Jazz</MenuItem>
+                    <MenuItem value="Hip Hop">Hip Hop</MenuItem>
+                    {/* Additional genres can be listed here */}
+                  </Select>
+                </FormControl>
+              </>
+            )}
+            {values.accountType === "User" && (
               <>
                 <TextField
                   label="First Name"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.firstName}
                   name="firstName"
-                  error={
-                    Boolean(touched.firstName) && Boolean(errors.firstName)
-                  }
-                  helperText={touched.firstName && errors.firstName}
+                  value={values.firstName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={Boolean(touched.firstName) && Boolean(errors.firstName)}
+                  helpertext={touched.firstName && errors.firstName}
                   sx={{ gridColumn: "span 2" }}
                 />
                 <TextField
                   label="Last Name"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.lastName}
                   name="lastName"
+                  value={values.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   error={Boolean(touched.lastName) && Boolean(errors.lastName)}
-                  helperText={touched.lastName && errors.lastName}
+                  helpertext={touched.lastName && errors.lastName}
                   sx={{ gridColumn: "span 2" }}
                 />
-                <TextField
-                  label="Location"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.location}
-                  name="location"
-                  error={Boolean(touched.location) && Boolean(errors.location)}
-                  helperText={touched.location && errors.location}
-                  sx={{ gridColumn: "span 4" }}
-                />
-                <TextField
-                  label="Occupation"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.occupation}
-                  name="occupation"
-                  error={
-                    Boolean(touched.occupation) && Boolean(errors.occupation)
-                  }
-                  helperText={touched.occupation && errors.occupation}
-                  sx={{ gridColumn: "span 4" }}
-                />
-                <Box
-                  gridColumn="span 4"
-                  border={`1px solid ${palette.neutral.medium}`}
-                  borderRadius="5px"
-                  p="1rem"
-                >
-                  <Dropzone
-                    acceptedFiles=".jpg,.jpeg,.png"
-                    multiple={false}
-                    onDrop={(acceptedFiles) =>
-                      setFieldValue("picture", acceptedFiles[0])
-                    }
-                  >
-                    {({ getRootProps, getInputProps }) => (
-                      <Box
-                        {...getRootProps()}
-                        border={`2px dashed ${palette.primary.main}`}
-                        p="1rem"
-                        sx={{ "&:hover": { cursor: "pointer" } }}
-                      >
-                        <input {...getInputProps()} />
-                        {!values.picture ? (
-                          <p>Add Picture Here</p>
-                        ) : (
-                          <FlexBetween>
-                            <Typography>{values.picture.name}</Typography>
-                            <EditOutlinedIcon />
-                          </FlexBetween>
-                        )}
-                      </Box>
-                    )}
-                  </Dropzone>
-                </Box>
               </>
             )}
-
             <TextField
               label="Email"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              value={values.email}
               name="email"
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
               error={Boolean(touched.email) && Boolean(errors.email)}
-              helperText={touched.email && errors.email}
+              helpertext={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
             />
             <TextField
-              label="Password"
-              type="password"
-              onBlur={handleBlur}
+              label="Location"
+              name="location"
+              value={values.location}
               onChange={handleChange}
-              value={values.password}
-              name="password"
-              error={Boolean(touched.password) && Boolean(errors.password)}
-              helperText={touched.password && errors.password}
+              onBlur={handleBlur}
+              error={Boolean(touched.location) && Boolean(errors.location)}
+              helpertext={touched.location && errors.location}
               sx={{ gridColumn: "span 4" }}
             />
-          </Box>
-
-          {/* BUTTONS */}
-          <Box>
+            <Box sx={{ gridColumn: "span 4" }}>
+              <Dropzone onDrop={(acceptedFiles) => setFieldValue("picture", acceptedFiles[0])}>
+                {({ getRootProps, getInputProps }) => (
+                  <Box {...getRootProps()} p={2} border={`2px dashed ${palette.primary.main}`} sx={{ "&:hover": { cursor: "pointer" } }}>
+                    <input {...getInputProps()} />
+                    <Typography>Drag 'n' drop profile picture here, or click to select file</Typography>
+                    {values.picture && (
+                      <FlexBetween>
+                        <Typography>{values.picture.name}</Typography>
+                        <EditOutlinedIcon />
+                      </FlexBetween>
+                    )}
+                  </Box>
+                )}
+              </Dropzone>
+            </Box>
             <Button
-              fullWidth
               type="submit"
-              sx={{
-                m: "2rem 0",
-                p: "1rem",
-                backgroundColor: palette.primary.main,
-                color: palette.background.alt,
-                "&:hover": { color: palette.primary.main },
-              }}
+              variant="contained"
+              color="primary"
+              disabled={!(isValid && dirty)}
+              sx={{ gridColumn: "span 4", mt: 2 }}
             >
-              {isLogin ? "LOGIN" : "REGISTER"}
+              Register
             </Button>
-            <Typography
-              onClick={() => {
-                setPageType(isLogin ? "register" : "login");
-                resetForm();
-              }}
-              sx={{
-                textDecoration: "underline",
-                color: palette.primary.main,
-                "&:hover": {
-                  cursor: "pointer",
-                  color: palette.primary.light,
-                },
-              }}
-            >
-              {isLogin
-                ? "Don't have an account? Sign Up here."
-                : "Already have an account? Login here."}
-            </Typography>
           </Box>
         </form>
       )}

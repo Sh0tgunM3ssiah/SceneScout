@@ -1,38 +1,59 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+// import bcrypt from "bcrypt";
+// import jwt from "jsonwebtoken";
+import User from '../models/User.js'; // Adjust the import path according to your project structure
+import Band from '../models/Band.js'; // Adjust the import path according to your project structure
 
-/* REGISTER USER */
 export const register = async (req, res) => {
   try {
     const {
+      username,
+      accountType, // assuming this is included in your request body
       firstName,
       lastName,
+      bandName, // assuming bandName is provided for accountType 'Band'
       email,
-      password,
       picturePath,
-      friends,
+      friends, // assuming this applies to Users
       location,
-      occupation,
+      genre, // assuming this applies to Bands
+      members, // assuming this is a list of member IDs or names for Bands
+      scene, // assuming this applies to Users
     } = req.body;
 
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    const newUser = new User({
-      firstName,
-      lastName,
-      email,
-      password: passwordHash,
-      picturePath,
-      friends,
-      location,
-      occupation,
-      viewedProfile: Math.floor(Math.random() * 10000),
-      impressions: Math.floor(Math.random() * 10000),
-    });
-    const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    if (accountType === 'User') {
+      const newUser = new User({
+        username,
+        firstName,
+        lastName,
+        email,
+        picturePath,
+        friends,
+        location,
+        scene,
+        viewedProfile: Math.floor(Math.random() * 10000),
+        impressions: Math.floor(Math.random() * 10000),
+      });
+      const savedUser = await newUser.save();
+      res.status(201).json(savedUser);
+    } else if (accountType === 'Band') {
+      const newBand = new Band({
+        username,
+        name: bandName, // Using bandName for the Band's name
+        email,
+        picturePath,
+        genre,
+        members,
+        location,
+        scene,
+        friends,
+        viewedProfile: Math.floor(Math.random() * 10000),
+        impressions: Math.floor(Math.random() * 10000),
+      });
+      const savedBand = await newBand.save();
+      res.status(201).json(savedBand);
+    } else {
+      res.status(400).json({ error: 'Invalid account type' });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

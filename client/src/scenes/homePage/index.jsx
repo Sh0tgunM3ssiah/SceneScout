@@ -11,7 +11,6 @@ import { useUser } from '../../../src/userContext'; // Ensure this path matches 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const user = useUser() ?? {}; // Use useUser hook to access the user context
-  console.log(user);
   const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
   return (

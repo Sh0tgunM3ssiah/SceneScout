@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "scenes/homePage";
-// import LoginPage from "scenes/loginPage"; // If you decide to use a custom login page
+import LoginPage from "scenes/loginPage"; // If you decide to use a custom login page
 import ProfilePage from "scenes/profilePage";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -27,6 +27,7 @@ function App() {
             <ThemeProvider theme={theme}>
               <CssBaseline />
               <Routes>
+              <Route path="/login" element={<LoginPage user={user} />} />
                 <Route path="/" element={<HomePage user={user} />} />
                 <Route path="/home" element={<HomePage user={user} />} />
                 <Route path="/profile/:userId" element={<ProfilePage user={user} />} />

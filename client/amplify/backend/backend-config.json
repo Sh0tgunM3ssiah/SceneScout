@@ -1,6 +1,6 @@
 {
   "auth": {
-    "scenescout147900b5": {
+    "scenescouta01c56c4": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -16,9 +16,7 @@
           "EMAIL"
         ],
         "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
+        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]
