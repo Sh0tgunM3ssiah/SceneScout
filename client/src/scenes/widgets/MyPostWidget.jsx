@@ -24,7 +24,7 @@ import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from 'state'; // Adjust the import path to match your project structure
 
-const MyPostWidget = ({ picturePath }) => {
+const MyPostWidget = ({ userData }) => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState('');
@@ -33,6 +33,18 @@ const MyPostWidget = ({ picturePath }) => {
   const token = useSelector((state) => state.token);
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
+
+  const {
+    _id: userId,
+    firstName,
+    lastName,
+    location,
+    scene,
+    picturePath,
+    friends = [],
+    viewedProfile = 0,
+    impressions = 0,
+  } = userData;
 
   const handlePost = async () => {
     if (!user || !user._id) {

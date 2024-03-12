@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Typography, Divider, useTheme } from "@mui/material";
 import {
   ManageAccountsOutlined,
@@ -10,78 +10,10 @@ import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useUser } from "../../../src/userContext"; // Ensure the path matches your project structure
 
-const UserWidget = () => {
-  const [userData, setUserData] = useState(null);
+const UserWidget = ({ userData }) => {
   const { palette } = useTheme();
   const navigate = useNavigate();
-  const token = useSelector((state) => state.token);
-  const userContext = useUser(); // Context might initially be null
-  const username = userContext?.username;
-
-  useEffect(() => {
-    const authToken = token;
-    const fetchUserByUsername = async () => {
-      if (!username) return; // Do not attempt to fetch if username is not available
-      try {
-        const userUrl = `http://localhost:3001/users/username/${encodeURIComponent(username)}`;
-        const bandUrl = `http://localhost:3001/bands/username/${encodeURIComponent(username)}`;
-        // Concurrently fetch user and band data
-        const [userResponse, bandResponse] = await Promise.all([
-          fetch(userUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          }),
-          fetch(bandUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          })
-        ]);
-  
-        let entity; // This will hold either the user or the band
-        if (userResponse.ok) {
-          const user = await userResponse.json();
-          entity = { ...user, type: 'user' };
-        } else if (bandResponse.ok) {
-          const band = await bandResponse.json();
-          entity = { ...band, type: 'band' };
-        } else {
-          throw new Error('Neither user nor band found');
-        }
-  
-        // Now we have either a user or band, check if they have a scene
-        if (entity.scene) {
-          const sceneResponse = await fetch(`http://localhost:3001/scenes/${entity.scene}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          });
-  
-          if (!sceneResponse.ok) throw new Error('Scene not found');
-          const sceneData = await sceneResponse.json();
-          entity.sceneName = sceneData.name; // Add the scene name to your entity
-        }
-  
-        setUserData(entity); // Update state with either user or band, including scene name if applicable
-  
-      } catch (err) {
-        console.error(err.message);
-        // Handle errors, e.g., by setting an error state or displaying a notification
-      }
-    };
-  
-    fetchUserByUsername();
-  }, [username, token]); // Re-run when username or token changes  
 
   // If userData is not loaded yet, return null or a loading indicator
   if (!userData) {
@@ -100,8 +32,6 @@ const UserWidget = () => {
     viewedProfile = 0,
     impressions = 0,
   } = userData;
-
-  console.log(userData);
 
   return (
     <WidgetWrapper>

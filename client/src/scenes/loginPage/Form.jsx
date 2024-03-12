@@ -53,6 +53,7 @@ const initialValues = {
   scene: "",
   accountType: "",
   genre: "",
+  picturePath: "",
   picture: null,
 };
 
@@ -238,7 +239,7 @@ const Form = () => {
               sx={{ gridColumn: "span 4" }}
             />
             <Box sx={{ gridColumn: "span 4" }}>
-              <Dropzone onDrop={(acceptedFiles) => setFieldValue("picture", acceptedFiles[0])}>
+              <Dropzone onDrop={(acceptedFiles) => { setFieldValue("picture", acceptedFiles[0]); setFieldValue("picturePath", acceptedFiles[0].name);}}>
                 {({ getRootProps, getInputProps }) => (
                   <Box {...getRootProps()} p={2} border={`2px dashed ${palette.primary.main}`} sx={{ "&:hover": { cursor: "pointer" } }}>
                     <input {...getInputProps()} />
