@@ -93,6 +93,7 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), async (req, res) => {
   const {
+    userId,
     username,
     accountType,
     firstName,
@@ -111,6 +112,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
   try {
     if (accountType === 'User') {
       const newUser = new User({
+        userId,
         username,
         firstName,
         lastName,
@@ -127,6 +129,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     } else if (accountType === 'Band') {
       // Ensure Band model exists and is similar to User but includes 'genre' and 'members'
       const newBand = new Band({
+        userId,
         username,
         name: bandName,
         email,

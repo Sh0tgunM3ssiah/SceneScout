@@ -45,6 +45,7 @@ const registerSchema = yup.object({
 });
 
 const initialValues = {
+  userId: "",
   username: "",
   bandName: "",
   firstName: "",
@@ -64,12 +65,12 @@ const Form = () => {
   const navigate = useNavigate(); // Hook for programmatic navigation
   const userContext = useUser();
   const [scenes, setScenes] = useState([]);
-  const [formValues, setFormValues] = useState({ ...initialValues, username: userContext?.username });
+  const [formValues, setFormValues] = useState({ ...initialValues, username: userContext?.username, userId: userContext?.userId });
 
   useEffect(() => {
     const fetchScenes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/scenes/');
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/`);
         if (!response.ok) throw new Error('Failed to fetch scenes');
         const data = await response.json();
         setScenes(data);
@@ -79,9 +80,9 @@ const Form = () => {
     };
 
     fetchScenes();
-
-    if (userContext?.signInDetails?.loginId) {
-      setFormValues(prevValues => ({ ...prevValues, username: userContext.username }));
+    console.log(userContext);
+    if (userContext?.userId) {
+      setFormValues(prevValues => ({ ...prevValues, username: userContext.username, userId: userContext.userId }));
     }
   }, [userContext]);
 
@@ -92,7 +93,7 @@ const Form = () => {
     });
 
     try {
-      const response = await fetch("http://localhost:3001/auth/register", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, {
         method: "POST",
         body: formData,
       });
@@ -255,6 +256,12 @@ const Form = () => {
                 )}
               </Dropzone>
             </Box>
+            <input
+              type="hidden"
+              name="userId"
+              value={values.userId}
+              onChange={handleChange}
+            />
             <Button
               type="submit"
               variant="contained"

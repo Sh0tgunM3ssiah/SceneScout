@@ -16,15 +16,15 @@ const ProfilePage = () => {
   const [userData, setUserData] = useState(null);
   const token = useSelector((state) => state.token);
   const userContext = useUser(); // Context might initially be null
-  const username = userContext?.username;
+  const userId = userContext?.userId;
 
   useEffect(() => {
     const authToken = token;
     const fetchUserByUsername = async () => {
-      if (!username) return; // Do not attempt to fetch if username is not available
+      if (!userId) return; // Do not attempt to fetch if username is not available
       try {
-        const userUrl = `http://localhost:3001/users/username/${encodeURIComponent(username)}`;
-        const bandUrl = `http://localhost:3001/bands/username/${encodeURIComponent(username)}`;
+        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
+        const bandUrl = `${process.env.REACT_APP_BACKEND_URL}/bands/${encodeURIComponent(userId)}`;
         // Concurrently fetch user and band data
         const [userResponse, bandResponse] = await Promise.all([
           fetch(userUrl, {
@@ -56,7 +56,7 @@ const ProfilePage = () => {
   
         // Now we have either a user or band, check if they have a scene
         if (entity.scene) {
-          const sceneResponse = await fetch(`http://localhost:3001/scenes/${entity.scene}`, {
+          const sceneResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/${entity.scene}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -78,7 +78,7 @@ const ProfilePage = () => {
     };
   
     fetchUserByUsername();
-  }, [username, token]);
+  }, [userId, token]);
 
   if (!user) return null;
 

@@ -11,6 +11,30 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const getUserById = async (req, res) => {
+  // Extract the email path parameter from req.params
+  let userId = req.params.id;
+  
+  if (userId) {
+    userId = decodeURIComponent(userId); // Decode the email if it's URL-encoded
+  } else {
+      // Handle the case where email path parameter is not provided
+      return res.status(400).json({ message: "userId path parameter is required." });
+  }
+
+
+  try {
+      const user = await User.findOne({ userId: userId }); // Use findOne to find the user by email
+      if (user) {
+          res.status(200).json(user);
+      } else {
+          res.status(404).json({ message: "User not found" });
+      }
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
+};
+
 export const getUserByUsername = async (req, res) => {
   // Extract the email path parameter from req.params
   let username = req.params.username;

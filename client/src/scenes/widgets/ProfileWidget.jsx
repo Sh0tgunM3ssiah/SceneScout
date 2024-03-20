@@ -74,7 +74,7 @@ const ProfileWidget = () => {
   useEffect(() => {
     const fetchScenes = async () => {
       try {
-        const response = await fetch("http://localhost:3001/scenes/");
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/`);
         if (!response.ok) throw new Error("Failed to fetch scenes");
         const data = await response.json();
         setScenes(data);
@@ -84,10 +84,10 @@ const ProfileWidget = () => {
     };
   
     const fetchUserByUsername = async () => {
-      if (!userContext?.username || !token) return;
+      if (!userContext?.userId || !token) return;
       try {
-        const userUrl = `http://localhost:3001/users/username/${encodeURIComponent(userContext.username)}`;
-        const bandUrl = `http://localhost:3001/bands/username/${encodeURIComponent(userContext.username)}`;
+        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userContext.userId)}`;
+        const bandUrl = `${process.env.REACT_APP_BACKEND_URL}/bands/${encodeURIComponent(userContext.userId)}`;
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -105,7 +105,7 @@ const ProfileWidget = () => {
         }
   
         if (entity && entity.scene) {
-          const sceneResponse = await fetch(`http://localhost:3001/scenes/${entity.scene}`, { method: "GET", headers });
+          const sceneResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/${entity.scene}`, { method: "GET", headers });
           if (sceneResponse.ok) {
             const sceneData = await sceneResponse.json();
             entity.sceneName = sceneData.name;

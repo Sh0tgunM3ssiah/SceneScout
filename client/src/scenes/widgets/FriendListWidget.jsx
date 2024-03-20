@@ -19,7 +19,7 @@ const FriendListWidget = () => {
       if (!user || !user._id) return; // Ensure user and userId are available
   
       const response = await fetch(
-        `http://localhost:3001/users/${user._id}/friends`, // Use user._id from context
+        `${process.env.REACT_APP_BACKEND_URL}/users/${user._id}/friends`, // Use user._id from context
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

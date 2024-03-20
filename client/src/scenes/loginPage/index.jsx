@@ -10,7 +10,7 @@ const LoginPage = () => {
   const navigate = useNavigate(); // Hook for programmatic navigation
   const token = useSelector((state) => state.token);
   const userContext = useUser();
-  const username = userContext?.signInDetails?.loginId;
+  const userId = userContext?.userId;
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
   // Optional: State for loading and error handling
@@ -20,10 +20,10 @@ const LoginPage = () => {
   useEffect(() => {
     const authToken = token;
     const fetchUserByUsername = async () => {
-      if (!username) return; // Do not attempt to fetch if userEmail is not available
+      if (!userId) return; // Do not attempt to fetch if userEmail is not available
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:3001/users/username/${encodeURIComponent(username)}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const LoginPage = () => {
     };
 
     fetchUserByUsername();
-  }, [username, token, navigate]); // Add navigate to dependency array
+  }, [userId, token, navigate]); // Add navigate to dependency array
 
   if (loading) {
     return <Typography>Loading...</Typography>;

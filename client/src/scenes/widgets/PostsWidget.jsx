@@ -12,7 +12,7 @@ const PostsWidget = ({ userData, isProfile = false }) => {
   
   useEffect(() => {
     const getPosts = async () => {
-      const endpoint = isProfile && userData ? `http://localhost:3001/posts/${userData._id}/posts` : "http://localhost:3001/posts";
+      const endpoint = isProfile && userData ? `${process.env.REACT_APP_BACKEND_URL}/posts/${userData._id}/posts` : "${process.env.REACT_APP_BACKEND_URL}/posts";
       const response = await fetch(endpoint, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },

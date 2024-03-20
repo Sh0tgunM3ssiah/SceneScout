@@ -1,62 +1,127 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
-  InputBase,
   Typography,
   useTheme,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import WidgetWrapper from 'components/WidgetWrapper';
+import { useSelector } from 'react-redux';
 
-const SearchSceneWidget = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredPosts, setFilteredPosts] = useState([]);
-    const theme = useTheme();
-  
-    // Static posts data. Replace with your actual data source.
-    const posts = [
-      { scene: 'mountains', genre: 'adventure', content: 'Mountain Climbing Adventure' },
-      { scene: 'city', genre: 'urban', content: 'Exploring Urban Nightlife' },
-      { scene: 'forest', genre: 'nature', content: 'Camping in the Forest' },
-      // Add more posts as needed
-    ];
-  
-    // Function to filter posts based on search term
-    const handleSearch = (event) => {
-      const value = event.target.value.toLowerCase();
-      setSearchTerm(value);
-  
-      const filtered = posts.filter(post =>
-        post.scene.toLowerCase().includes(value) || 
-        post.genre.toLowerCase().includes(value) || 
-        post.content.toLowerCase().includes(value)
-      );
-  
-      setFilteredPosts(filtered);
+const SearchSceneWidget = ({ userSceneId }) => {
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [sceneFilter, setSceneFilter] = useState(userSceneId || '');
+  const [genreFilter, setGenreFilter] = useState('');
+  const [scenes, setScenes] = useState([]); // Will hold fetched scenes
+  const theme = useTheme();
+  const token = useSelector((state) => state.token); // Assuming token is stored in redux for API authorization
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchScenes = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes`, {
+          headers: { Authorization: `Bearer ${token}` }, // Include authorization header if required
+        });
+        if (!response.ok) throw new Error("Failed to fetch scenes");
+        const scenesData = await response.json();
+        setScenes(scenesData); // Set fetched scenes into state
+      } catch (error) {
+        console.error("Error fetching scenes:", error);
+      }
     };
-  
-    return (
-      <WidgetWrapper>
-        <Box display="flex" flexDirection="column" gap="1rem">
-          <InputBase
-            placeholder="Search posts..."
-            fullWidth
-            onChange={handleSearch}
-            value={searchTerm}
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-              borderRadius: '20px',
-              padding: '10px 20px',
-            }}
-          />
-          {filteredPosts.map((post, index) => (
-            <Typography key={index} sx={{ padding: '10px', borderBottom: `1px solid ${theme.palette.divider}` }}>
-              {post.content}
-            </Typography>
-          ))}
-        </Box>
-      </WidgetWrapper>
-    );
+
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts`, {
+          headers: { Authorization: `Bearer ${token}` }, // Include authorization header if required
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        setPosts(data); // Assuming data is the array of posts
+        filterPosts(data, sceneFilter, genreFilter);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchScenes();
+    fetchPosts();
+  }, [token, sceneFilter, genreFilter]); // Dependencies for re-fetching when these values change
+
+  // Filter function updated to use scene ID
+  const filterPosts = (posts, sceneId, genre) => {
+    console.log(posts);
+    console.log(sceneId);
+    const filtered = posts.filter(post => {
+      return (!sceneId || post.scene === sceneId) && (!genre || post.genre === genre);
+    });
+    setFilteredPosts(filtered);
   };
-  
-  export default SearchSceneWidget;
-  
+
+  // Update filters
+  const handleSceneFilterChange = (event) => {
+    setSceneFilter(event.target.value);
+  };
+
+  const handleGenreFilterChange = (event) => {
+    setGenreFilter(event.target.value);
+  };
+
+  return (
+    <WidgetWrapper>
+      <Box display="flex" flexDirection="column" gap="1rem">
+        {/* Filters */}
+        <Box display="flex" justifyContent="space-between">
+          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="scene-select-label">Scene</InputLabel>
+            <Select
+              labelId="scene-select-label"
+              id="scene-select"
+              value={sceneFilter}
+              onChange={handleSceneFilterChange}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {scenes.map((scene) => (
+                <MenuItem key={scene._id} value={scene._id}>{scene.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel id="genre-select-label">Genre</InputLabel>
+            <Select
+              labelId="genre-select-label"
+              id="genre-select"
+              value={genreFilter}
+              onChange={handleGenreFilterChange}
+            >
+              {/* Genre options (static or could be fetched similar to scenes) */}
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value="adventure">Adventure</MenuItem>
+              <MenuItem value="urban">Urban</MenuItem>
+              <MenuItem value="nature">Nature</MenuItem>
+              {/* Add more genres as needed */}
+            </Select>
+          </FormControl>
+        </Box>
+        
+        {/* Display filtered posts */}
+        {filteredPosts.map((post, index) => (
+          <Typography key={index} sx={{ padding: '10px', borderBottom: `1px solid ${theme.palette.divider}` }}>
+            {post.content} {/* Customize as needed */}
+          </Typography>
+        ))}
+      </Box>
+    </WidgetWrapper>
+  );
+};
+
+export default SearchSceneWidget;
