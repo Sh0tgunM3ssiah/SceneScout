@@ -36,13 +36,13 @@ const UserWidget = ({ userData }) => {
   return (
     <WidgetWrapper>
       {/* FIRST ROW */}
-      <FlexBetween gap="0.5rem" pb="1.1rem" onClick={() => navigate(`/profile/${userId}`)}>
+      <FlexBetween gap="0.5rem" pb="1.1rem" onClick={() => navigate(`/profile/${userData.username}`)}>
         <FlexBetween gap="1rem">
           <UserImage image={picturePath} />
           <Box>
             <Typography variant="h4" color={palette.neutral.dark} fontWeight="500" sx={{ "&:hover": { cursor: "pointer", color: palette.primary.light } }}>
               {/* Conditionally display band name or user's full name */}
-              {userData.type === 'band' ? userData.name : `${firstName} ${lastName}`}
+              {userData.type === 'band' ? userData.name : userData.username}
             </Typography>
             <Typography color={palette.neutral.medium}>{friends.length} friends</Typography>
           </Box>
@@ -64,10 +64,10 @@ const UserWidget = ({ userData }) => {
         </Box>
       </Box>
 
-      <Divider />
+      {/* <Divider /> */}
 
       {/* THIRD ROW */}
-      <Box p="1rem 0">
+      {/* <Box p="1rem 0">
         <FlexBetween mb="0.5rem">
           <Typography color={palette.neutral.medium}>Who's viewed your profile</Typography>
           <Typography color={palette.neutral.main} fontWeight="500">{viewedProfile}</Typography>
@@ -78,10 +78,10 @@ const UserWidget = ({ userData }) => {
         </FlexBetween>
       </Box>
 
-      <Divider />
+      <Divider /> */}
 
       {/* FOURTH ROW - Social Profiles */}
-      <Box p="1rem 0">
+      {/* <Box p="1rem 0">
         <Typography fontSize="1rem" color={palette.neutral.main} fontWeight="500" mb="1rem">
           Social Profiles
         </Typography>
@@ -110,7 +110,9 @@ const UserWidget = ({ userData }) => {
           </FlexBetween>
           <EditOutlined sx={{ color: palette.neutral.main }} />
         </FlexBetween>
-      </Box>
+      </Box> */}
+
+
     </WidgetWrapper>
   );
 };

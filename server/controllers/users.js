@@ -22,7 +22,6 @@ export const getUserByUsername = async (req, res) => {
       return res.status(400).json({ message: "Username path parameter is required." });
   }
 
-  console.log(username); // This should now correctly log the email string
 
   try {
       const user = await User.findOne({ username: username }); // Use findOne to find the user by email
@@ -46,8 +45,6 @@ export const getUserByEmail = async (req, res) => {
       // Handle the case where email path parameter is not provided
       return res.status(400).json({ message: "Email path parameter is required." });
   }
-
-  console.log(email); // This should now correctly log the email string
 
   try {
       const user = await User.findOne({ email: email }); // Use findOne to find the user by email

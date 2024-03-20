@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const postSchema = mongoose.Schema(
+const postSchema = new mongoose.Schema(
   {
     userId: {
       type: String,
@@ -8,14 +8,15 @@ const postSchema = mongoose.Schema(
     },
     firstName: {
       type: String,
-      required: true,
     },
     lastName: {
       type: String,
-      required: true,
     },
     location: String,
     description: String,
+    sceneId: {
+      type: String,
+    },
     picturePath: String,
     userPicturePath: String,
     likes: {

@@ -23,8 +23,11 @@ import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from 'state'; // Adjust the import path to match your project structure
+import { addPost } from 'state';
+import { useNavigate } from "react-router-dom";
 
 const MyPostWidget = ({ userData }) => {
+  const navigate = useNavigate();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState('');
@@ -34,8 +37,14 @@ const MyPostWidget = ({ userData }) => {
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
+  // Destructure the user data for easy access
   const {
     _id: userId,
+    username,
     firstName,
     lastName,
     location,
@@ -47,14 +56,16 @@ const MyPostWidget = ({ userData }) => {
   } = userData;
 
   const handlePost = async () => {
-    if (!user || !user._id) {
+    if (!userData || !userData._id) {
       console.error('User ID is not available.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('userId', user._id);
+    formData.append('userId', userData._id);
     formData.append('description', post);
+    formData.append('sceneId', userData.scene);
+    formData.append('userPicturePath', userData.picturePath)
     if (image) {
       formData.append('picture', image);
       formData.append('picturePath', image.name);
@@ -68,7 +79,7 @@ const MyPostWidget = ({ userData }) => {
       });
       if (!response.ok) throw new Error('Network response was not ok.');
       const posts = await response.json();
-      dispatch(setPosts(posts)); // Ensure this aligns with how your reducer expects to receive the payload
+      dispatch(addPost(posts));
       setImage(null);
       setPost('');
     } catch (error) {
@@ -132,7 +143,7 @@ const MyPostWidget = ({ userData }) => {
           </IconButton>
 
           {/* Optionally showing more icons based on mobile or non-mobile screens */}
-          {isNonMobileScreens && (
+          {/* {isNonMobileScreens && (
             <>
               <IconButton>
                 <GifBoxOutlined />
@@ -147,7 +158,7 @@ const MyPostWidget = ({ userData }) => {
                 <MoreHorizOutlined />
               </IconButton>
             </>
-          )}
+          )} */}
 
           <Button
             variant="contained"

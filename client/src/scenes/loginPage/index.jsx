@@ -34,7 +34,6 @@ const LoginPage = () => {
         setLoading(false);
 
         if (!response.ok) {
-          console.log(response);
           setError('User not found or error fetching user');
           throw new Error('User not found or error fetching user');
         }

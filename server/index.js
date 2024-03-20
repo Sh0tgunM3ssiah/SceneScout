@@ -22,6 +22,7 @@ import { MulterAzureStorage } from 'multer-azure-blob-storage';
 import { BlobServiceClient } from "@azure/storage-blob";
 import User from './models/User.js'; // Adjust the import path according to your project structure
 import Band from './models/Band.js';
+import Post from './models/Post.js';
 
 /* AZURE BLOB STORAGE SETUP */
 const account = process.env.ACCOUNT_NAME;
@@ -147,7 +148,41 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-app.post("/posts", verifyToken, upload.single("picture"), createPost);
+app.post("/posts", upload.single("picture"), async (req, res) => {
+  const {
+    userId,
+    sceneId,
+    location,
+    description,
+    userPicturePath
+  } = req.body;
+
+  // The URL of the uploaded file is directly accessible via the `req.file` object
+  // provided by the `MulterAzureStorage` engine
+  let picturePath = req.file ? req.file.url.split('?')[0] : '';
+
+
+  try {
+    // Assuming `userId` is used to fetch user details, including `firstName` and `lastName`
+    // If these details are not in `req.body`, ensure they are fetched from the database
+    const newPost = new Post({
+      userId,
+      sceneId,
+      location,
+      description,
+      picturePath,
+      userPicturePath,
+      likes: {},
+      comments: [],
+    });
+
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 /* ROUTES */
 app.use("/auth", authRoutes);

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 
 const PostWidget = ({
+  userData,
   postId,
   postUserId,
   name,
@@ -26,9 +27,11 @@ const PostWidget = ({
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
-  const loggedInUserId = useSelector((state) => state.user._id);
-  const isLiked = Boolean(likes[loggedInUserId]);
-  const likeCount = Object.keys(likes).length;
+  const loggedInUserId = '';
+  // const loggedInUserId = userData._id;
+  // const isLiked = Boolean(likes[loggedInUserId]);
+  const isLiked = false;
+  const likeCount = 0;
 
   const { palette } = useTheme();
   const main = palette.neutral.main;
@@ -64,7 +67,7 @@ const PostWidget = ({
           height="auto"
           alt="post"
           style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
-          src={`http://localhost:3001/assets/${picturePath}`}
+          src={`${picturePath}?${process.env.REACT_APP_SAS_TOKEN}`}
         />
       )}
       <FlexBetween mt="0.25rem">

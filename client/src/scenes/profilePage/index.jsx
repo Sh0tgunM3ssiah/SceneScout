@@ -1,31 +1,84 @@
 import { Box, useMediaQuery } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import Navbar from "scenes/navbar";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
-import MyPostWidget from "scenes/widgets/MyPostWidget";
+import ProfileWidget from "scenes/widgets/ProfileWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget";
+import { useUser } from '../../../src/userContext'; // Ensure this path matches your project structure
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
-  const { userId } = useParams();
-  const token = useSelector((state) => state.token);
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const user = useUser() ?? {}; // Use useUser hook to access the user context
+  const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
-  const getUser = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setUser(data);
-  };
+  const [userData, setUserData] = useState(null);
+  const token = useSelector((state) => state.token);
+  const userContext = useUser(); // Context might initially be null
+  const username = userContext?.username;
 
   useEffect(() => {
-    getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const authToken = token;
+    const fetchUserByUsername = async () => {
+      if (!username) return; // Do not attempt to fetch if username is not available
+      try {
+        const userUrl = `http://localhost:3001/users/username/${encodeURIComponent(username)}`;
+        const bandUrl = `http://localhost:3001/bands/username/${encodeURIComponent(username)}`;
+        // Concurrently fetch user and band data
+        const [userResponse, bandResponse] = await Promise.all([
+          fetch(userUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authToken}`,
+            },
+          }),
+          fetch(bandUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authToken}`,
+            },
+          })
+        ]);
+  
+        let entity; // This will hold either the user or the band
+        if (userResponse.ok) {
+          const user = await userResponse.json();
+          entity = { ...user, type: 'user' };
+        } else if (bandResponse.ok) {
+          const band = await bandResponse.json();
+          entity = { ...band, type: 'band' };
+        } else {
+          throw new Error('Neither user nor band found');
+        }
+  
+        // Now we have either a user or band, check if they have a scene
+        if (entity.scene) {
+          const sceneResponse = await fetch(`http://localhost:3001/scenes/${entity.scene}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authToken}`,
+            },
+          });
+  
+          if (!sceneResponse.ok) throw new Error('Scene not found');
+          const sceneData = await sceneResponse.json();
+          entity.sceneName = sceneData.name; // Add the scene name to your entity
+        }
+  
+        setUserData(entity); // Update state with either user or band, including scene name if applicable
+  
+      } catch (err) {
+        console.error(err.message);
+        // Handle errors, e.g., by setting an error state or displaying a notification
+      }
+    };
+  
+    fetchUserByUsername();
+  }, [username, token]);
 
   if (!user) return null;
 
@@ -35,22 +88,14 @@ const ProfilePage = () => {
       <Box
         width="100%"
         padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "block"}
+        display={"flex"}
         gap="2rem"
         justifyContent="center"
       >
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={userId} picturePath={user.picturePath} />
+        <Box flexBasis={"90%"}>
+          <ProfileWidget userId={_id} picturePath={picturePath} userData={userData} />
           <Box m="2rem 0" />
-          <FriendListWidget userId={userId} />
-        </Box>
-        <Box
-          flexBasis={isNonMobileScreens ? "42%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}
-        >
-          <MyPostWidget picturePath={user.picturePath} />
-          <Box m="2rem 0" />
-          <PostsWidget userId={userId} isProfile />
+          <FriendListWidget userData={userData} />
         </Box>
       </Box>
     </Box>

@@ -36,8 +36,6 @@ export const getBandByUsername = async (req, res) => {
       return res.status(400).json({ message: "Username path parameter is required." });
   }
 
-  console.log(username); // This should now correctly log the email string
-
   try {
       const band = await Band.findOne({ username: username });
       if (band) {

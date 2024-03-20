@@ -16,8 +16,9 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { useUser } from '../../../src/userContext';
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useUser } from "../../../src/userContext";
 
 const registerSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -52,59 +53,89 @@ const initialValues = {
   email: "",
   location: "",
   scene: "",
-  accountType: "",
+  accountType: "User", // Assuming default account type
   genre: "",
   picturePath: "",
   picture: null,
 };
 
-const Form = () => {
+const ProfileWidget = () => {
+  const navigate = useNavigate();
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const navigate = useNavigate(); // Hook for programmatic navigation
   const userContext = useUser();
   const [scenes, setScenes] = useState([]);
+  const token = useSelector((state) => state.token);
+  const [userData, setUserData] = useState(null);
+
+  // Setup initial form values based on user context or other conditions
   const [formValues, setFormValues] = useState({ ...initialValues, username: userContext?.username });
 
   useEffect(() => {
     const fetchScenes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/scenes/');
-        if (!response.ok) throw new Error('Failed to fetch scenes');
+        const response = await fetch("http://localhost:3001/scenes/");
+        if (!response.ok) throw new Error("Failed to fetch scenes");
         const data = await response.json();
         setScenes(data);
       } catch (error) {
-        console.error('Error fetching scenes:', error);
+        console.error("Error fetching scenes:", error);
       }
     };
-
+  
+    const fetchUserByUsername = async () => {
+      if (!userContext?.username || !token) return;
+      try {
+        const userUrl = `http://localhost:3001/users/username/${encodeURIComponent(userContext.username)}`;
+        const bandUrl = `http://localhost:3001/bands/username/${encodeURIComponent(userContext.username)}`;
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        };
+        const userResponse = await fetch(userUrl, { method: "GET", headers });
+        const bandResponse = await fetch(bandUrl, { method: "GET", headers });
+  
+        let entity;
+        if (userResponse.ok) {
+          const user = await userResponse.json();
+          entity = { ...user, type: "user" };
+        } else if (bandResponse.ok) {
+          const band = await bandResponse.json();
+          entity = { ...band, type: "band" };
+        }
+  
+        if (entity && entity.scene) {
+          const sceneResponse = await fetch(`http://localhost:3001/scenes/${entity.scene}`, { method: "GET", headers });
+          if (sceneResponse.ok) {
+            const sceneData = await sceneResponse.json();
+            entity.sceneName = sceneData.name;
+          }
+        }
+  
+        setUserData(entity); // This updates the userData state
+      } catch (error) {
+        console.error("Error fetching user/band data:", error);
+      }
+    };
+  
     fetchScenes();
+    fetchUserByUsername();
+  }, [userContext?.username, token]);
 
-    if (userContext?.signInDetails?.loginId) {
-      setFormValues(prevValues => ({ ...prevValues, username: userContext.username }));
+  useEffect(() => {
+    if (userData) {
+      setFormValues(prev => ({
+        ...prev,
+        username: userData.username || "",
+        email: userData.email || "",
+        accountType: userData.type === 'user' ? 'User' : 'Band',
+        // Ensure you populate other necessary fields based on userData
+      }));
     }
-  }, [userContext]);
+  }, [userData]);
 
   const handleRegistration = async (values, { resetForm }) => {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value instanceof Blob ? value : String(value));
-    });
-
-    try {
-      const response = await fetch("http://localhost:3001/auth/register", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error("Failed to register.");
-
-      const result = await response.json();
-      resetForm();
-      navigate('/home');
-    } catch (error) {
-      console.error("Error during registration:", error);
-    }
+    // Implementation for handling form submission
   };
 
   return (
@@ -271,4 +302,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default ProfileWidget;

@@ -7,9 +7,11 @@ import {
   Button,
   useTheme,
   useMediaQuery,
+  Icon,
 } from "@mui/material";
 import {
   Search,
+  Assignment,
   Message,
   DarkMode,
   LightMode,
@@ -42,6 +44,14 @@ const Navbar = () => {
     }
   };
 
+  const handleNavigateToSearch = () => {
+    navigate('/search');
+  };
+
+  const handleNavigateToClassifieds = () => {
+    navigate('/classifieds');
+  };
+
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={theme.palette.background.alt}>
       <FlexBetween gap="1.75rem">
@@ -58,19 +68,6 @@ const Navbar = () => {
         >
           SceneScout
         </Typography>
-        {isNonMobileScreens && (
-          <FlexBetween
-            backgroundColor={theme.palette.neutral.light}
-            borderRadius="9px"
-            gap="3rem"
-            padding="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
-        )}
       </FlexBetween>
 
       {isNonMobileScreens ? (
@@ -82,9 +79,12 @@ const Navbar = () => {
               <LightMode sx={{ color: theme.palette.neutral.dark, fontSize: "25px" }} />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
-          <Notifications sx={{ fontSize: "25px" }} />
-          <Help sx={{ fontSize: "25px" }} />
+          <IconButton onClick={handleNavigateToSearch}>
+            <Search sx={{ fontSize: "25px" }} />
+          </IconButton>
+          <IconButton onClick={handleNavigateToClassifieds}>
+            <Assignment sx={{ fontSize: "25px" }} />
+          </IconButton>
           <Button onClick={handleLogout} variant="outlined" color="inherit">
             Log Out
           </Button>
@@ -124,9 +124,12 @@ const Navbar = () => {
                 <LightMode sx={{ color: theme.palette.neutral.dark }} />
               )}
             </IconButton>
-            <Message />
-            <Notifications />
-            <Help />
+            <IconButton onClick={handleNavigateToSearch}>
+              <Search/>
+            </IconButton>
+            <IconButton onClick={handleNavigateToClassifieds}>
+              <Assignment/>
+            </IconButton>
             <Button onClick={handleLogout} variant="outlined" color="inherit">
               Log Out
             </Button>

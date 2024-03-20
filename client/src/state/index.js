@@ -39,9 +39,12 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+    addPost: (state, action) => {
+      state.posts = [...state.posts, action.payload]; // Append the new post
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, addPost } =
   authSlice.actions;
 export default authSlice.reducer;

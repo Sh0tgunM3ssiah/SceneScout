@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "scenes/navbar";
-import UserWidget from "scenes/widgets/UserWidget";
-import MyPostWidget from "scenes/widgets/MyPostWidget";
-import PostsWidget from "scenes/widgets/PostsWidget";
-import AdvertWidget from "scenes/widgets/AdvertWidget";
-import FriendListWidget from "scenes/widgets/FriendListWidget";
+import SearchSceneWidget from "scenes/widgets/SearchSceneWidget";
 import { useSelector } from "react-redux";
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 
-const HomePage = () => {
+const SearchPage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const user = useUser() ?? {}; // Use useUser hook to access the user context
   const { _id, picturePath } = user; // Destructure the needed properties from the user object
@@ -86,29 +82,16 @@ const HomePage = () => {
       <Box
         width="100%"
         padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "block"}
-        gap="0.5rem"
-        justifyContent="space-between"
+        display={"flex"}
+        gap="2rem"
+        justifyContent="center"
       >
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={_id} picturePath={picturePath} userData={userData} />
+        <Box flexBasis={"90%"}>
+          <SearchSceneWidget userId={_id} picturePath={picturePath} userData={userData} />
         </Box>
-        <Box
-          flexBasis={isNonMobileScreens ? "42%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}
-        >
-          <MyPostWidget picturePath={picturePath} userData={userData} />
-          {userData && <PostsWidget userId={_id} isProfile={true} userData={userData} />}
-        </Box>
-        {isNonMobileScreens && (
-          <Box flexBasis="26%">
-            <AdvertWidget />
-            <FriendListWidget userId={_id} />
-          </Box>
-        )}
       </Box>
     </Box>
   );
 };
 
-export default HomePage;
+export default SearchPage;

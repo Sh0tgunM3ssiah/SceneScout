@@ -37,8 +37,6 @@ export const getSceneByName = async (req, res) => {
       return res.status(400).json({ message: "Username path parameter is required." });
   }
 
-  console.log(sceneName); // This should now correctly log the email string
-
   try {
       const scene = await Scene.findOne({ name: sceneName }); // Use findOne to find the user by email
       if (scene) {
