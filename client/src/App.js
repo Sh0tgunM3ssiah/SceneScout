@@ -35,7 +35,7 @@ function App() {
                 <Route path="/home" element={<HomePage/>} />
                 <Route path="/profile/:userId" element={<ProfilePage/>} />
                 <Route path="/search" element={<SearchPage/>} />
-                <Route path="/classifieds/:sceneId" element={<ClassifiedPage/>} />
+                <Route path="/classifieds/:scene" element={<ClassifiedPage/>} />
               </Routes>
             </ThemeProvider>
           </BrowserRouter>

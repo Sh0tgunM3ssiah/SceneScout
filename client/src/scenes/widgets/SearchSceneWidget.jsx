@@ -107,7 +107,7 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
               <MenuItem value="">
                 <em>All</em>
               </MenuItem>
-              <MenuItem value="User">User Posts</MenuItem>
+              <MenuItem value="User">Fan Posts</MenuItem>
               <MenuItem value="Artist">Artist Posts</MenuItem>
               <MenuItem value="Event">Events</MenuItem>
             </Select>
