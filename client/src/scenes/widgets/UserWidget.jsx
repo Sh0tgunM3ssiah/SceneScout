@@ -41,8 +41,8 @@ const UserWidget = ({ userData }) => {
           <UserImage image={picturePath} />
           <Box>
             <Typography variant="h4" color={palette.neutral.dark} fontWeight="500" sx={{ "&:hover": { cursor: "pointer", color: palette.primary.light } }}>
-              {/* Conditionally display band name or user's full name */}
-              {userData.type === 'band' ? userData.name : userData.username}
+              {/* Conditionally display Artist name or user's full name */}
+              {userData.type === 'Artist' ? userData.name : userData.username}
             </Typography>
             <Typography color={palette.neutral.medium}>{friends.length} friends</Typography>
           </Box>

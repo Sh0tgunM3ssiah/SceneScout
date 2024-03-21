@@ -1,31 +1,31 @@
-import Band from "../models/Band.js";
+import Artist from "../models/Artist.js";
 
 /* READ */
-export const getBandById = async (req, res) => {
+export const getArtistById = async (req, res) => {
   try {
     const { id } = req.params;
-    const band = await Band.findById(id);
-    res.status(200).json(band);
+    const artist = await Artist.findById(id);
+    res.status(200).json(artist);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
 
-export const getAllBands = async (req, res) => {
+export const getAllArtists = async (req, res) => {
   try {
-      const bands = await Band.find();
-      if (bands.length > 0) {
-          res.status(200).json(bands);
+      const artist = await Artist.find();
+      if (artists.length > 0) {
+          res.status(200).json(artists);
       } else {
           // Handle the case where no scenes are found
-          res.status(404).json({ message: "No Bands found" });
+          res.status(404).json({ message: "No Artists found" });
       }
   } catch (err) {
       res.status(500).json({ error: err.message });
   }
 };
 
-export const getBandByUsername = async (req, res) => {
+export const getArtistByUsername = async (req, res) => {
   // Extract the email path parameter from req.params
   let username = req.params.username;
   
@@ -37,11 +37,11 @@ export const getBandByUsername = async (req, res) => {
   }
 
   try {
-      const band = await Band.findOne({ username: username });
-      if (band) {
-          res.status(200).json(band);
+      const artist = await Artist.findOne({ username: username });
+      if (artist) {
+          res.status(200).json(artist);
       } else {
-          res.status(404).json({ message: "Band not found" });
+          res.status(404).json({ message: "Artist not found" });
       }
   } catch (err) {
       res.status(500).json({ error: err.message });

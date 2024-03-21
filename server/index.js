@@ -12,7 +12,7 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import sceneRoutes from "./routes/scenes.js";
-import bandRoutes from "./routes/bands.js";
+import artistRoutes from "./routes/artists.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
@@ -21,7 +21,7 @@ import multer from 'multer';
 import { MulterAzureStorage } from 'multer-azure-blob-storage';
 import { BlobServiceClient } from "@azure/storage-blob";
 import User from './models/User.js'; // Adjust the import path according to your project structure
-import Band from './models/Band.js';
+import Artist from './models/Artist.js';
 import Post from './models/Post.js';
 
 /* AZURE BLOB STORAGE SETUP */
@@ -98,7 +98,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     accountType,
     firstName,
     lastName,
-    bandName,
+    artistName,
     email,
     friends,
     location,
@@ -116,6 +116,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         username,
         firstName,
         lastName,
+        accountType,
         email,
         picturePath, // Picture uploaded to Azure Blob
         friends,
@@ -126,13 +127,14 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
       });
       await newUser.save();
       res.status(201).json(newUser);
-    } else if (accountType === 'Band') {
-      // Ensure Band model exists and is similar to User but includes 'genre' and 'members'
-      const newBand = new Band({
+    } else if (accountType === 'Artist') {
+      // Ensure Artist model exists and is similar to User but includes 'genre' and 'members'
+      const newArtist = new Artist({
         userId,
         username,
-        name: bandName,
+        name: artistName,
         email,
+        accountType,
         picturePath, // Picture uploaded to Azure Blob
         genre,
         members,
@@ -142,8 +144,8 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         viewedProfile: 0,
         impressions: 0,
       });
-      await newBand.save();
-      res.status(201).json(newBand);
+      await newArtist.save();
+      res.status(201).json(newArtist);
     } else {
       res.status(400).json({ error: 'Invalid account type' });
     }
@@ -154,6 +156,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
 app.post("/posts", upload.single("picture"), async (req, res) => {
   const {
     userId,
+    postType,
     sceneId,
     location,
     description,
@@ -170,6 +173,7 @@ app.post("/posts", upload.single("picture"), async (req, res) => {
     // If these details are not in `req.body`, ensure they are fetched from the database
     const newPost = new Post({
       userId,
+      postType,
       sceneId,
       location,
       description,
@@ -192,7 +196,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/scenes", sceneRoutes);
-app.use("/bands", bandRoutes);
+app.use("/artists", artistRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;

@@ -4,12 +4,9 @@ import { useSelector } from "react-redux";
 import Navbar from "scenes/navbar";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import ProfileWidget from "scenes/widgets/ProfileWidget";
-import PostsWidget from "scenes/widgets/PostsWidget";
-import UserWidget from "scenes/widgets/UserWidget";
 import { useUser } from '../../../src/userContext'; // Ensure this path matches your project structure
 
 const ProfilePage = () => {
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const user = useUser() ?? {}; // Use useUser hook to access the user context
   const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
@@ -24,9 +21,9 @@ const ProfilePage = () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
-        const bandUrl = `${process.env.REACT_APP_BACKEND_URL}/bands/${encodeURIComponent(userId)}`;
-        // Concurrently fetch user and band data
-        const [userResponse, bandResponse] = await Promise.all([
+        const artistUrl = `${process.env.REACT_APP_BACKEND_URL}/artists/${encodeURIComponent(userId)}`;
+        // Concurrently fetch user and artist data
+        const [userResponse, artistResponse] = await Promise.all([
           fetch(userUrl, {
             method: "GET",
             headers: {
@@ -34,7 +31,7 @@ const ProfilePage = () => {
               "Authorization": `Bearer ${authToken}`,
             },
           }),
-          fetch(bandUrl, {
+          fetch(artistUrl, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -43,18 +40,18 @@ const ProfilePage = () => {
           })
         ]);
   
-        let entity; // This will hold either the user or the band
+        let entity; // This will hold either the user or the artist
         if (userResponse.ok) {
           const user = await userResponse.json();
           entity = { ...user, type: 'user' };
-        } else if (bandResponse.ok) {
-          const band = await bandResponse.json();
-          entity = { ...band, type: 'band' };
+        } else if (artistResponse.ok) {
+          const artist = await artistResponse.json();
+          entity = { ...artist, type: 'artist' };
         } else {
-          throw new Error('Neither user nor band found');
+          throw new Error('Neither user nor artist found');
         }
   
-        // Now we have either a user or band, check if they have a scene
+        // Now we have either a user or artist, check if they have a scene
         if (entity.scene) {
           const sceneResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/${entity.scene}`, {
             method: "GET",
@@ -69,7 +66,7 @@ const ProfilePage = () => {
           entity.sceneName = sceneData.name; // Add the scene name to your entity
         }
   
-        setUserData(entity); // Update state with either user or band, including scene name if applicable
+        setUserData(entity); // Update state with either user or artist, including scene name if applicable
   
       } catch (err) {
         console.error(err.message);

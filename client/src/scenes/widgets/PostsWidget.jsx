@@ -1,40 +1,20 @@
 import React, { useEffect } from 'react';
 import { Typography } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPosts } from 'state'; // Adjust this import based on your actual state management setup
-import { useUser } from '../../../src/userContext'; // Adjust the import path as needed
 import PostWidget from './PostWidget';
 
-const PostsWidget = ({ userData, isProfile = false }) => {
-  const dispatch = useDispatch();
-  const posts = useSelector((state) => state.posts);
-  const token = useSelector((state) => state.token);
-  
-  useEffect(() => {
-    const getPosts = async () => {
-      const endpoint = isProfile && userData ? `${process.env.REACT_APP_BACKEND_URL}/posts/${userData._id}/posts` : "${process.env.REACT_APP_BACKEND_URL}/posts";
-      const response = await fetch(endpoint, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
-      // Assuming data is an array of posts, sort them by createdAt in descending order
-      const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      dispatch(setPosts({ posts: sortedData })); // Update the posts state with the sorted posts
-    };
-
-    if (userData || !isProfile) {
-      getPosts();
-    }
-  }, [userData, isProfile, token, dispatch]);
+const PostsWidget = ({ posts, userData, isProfile = false }) => {
 
   if (!userData) {
     return <div>Loading...</div>;
   }
 
+  if (!posts || posts.length === 0) {
+    return <Typography variant="body1">No posts available.</Typography>;
+  }
+
   return (
     <>
-      {Array.isArray(posts) ? posts.map((post) => (
+      {posts.map((post) => (
         <PostWidget
           userData={userData}
           key={post._id}
@@ -49,9 +29,7 @@ const PostsWidget = ({ userData, isProfile = false }) => {
           likes={post.likes}
           comments={post.comments}
         />
-      )) : (
-        <Typography variant="body1">No posts available.</Typography>
-      )}
+      ))}
     </>
   );
 };

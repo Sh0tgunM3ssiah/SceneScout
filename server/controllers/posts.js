@@ -31,8 +31,17 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
-    const post = await Post.find();
-    res.status(200).json(post);
+    let query = {}; // Initialize an empty query object
+
+    // Check if sceneId is provided in the query params
+    if (req.query.sceneId) {
+      // Update the query to filter by sceneId
+      query.sceneId = req.query.sceneId;
+    }
+
+    // Use the query object in your find method
+    const posts = await Post.find(query);
+    res.status(200).json(posts);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

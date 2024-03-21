@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 
-const BandSchema = new mongoose.Schema(
+const ArtistSchema = new mongoose.Schema(
   {
     username: {
+      type: String,
+      required: true,
+      unique: true,
+      min: 2,
+      max: 100,
+    },
+    accountType: {
       type: String,
       required: true,
       unique: true,
@@ -50,5 +57,5 @@ const BandSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Band = mongoose.model("Band", BandSchema);
-export default Band;
+const Artist = mongoose.model("Artist", ArtistSchema);
+export default Artist;

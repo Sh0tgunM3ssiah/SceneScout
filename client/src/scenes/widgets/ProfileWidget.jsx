@@ -16,15 +16,14 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useUser } from "../../../src/userContext";
 
 const registerSchema = yup.object({
   username: yup.string().required("Username is required"),
-  bandName: yup.string().when("accountType", {
-    is: "Band",
-    then: yup.string().required("Band name is required"),
+  artistName: yup.string().when("accountType", {
+    is: "Artist",
+    then: yup.string().required("Artist name is required"),
   }),
   firstName: yup.string().when("accountType", {
     is: "User",
@@ -39,7 +38,7 @@ const registerSchema = yup.object({
   scene: yup.string().required("Scene is required"),
   accountType: yup.string().required("Account type is required"),
   genre: yup.string().when("accountType", {
-    is: "Band",
+    is: "Artist",
     then: yup.string().required("Genre is required"),
   }),
   picture: yup.mixed().required("A profile picture is required"),
@@ -47,7 +46,7 @@ const registerSchema = yup.object({
 
 const initialValues = {
   username: "",
-  bandName: "",
+  artistName: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -60,9 +59,7 @@ const initialValues = {
 };
 
 const ProfileWidget = () => {
-  const navigate = useNavigate();
   const { palette } = useTheme();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
   const userContext = useUser();
   const [scenes, setScenes] = useState([]);
   const token = useSelector((state) => state.token);
@@ -87,21 +84,21 @@ const ProfileWidget = () => {
       if (!userContext?.userId || !token) return;
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userContext.userId)}`;
-        const bandUrl = `${process.env.REACT_APP_BACKEND_URL}/bands/${encodeURIComponent(userContext.userId)}`;
+        const artistUrl = `${process.env.REACT_APP_BACKEND_URL}/artists/${encodeURIComponent(userContext.userId)}`;
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         };
         const userResponse = await fetch(userUrl, { method: "GET", headers });
-        const bandResponse = await fetch(bandUrl, { method: "GET", headers });
+        const artistResponse = await fetch(artistUrl, { method: "GET", headers });
   
         let entity;
         if (userResponse.ok) {
           const user = await userResponse.json();
           entity = { ...user, type: "user" };
-        } else if (bandResponse.ok) {
-          const band = await bandResponse.json();
-          entity = { ...band, type: "band" };
+        } else if (artistResponse.ok) {
+          const artist = await artistResponse.json();
+          entity = { ...artist, type: "artist" };
         }
   
         if (entity && entity.scene) {
@@ -114,7 +111,7 @@ const ProfileWidget = () => {
   
         setUserData(entity); // This updates the userData state
       } catch (error) {
-        console.error("Error fetching user/band data:", error);
+        console.error("Error fetching user/Artist data:", error);
       }
     };
   
@@ -128,11 +125,11 @@ const ProfileWidget = () => {
         ...prev,
         username: userData.username || "",
         email: userData.email || "",
-        accountType: userData.type === 'user' ? 'User' : 'Band',
+        accountType: userData.type === 'user' ? 'User' : 'Artist',
         // Ensure you populate other necessary fields based on userData
       }));
     }
-  }, [userData]);
+  }, [userContext?.username, userData]);
 
   const handleRegistration = async (values, { resetForm }) => {
     // Implementation for handling form submission
@@ -192,19 +189,19 @@ const ProfileWidget = () => {
                 onBlur={handleBlur}
               >
                 <MenuItem value="User">User</MenuItem>
-                <MenuItem value="Band">Band</MenuItem>
+                <MenuItem value="Artist">Artist</MenuItem>
               </Select>
             </FormControl>
-            {values.accountType === "Band" && (
+            {values.accountType === "Artist" && (
               <>
                 <TextField
-                  label="Band Name"
-                  name="bandName"
-                  value={values.bandName}
+                  label="Artist Name"
+                  name="artistName"
+                  value={values.artistName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={Boolean(touched.bandName) && Boolean(errors.bandName)}
-                  helpertext={touched.bandName && errors.bandName}
+                  error={Boolean(touched.artistName) && Boolean(errors.artistName)}
+                  helpertext={touched.artistName && errors.artistName}
                   sx={{ gridColumn: "span 4" }}
                 />
                 <FormControl fullWidth sx={{ gridColumn: "span 4" }}>

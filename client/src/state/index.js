@@ -40,7 +40,8 @@ export const authSlice = createSlice({
       state.posts = updatedPosts;
     },
     addPost: (state, action) => {
-      state.posts = [...state.posts, action.payload]; // Append the new post
+      // Prepend the new post so it appears at the top of the list
+      state.posts = [action.payload, ...state.posts];
     },
   },
 });

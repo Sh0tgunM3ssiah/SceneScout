@@ -64,7 +64,7 @@ const LoginPage = () => {
 
       <Box width={isNonMobileScreens ? '50%' : '93%'} p="2rem" m="2rem auto" borderRadius="1.5rem" backgroundColor={theme.palette.background.alt}>
         <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
-          Welcome to SceneScout, the Social Media for Local Bands and Their Fans!
+          Welcome to SceneScout, the Social Media for Local Artists and Their Fans!
         </Typography>
         <Form />
       </Box>

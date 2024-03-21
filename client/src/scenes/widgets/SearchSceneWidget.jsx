@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Typography,
-  useTheme,
   Select,
   MenuItem,
   FormControl,
@@ -10,16 +8,16 @@ import {
 } from '@mui/material';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useSelector } from 'react-redux';
+import PostsWidget from './PostsWidget';
 
-const SearchSceneWidget = ({ userSceneId }) => {
+const SearchSceneWidget = ({ userSceneId, userData }) => {
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [sceneFilter, setSceneFilter] = useState(userSceneId || '');
   const [genreFilter, setGenreFilter] = useState('');
+  const [postTypeFilter, setPostTypeFilter] = useState('');
   const [scenes, setScenes] = useState([]); // Will hold fetched scenes
-  const theme = useTheme();
   const token = useSelector((state) => state.token); // Assuming token is stored in redux for API authorization
-  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const fetchScenes = async () => {
@@ -43,7 +41,7 @@ const SearchSceneWidget = ({ userSceneId }) => {
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setPosts(data); // Assuming data is the array of posts
-        filterPosts(data, sceneFilter, genreFilter);
+        filterPosts(data, sceneFilter, genreFilter, postTypeFilter);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -51,14 +49,15 @@ const SearchSceneWidget = ({ userSceneId }) => {
 
     fetchScenes();
     fetchPosts();
-  }, [token, sceneFilter, genreFilter]); // Dependencies for re-fetching when these values change
+  }, [token, sceneFilter, genreFilter, postTypeFilter]); // Dependencies for re-fetching when these values change
 
   // Filter function updated to use scene ID
-  const filterPosts = (posts, sceneId, genre) => {
-    console.log(posts);
-    console.log(sceneId);
+  const filterPosts = (posts, sceneId, genre, postType) => {
     const filtered = posts.filter(post => {
-      return (!sceneId || post.scene === sceneId) && (!genre || post.genre === genre);
+      const matchesScene = !sceneId || post.sceneId === sceneId;
+      const matchesGenre = !genre || post.genre === genre;
+      const matchesType = !postType || post.postType === postType; // Adjusted for case sensitivity and property name
+      return matchesScene && matchesGenre && matchesType;
     });
     setFilteredPosts(filtered);
   };
@@ -72,12 +71,16 @@ const SearchSceneWidget = ({ userSceneId }) => {
     setGenreFilter(event.target.value);
   };
 
+  const handlePostTypeFilterChange = (event) => {
+    setPostTypeFilter(event.target.value);
+  };
+
   return (
     <WidgetWrapper>
       <Box display="flex" flexDirection="column" gap="1rem">
         {/* Filters */}
-        <Box display="flex" justifyContent="space-between">
-          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+        <Box display="flex" flexDirection="column" gap="1rem">
+          <FormControl variant="filled" sx={{ width: '100%' }}>
             <InputLabel id="scene-select-label">Scene</InputLabel>
             <Select
               labelId="scene-select-label"
@@ -86,39 +89,55 @@ const SearchSceneWidget = ({ userSceneId }) => {
               onChange={handleSceneFilterChange}
             >
               <MenuItem value="">
-                <em>None</em>
+                <em>Default Scene</em>
               </MenuItem>
               {scenes.map((scene) => (
                 <MenuItem key={scene._id} value={scene._id}>{scene.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
-          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="genre-select-label">Genre</InputLabel>
+          <FormControl variant="filled" sx={{ width: '100%' }}>
+            <InputLabel id="post-type-select-label">Post Type</InputLabel>
             <Select
-              labelId="genre-select-label"
-              id="genre-select"
-              value={genreFilter}
-              onChange={handleGenreFilterChange}
+              labelId="post-type-select-label"
+              id="post-type-select"
+              value={postTypeFilter}
+              onChange={handlePostTypeFilterChange}
             >
-              {/* Genre options (static or could be fetched similar to scenes) */}
               <MenuItem value="">
-                <em>None</em>
+                <em>All</em>
               </MenuItem>
-              <MenuItem value="adventure">Adventure</MenuItem>
-              <MenuItem value="urban">Urban</MenuItem>
-              <MenuItem value="nature">Nature</MenuItem>
-              {/* Add more genres as needed */}
+              <MenuItem value="User">User Posts</MenuItem>
+              <MenuItem value="Artist">Artist Posts</MenuItem>
+              <MenuItem value="Event">Events</MenuItem>
             </Select>
           </FormControl>
+          
+          {/* Conditionally render the Genre filter based on the postTypeFilter */}
+          {(postTypeFilter === 'Artist' || postTypeFilter === 'Event') && (
+            <FormControl variant="filled" sx={{ width: '100%' }}>
+              <InputLabel id="genre-select-label">Genre</InputLabel>
+              <Select
+                labelId="genre-select-label"
+                id="genre-select"
+                value={genreFilter}
+                onChange={handleGenreFilterChange}
+              >
+                <MenuItem value="">
+                  <em>All</em>
+                </MenuItem>
+                <MenuItem value="rock">Rock</MenuItem>
+                <MenuItem value="pop">Pop</MenuItem>
+                <MenuItem value="jazz">Jazz</MenuItem>
+                <MenuItem value="metal">Metal</MenuItem>
+                {/* Add more genres as needed */}
+              </Select>
+            </FormControl>
+          )}
         </Box>
         
         {/* Display filtered posts */}
-        {filteredPosts.map((post, index) => (
-          <Typography key={index} sx={{ padding: '10px', borderBottom: `1px solid ${theme.palette.divider}` }}>
-            {post.content} {/* Customize as needed */}
-          </Typography>
-        ))}
+        <PostsWidget posts={filteredPosts} userData={userData} />
       </Box>
     </WidgetWrapper>
   );

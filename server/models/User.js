@@ -9,6 +9,13 @@ const UserSchema = new mongoose.Schema(
       min: 2,
       max: 100,
     },
+    accountType: {
+      type: String,
+      required: true,
+      unique: true,
+      min: 2,
+      max: 100,
+    },
     username: {
       type: String,
       required: true,

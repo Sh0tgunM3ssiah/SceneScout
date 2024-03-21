@@ -20,9 +20,9 @@ const SearchPage = () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
-        const bandUrl = `${process.env.REACT_APP_BACKEND_URL}/bands/${encodeURIComponent(userId)}`;
-        // Concurrently fetch user and band data
-        const [userResponse, bandResponse] = await Promise.all([
+        const artistUrl = `${process.env.REACT_APP_BACKEND_URL}/artists/${encodeURIComponent(userId)}`;
+        // Concurrently fetch user and artist data
+        const [userResponse, artistResponse] = await Promise.all([
           fetch(userUrl, {
             method: "GET",
             headers: {
@@ -30,7 +30,7 @@ const SearchPage = () => {
               "Authorization": `Bearer ${authToken}`,
             },
           }),
-          fetch(bandUrl, {
+          fetch(artistUrl, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -39,18 +39,18 @@ const SearchPage = () => {
           })
         ]);
   
-        let entity; // This will hold either the user or the band
+        let entity; // This will hold either the user or the artist
         if (userResponse.ok) {
           const user = await userResponse.json();
           entity = { ...user, type: 'user' };
-        } else if (bandResponse.ok) {
-          const band = await bandResponse.json();
-          entity = { ...band, type: 'band' };
+        } else if (artistResponse.ok) {
+          const artist = await artistResponse.json();
+          entity = { ...artist, type: 'artist' };
         } else {
-          throw new Error('Neither user nor band found');
+          throw new Error('Neither user nor artist found');
         }
   
-        // Now we have either a user or band, check if they have a scene
+        // Now we have either a user or artist, check if they have a scene
         if (entity.scene) {
           const sceneResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/${entity.scene}`, {
             method: "GET",
@@ -65,7 +65,7 @@ const SearchPage = () => {
           entity.sceneName = sceneData.name; // Add the scene name to your entity
         }
   
-        setUserData(entity); // Update state with either user or band, including scene name if applicable
+        setUserData(entity); // Update state with either user or artist, including scene name if applicable
   
       } catch (err) {
         console.error(err.message);

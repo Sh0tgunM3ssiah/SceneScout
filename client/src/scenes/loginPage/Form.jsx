@@ -21,9 +21,9 @@ import { useUser } from '../../../src/userContext';
 
 const registerSchema = yup.object({
   username: yup.string().required("Username is required"),
-  bandName: yup.string().when("accountType", {
-    is: "Band",
-    then: yup.string().required("Band name is required"),
+  artistName: yup.string().when("accountType", {
+    is: "Artist",
+    then: yup.string().required("Artist name is required"),
   }),
   firstName: yup.string().when("accountType", {
     is: "User",
@@ -38,7 +38,7 @@ const registerSchema = yup.object({
   scene: yup.string().required("Scene is required"),
   accountType: yup.string().required("Account type is required"),
   genre: yup.string().when("accountType", {
-    is: "Band",
+    is: "Artist",
     then: yup.string().required("Genre is required"),
   }),
   picture: yup.mixed().required("A profile picture is required"),
@@ -47,7 +47,7 @@ const registerSchema = yup.object({
 const initialValues = {
   userId: "",
   username: "",
-  bandName: "",
+  artistName: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -61,7 +61,6 @@ const initialValues = {
 
 const Form = () => {
   const { palette } = useTheme();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
   const navigate = useNavigate(); // Hook for programmatic navigation
   const userContext = useUser();
   const [scenes, setScenes] = useState([]);
@@ -80,7 +79,6 @@ const Form = () => {
     };
 
     fetchScenes();
-    console.log(userContext);
     if (userContext?.userId) {
       setFormValues(prevValues => ({ ...prevValues, username: userContext.username, userId: userContext.userId }));
     }
@@ -99,8 +97,7 @@ const Form = () => {
       });
 
       if (!response.ok) throw new Error("Failed to register.");
-
-      const result = await response.json();
+      
       resetForm();
       navigate('/home');
     } catch (error) {
@@ -162,19 +159,19 @@ const Form = () => {
                 onBlur={handleBlur}
               >
                 <MenuItem value="User">User</MenuItem>
-                <MenuItem value="Band">Band</MenuItem>
+                <MenuItem value="Artist">Artist</MenuItem>
               </Select>
             </FormControl>
-            {values.accountType === "Band" && (
+            {values.accountType === "Artist" && (
               <>
                 <TextField
-                  label="Band Name"
-                  name="bandName"
-                  value={values.bandName}
+                  label="Artist Name"
+                  name="artistName"
+                  value={values.artistName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={Boolean(touched.bandName) && Boolean(errors.bandName)}
-                  helpertext={touched.bandName && errors.bandName}
+                  error={Boolean(touched.artistName) && Boolean(errors.artistName)}
+                  helpertext={touched.artistName && errors.artistName}
                   sx={{ gridColumn: "span 4" }}
                 />
                 <FormControl fullWidth sx={{ gridColumn: "span 4" }}>

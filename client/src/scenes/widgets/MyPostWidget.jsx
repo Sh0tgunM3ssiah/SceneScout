@@ -22,12 +22,9 @@ import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPosts } from 'state'; // Adjust the import path to match your project structure
 import { addPost } from 'state';
-import { useNavigate } from "react-router-dom";
 
 const MyPostWidget = ({ userData }) => {
-  const navigate = useNavigate();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState('');
@@ -44,15 +41,7 @@ const MyPostWidget = ({ userData }) => {
   // Destructure the user data for easy access
   const {
     _id: userId,
-    username,
-    firstName,
-    lastName,
-    location,
-    scene,
     picturePath,
-    friends = [],
-    viewedProfile = 0,
-    impressions = 0,
   } = userData;
 
   const handlePost = async () => {
@@ -65,6 +54,7 @@ const MyPostWidget = ({ userData }) => {
     formData.append('userId', userData._id);
     formData.append('description', post);
     formData.append('sceneId', userData.scene);
+    formData.append('postType', userData.accountType)
     formData.append('userPicturePath', userData.picturePath)
     if (image) {
       formData.append('picture', image);
@@ -81,6 +71,7 @@ const MyPostWidget = ({ userData }) => {
       const posts = await response.json();
       dispatch(addPost(posts));
       setImage(null);
+      setIsImage(false);
       setPost('');
     } catch (error) {
       console.error('Error creating post:', error);
@@ -113,6 +104,7 @@ const MyPostWidget = ({ userData }) => {
             p="1rem"
           >
             <Dropzone
+              key={image ? 'selected' : 'empty'} // Add a dynamic key based on the image state
               onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
               multiple={false}
             >
