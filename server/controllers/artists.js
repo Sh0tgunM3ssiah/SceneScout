@@ -2,12 +2,24 @@ import Artist from "../models/Artist.js";
 
 /* READ */
 export const getArtistById = async (req, res) => {
+  let userId = req.params.id;
+  
+  if (userId) {
+    userId = decodeURIComponent(userId); // Decode the email if it's URL-encoded
+  } else {
+      // Handle the case where email path parameter is not provided
+      return res.status(400).json({ message: "userId path parameter is required." });
+  }
+
   try {
-    const { id } = req.params;
-    const artist = await Artist.findById(id);
-    res.status(200).json(artist);
+      const artist = await Artist.findOne({ userId: userId });
+      if (artist) {
+          res.status(200).json(artist);
+      } else {
+          res.status(404).json({ message: "Artist not found" });
+      }
   } catch (err) {
-    res.status(404).json({ message: err.message });
+      res.status(500).json({ error: err.message });
   }
 };
 

@@ -1,32 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Box, useMediaQuery } from "@mui/material";
 import Navbar from "scenes/navbar";
-import UserWidget from "scenes/widgets/UserWidget";
-import MyPostWidget from "scenes/widgets/MyPostWidget";
-import PostsWidget from "scenes/widgets/PostsWidget";
-import AdvertWidget from "scenes/widgets/AdvertWidget";
-import FriendListWidget from "scenes/widgets/FriendListWidget";
+import SearchSceneWidget from "scenes/widgets/SearchSceneWidget";
 import { useSelector } from "react-redux";
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 
-const HomePage = () => {
+const EventPage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const user = useUser() ?? {}; // Use useUser hook to access the user context
   const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
   const [userData, setUserData] = useState(null);
-  const [posts, setPosts] = useState([]);
   const token = useSelector((state) => state.token);
   const userId = user?.userId;
-  const userSceneId = user?.scene;
-
-  const addPost = (post) => {
-    setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
-  };
 
   useEffect(() => {
     const authToken = token;
-    const fetchUser = async () => {
+    const fetchUserByUsername = async () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
@@ -83,29 +73,8 @@ const HomePage = () => {
       }
     };
   
-    fetchUser();
+    fetchUserByUsername();
   }, [userId, token]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      if (!userData || !userData.scene) return; // Ensure userData and userData.sceneId are available
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/posts?sceneId=${encodeURIComponent(userData.scene)}`;
-      const response = await fetch(endpoint, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setPosts(sortedData); // Update the posts state with the sorted posts
-      } else {
-        // Handle errors or set an empty array
-        setPosts([]);
-      }
-    };
-  
-    fetchPosts();
-  }, [userData, token]);
 
   return (
     <Box>
@@ -113,29 +82,16 @@ const HomePage = () => {
       <Box
         width="100%"
         padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "block"}
-        gap="0.5rem"
-        justifyContent="space-between"
+        display={"flex"}
+        gap="2rem"
+        justifyContent="center"
       >
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={_id} picturePath={picturePath} userData={userData} />
+        <Box flexBasis={"90%"}>
+          <SearchSceneWidget userId={_id} picturePath={picturePath} userData={userData} />
         </Box>
-        <Box
-          flexBasis={isNonMobileScreens ? "42%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}
-        >
-          <MyPostWidget picturePath={picturePath} userData={userData} addPost={addPost} />
-          {userData && <PostsWidget userId={_id} isProfile={true} userData={userData} posts={posts} />}
-        </Box>
-        {isNonMobileScreens && (
-          <Box flexBasis="26%">
-            <AdvertWidget />
-            <FriendListWidget userId={_id} />
-          </Box>
-        )}
       </Box>
     </Box>
   );
 };
 
-export default HomePage;
+export default EventPage;

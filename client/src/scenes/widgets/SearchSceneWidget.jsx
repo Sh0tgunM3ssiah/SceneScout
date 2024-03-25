@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useSelector } from 'react-redux';
-import PostsWidget from './PostsWidget';
+import SceneSearchPostsWidget from './SceneSearchPostsWidget';
 
 const SearchSceneWidget = ({ userSceneId, userData }) => {
   const [posts, setPosts] = useState([]);
@@ -137,7 +137,7 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
         </Box>
         
         {/* Display filtered posts */}
-        <PostsWidget posts={filteredPosts} userData={userData} />
+        <SceneSearchPostsWidget posts={filteredPosts} userData={userData} />
       </Box>
     </WidgetWrapper>
   );

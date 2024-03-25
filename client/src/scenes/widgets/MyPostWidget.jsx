@@ -23,8 +23,10 @@ import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPost } from 'state';
+import { useNavigate } from 'react-router-dom';
 
-const MyPostWidget = ({ userData }) => {
+const MyPostWidget = ({ userData, addPost }) => {
+  const navigate = useNavigate();
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState('');
@@ -51,6 +53,7 @@ const MyPostWidget = ({ userData }) => {
     }
 
     const formData = new FormData();
+    formData.append('username', userData.username)
     formData.append('userId', userData._id);
     formData.append('description', post);
     formData.append('sceneId', userData.scene);
@@ -69,7 +72,7 @@ const MyPostWidget = ({ userData }) => {
       });
       if (!response.ok) throw new Error('Network response was not ok.');
       const posts = await response.json();
-      dispatch(addPost(posts));
+      addPost(posts);
       setImage(null);
       setIsImage(false);
       setPost('');

@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   TextField,
-  useMediaQuery,
   Typography,
   useTheme,
   MenuItem,
@@ -18,6 +17,7 @@ import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../../../src/userContext';
+import LocationAutocomplete from "../../components/LocationAutocomplete"
 
 const registerSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -227,15 +227,14 @@ const Form = () => {
               helpertext={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
             />
-            <TextField
-              label="Location"
-              name="location"
-              value={values.location}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={Boolean(touched.location) && Boolean(errors.location)}
-              helpertext={touched.location && errors.location}
-              sx={{ gridColumn: "span 4" }}
+            <LocationAutocomplete
+                name="location"
+                value={values.location}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.location && Boolean(errors.location)}
+                helperText={touched.location && errors.location}
+                sx={{ gridColumn: "span 4" }}
             />
             <Box sx={{ gridColumn: "span 4" }}>
               <Dropzone onDrop={(acceptedFiles) => { setFieldValue("picture", acceptedFiles[0]); setFieldValue("picturePath", acceptedFiles[0].name);}}>

@@ -19,36 +19,55 @@ const LoginPage = () => {
 
   useEffect(() => {
     const authToken = token;
-    const fetchUserByUsername = async () => {
-      if (!userId) return; // Do not attempt to fetch if userEmail is not available
-      setLoading(true);
+    setLoading(true);
+    const fetchUserAndArtist = async () => {
+      if (!userId) return; // Do not attempt to fetch if userId is not available
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`,
-          },
-        });
-
-        setLoading(false);
-
-        if (!response.ok) {
-          setError('User not found or error fetching user');
-          throw new Error('User not found or error fetching user');
+        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
+        const artistUrl = `${process.env.REACT_APP_BACKEND_URL}/artists/${encodeURIComponent(userId)}`;
+        // Concurrently fetch user and artist data
+        const [userResponse, artistResponse] = await Promise.all([
+          fetch(userUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authToken}`,
+            },
+          }),
+          fetch(artistUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authToken}`,
+            },
+          })
+        ]);
+  
+        setLoading(false); // Stop loading state
+  
+        let entity; // This will hold either the user or the artist
+        if (userResponse.ok) {
+          const user = await userResponse.json();
+          entity = { ...user, type: 'user' };
+        } else if (artistResponse.ok) {
+          const artist = await artistResponse.json();
+          entity = { ...artist, type: 'artist' };
+        } else {
+          setError('Neither user nor artist found');
+          throw new Error('Neither user nor artist found');
         }
-
-        // If user is found, redirect to the homepage
+  
+        // If we have either a user or an artist, navigate to the home page
         navigate('/home');
       } catch (err) {
         console.error(err.message);
-        setLoading(false);
+        setLoading(false); // Ensure loading is false in case of an error
         setError(err.message); // Handle errors, e.g., by setting an error state
       }
     };
-
-    fetchUserByUsername();
-  }, [userId, token, navigate]); // Add navigate to dependency array
+  
+    fetchUserAndArtist();
+  }, [userId, token, navigate, setLoading, setError]); // Ensure all used state setters and navigate are in the dependency array  
 
   if (loading) {
     return <Typography>Loading...</Typography>;

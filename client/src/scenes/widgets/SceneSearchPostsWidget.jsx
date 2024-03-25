@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import PostWidget from './PostWidget';
 
-const PostsWidget = ({ posts, userData, isProfile = false }) => {
+const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -13,6 +13,7 @@ const PostsWidget = ({ posts, userData, isProfile = false }) => {
   }
 
   return (
+    <Grid container spacing={3}>
     <>
       {posts.map((post) => (
         <PostWidget
@@ -31,7 +32,8 @@ const PostsWidget = ({ posts, userData, isProfile = false }) => {
         />
       ))}
     </>
+    </Grid>
   );
 };
 
-export default PostsWidget;
+export default SceneSearchPostsWidget;

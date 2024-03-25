@@ -155,6 +155,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
 });
 app.post("/posts", upload.single("picture"), async (req, res) => {
   const {
+    username,
     userId,
     postType,
     sceneId,
@@ -172,6 +173,7 @@ app.post("/posts", upload.single("picture"), async (req, res) => {
     // Assuming `userId` is used to fetch user details, including `firstName` and `lastName`
     // If these details are not in `req.body`, ensure they are fetched from the database
     const newPost = new Post({
+      username,
       userId,
       postType,
       sceneId,

@@ -2,6 +2,13 @@ import mongoose from "mongoose";
 
 const ArtistSchema = new mongoose.Schema(
   {
+    userId: {
+      type: String,
+      required: true,
+      unique: true,
+      min: 2,
+      max: 100,
+    },
     username: {
       type: String,
       required: true,

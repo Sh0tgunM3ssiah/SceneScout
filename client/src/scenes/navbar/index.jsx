@@ -10,6 +10,7 @@ import {
   Icon,
 } from "@mui/material";
 import {
+  Event,
   Search,
   Assignment,
   Message,
@@ -116,6 +117,10 @@ const Navbar = () => {
     navigate('/search');
   };
 
+  const handleNavigateToCreateEvent = () => {
+    navigate('/event/create');
+  };
+
   const handleNavigateToClassifieds = () => {
     navigate(`/classifieds/${userData.sceneName}`);
   };
@@ -150,6 +155,11 @@ const Navbar = () => {
           <IconButton onClick={handleNavigateToSearch}>
             <Search sx={{ fontSize: "25px" }} />
           </IconButton>
+          {userData?.type === 'artist' && (
+            <IconButton onClick={handleNavigateToCreateEvent}>
+              <Event sx={{ fontSize: "25px" }} />
+            </IconButton>
+          )}
           <IconButton onClick={handleNavigateToClassifieds}>
             <Assignment sx={{ fontSize: "25px" }} />
           </IconButton>
@@ -195,6 +205,11 @@ const Navbar = () => {
             <IconButton onClick={handleNavigateToSearch}>
               <Search/>
             </IconButton>
+            {userData?.type === 'artist' && (
+              <IconButton onClick={handleNavigateToCreateEvent}>
+                <Event sx={{ fontSize: "25px" }} />
+              </IconButton>
+            )}
             <IconButton onClick={handleNavigateToClassifieds}>
               <Assignment/>
             </IconButton>
