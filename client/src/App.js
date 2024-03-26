@@ -6,6 +6,8 @@ import ProfilePage from 'scenes/profilePage';
 import SearchPage from 'scenes/searchPage';
 import CreateEventPage from 'scenes/eventPage/create';
 import ClassifiedPage from 'scenes/classifiedPage';
+import EventsPage from 'scenes/eventPage';
+import EventsEditPage from 'scenes/eventPage/edit';
 import { useSelector } from "react-redux";
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
@@ -36,6 +38,8 @@ function App() {
                 <Route path="/home" element={<HomePage/>} />
                 <Route path="/profile/:userId" element={<ProfilePage/>} />
                 <Route path="/search" element={<SearchPage/>} />
+                <Route path="/event" element={<EventsPage/>} />
+                <Route path="/event/:id" element={<EventsEditPage/>} />
                 <Route path="/event/create" element={<CreateEventPage/>} />
                 <Route path="/classifieds/:scene" element={<ClassifiedPage/>} />
               </Routes>

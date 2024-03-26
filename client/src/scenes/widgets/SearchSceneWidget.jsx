@@ -20,36 +20,45 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
   const token = useSelector((state) => state.token); // Assuming token is stored in redux for API authorization
 
   useEffect(() => {
-    const fetchScenes = async () => {
+    const fetchPostsAndEvents = async () => {
+      if (!userData || !userData.scene) return; // Ensure userData and userData.sceneId are available
+      
+      const postsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/posts?sceneId=${encodeURIComponent(userData.scene)}`;
+      const eventsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/events?sceneId=${encodeURIComponent(userData.scene)}`;
+
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes`, {
-          headers: { Authorization: `Bearer ${token}` }, // Include authorization header if required
-        });
-        if (!response.ok) throw new Error("Failed to fetch scenes");
-        const scenesData = await response.json();
-        setScenes(scenesData); // Set fetched scenes into state
-      } catch (error) {
-        console.error("Error fetching scenes:", error);
+        // Fetch both posts and events concurrently
+        const [postsResponse, eventsResponse] = await Promise.all([
+          fetch(postsEndpoint, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch(eventsEndpoint, {
+            method: "GET",
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        if (!postsResponse.ok || !eventsResponse.ok) {
+          throw new Error('Failed to fetch posts or events');
+        }
+
+        const postsData = await postsResponse.json();
+        const eventsData = await eventsResponse.json();
+
+        // Assuming both posts and events have a createdAt field
+        const combinedData = [...postsData, ...eventsData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        setPosts(combinedData); // Assuming data is the array of posts
+        filterPosts(combinedData, sceneFilter, genreFilter, postTypeFilter);
+      } catch (err) {
+        console.error(err.message);
+        setPosts([]); // Handle errors or set an empty array
       }
     };
 
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts`, {
-          headers: { Authorization: `Bearer ${token}` }, // Include authorization header if required
-        });
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        setPosts(data); // Assuming data is the array of posts
-        filterPosts(data, sceneFilter, genreFilter, postTypeFilter);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchScenes();
-    fetchPosts();
-  }, [token, sceneFilter, genreFilter, postTypeFilter]); // Dependencies for re-fetching when these values change
+    fetchPostsAndEvents();
+  }, [userData, token, sceneFilter, genreFilter, postTypeFilter]);
 
   // Filter function updated to use scene ID
   const filterPosts = (posts, sceneId, genre, postType) => {

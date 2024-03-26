@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery, Typography } from "@mui/material";
 import Navbar from "scenes/navbar";
 import SearchSceneWidget from "scenes/widgets/SearchSceneWidget";
 import { useSelector } from "react-redux";
@@ -87,6 +87,9 @@ const SearchPage = () => {
         justifyContent="center"
       >
         <Box flexBasis={"90%"}>
+          <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
+            Welcome to the Search Engine
+          </Typography>
           <SearchSceneWidget userId={_id} picturePath={picturePath} userData={userData} />
         </Box>
       </Box>

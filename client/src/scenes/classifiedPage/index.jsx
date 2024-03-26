@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery, Typography, useTheme, Button } from "@mui/material";
 import Navbar from "scenes/navbar";
-import UserWidget from "scenes/widgets/UserWidget";
-import MyPostWidget from "scenes/widgets/MyPostWidget";
-import PostsWidget from "scenes/widgets/PostsWidget";
-import AdvertWidget from "scenes/widgets/AdvertWidget";
-import FriendListWidget from "scenes/widgets/FriendListWidget";
+import ClassifiedWidget from "scenes/widgets/ClassifiedWidget.jsx";
 import { useSelector } from "react-redux";
-import { useUser } from '../../userContext.js'; // Ensure this path matches your project structure
+import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
+import { useNavigate } from 'react-router-dom';
 
-const SearchPage = () => {
+const ClassifiedPage = () => {
+  const theme = useTheme();
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
   const user = useUser() ?? {}; // Use useUser hook to access the user context
   const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
@@ -83,8 +83,22 @@ const SearchPage = () => {
   return (
     <Box>
       <Navbar />
+      <Box width={isNonMobileScreens ? '50%' : '93%'} p="2rem" m="2rem auto" borderRadius="1.5rem" backgroundColor={theme.palette.background.alt}>
+        <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
+          Welcome to the Classified Pages
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+          // onClick={handleCreateListing}
+        >
+          Create A New Listing Here!
+        </Button>
+        <ClassifiedWidget userData={userData}/>
+      </Box>
     </Box>
   );
 };
 
-export default SearchPage;
+export default ClassifiedPage;

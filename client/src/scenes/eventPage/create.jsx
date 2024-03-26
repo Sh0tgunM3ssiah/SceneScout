@@ -17,9 +17,11 @@ const CreateEventPage = () => {
     const [posts, setPosts] = useState([]);
     const token = useSelector((state) => state.token);
     const userId = user?.userId;
+    const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const authToken = token;
+    setIsLoading(true);
     const fetchUser = async () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
@@ -68,21 +70,25 @@ const CreateEventPage = () => {
           const sceneData = await sceneResponse.json();
           entity.sceneName = sceneData.name; // Add the scene name to your entity
         }
-  
         setUserData(entity); // Update state with either user or artist, including scene name if applicable
-
+        setIsLoading(false);
         if(entity.type !== 'artist') {
             navigate('/home');
         }
   
       } catch (err) {
         console.error(err.message);
+        setIsLoading(false);
         // Handle errors, e.g., by setting an error state or displaying a notification
       }
     };
   
     fetchUser();
   }, [userId, token]);
+
+  if (isLoading || !userData) {
+    return <div>Loading...</div>; // Show loading indicator or handle null userData
+  }
 
   return (
     <Box>
@@ -91,7 +97,7 @@ const CreateEventPage = () => {
         <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
           Got an Event Coming Up? Let Your Scene Know About It!
         </Typography>
-        <Form />
+        <Form userData={userData} />
       </Box>
     </Box>
   );

@@ -13,6 +13,7 @@ import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import sceneRoutes from "./routes/scenes.js";
 import artistRoutes from "./routes/artists.js";
+import eventsRoutes from "./routes/events.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
@@ -23,6 +24,7 @@ import { BlobServiceClient } from "@azure/storage-blob";
 import User from './models/User.js'; // Adjust the import path according to your project structure
 import Artist from './models/Artist.js';
 import Post from './models/Post.js';
+import Event from './models/Event.js';
 
 /* AZURE BLOB STORAGE SETUP */
 const account = process.env.ACCOUNT_NAME;
@@ -192,6 +194,54 @@ app.post("/posts", upload.single("picture"), async (req, res) => {
   }
 });
 
+app.post("/events/create", upload.single("picture"), async (req, res) => {
+  const {
+    username,
+    userId,
+    sceneId,
+    name,
+    venueName,
+    location,
+    description,
+    bands,
+    genres,
+    ticketLink,
+    facebookLink
+  } = req.body;
+
+  // The URL of the uploaded file is directly accessible via the `req.file` object
+  // provided by the `MulterAzureStorage` engine
+  let picturePath = req.file ? req.file.url.split('?')[0] : '';
+
+
+  try {
+    // Assuming `userId` is used to fetch user details, including `firstName` and `lastName`
+    // If these details are not in `req.body`, ensure they are fetched from the database
+    const newEvent = new Event({
+      username,
+      userId,
+      postType: "Event",
+      sceneId,
+      eventName: name,
+      venueName,
+      location,
+      description,
+      picturePath,
+      bands,
+      genres,
+      ticketLink,
+      facebookLink,
+      likes: {},
+      comments: [],
+    });
+
+    await newEvent.save();
+    res.status(201).json(newEvent);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 /* ROUTES */
 app.use("/auth", authRoutes);
@@ -199,6 +249,7 @@ app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/scenes", sceneRoutes);
 app.use("/artists", artistRoutes);
+app.use("/events", eventsRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;

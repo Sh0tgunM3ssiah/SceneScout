@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useMediaQuery, Typography, useTheme, Button } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import Navbar from "scenes/navbar";
-import EventsWidget from "scenes/widgets/EventsWidget.jsx";
 import { useSelector } from "react-redux";
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
-import { useNavigate } from 'react-router-dom';
+import Form from './Form.jsx';
+import { useNavigate } from "react-router-dom";
 
-const EventPage = () => {
-  const theme = useTheme();
-  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const navigate = useNavigate();
-  const [events, setEvents] = useState([]);
-  const user = useUser() ?? {}; // Use useUser hook to access the user context
-  const { _id, picturePath } = user; // Destructure the needed properties from the user object
-
-  const [userData, setUserData] = useState(null);
-  const token = useSelector((state) => state.token);
-  const userId = user?.userId;
+const CreateEventPage = () => {
+    const theme = useTheme();
+    const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+    const navigate = useNavigate();
+    const user = useUser() ?? {}; // Use useUser hook to access the user context
+    const { _id, picturePath } = user; // Destructure the needed properties from the user object
+  
+    const [userData, setUserData] = useState(null);
+    const [posts, setPosts] = useState([]);
+    const token = useSelector((state) => state.token);
+    const userId = user?.userId;
+    const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const authToken = token;
-    const fetchUserByUsername = async () => {
+    setIsLoading(true);
+    const fetchUser = async () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
@@ -68,67 +70,36 @@ const EventPage = () => {
           const sceneData = await sceneResponse.json();
           entity.sceneName = sceneData.name; // Add the scene name to your entity
         }
-  
         setUserData(entity); // Update state with either user or artist, including scene name if applicable
+        setIsLoading(false);
+        if(entity.type !== 'artist') {
+            navigate('/home');
+        }
   
       } catch (err) {
         console.error(err.message);
+        setIsLoading(false);
         // Handle errors, e.g., by setting an error state or displaying a notification
       }
     };
   
-    fetchUserByUsername();
+    fetchUser();
   }, [userId, token]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!userData || !userData.scene) return; // Ensure userData and userData.scene are available
-      const eventsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/events?sceneId=${encodeURIComponent(userData.scene)}`;
-    
-      try {
-        const response = await fetch(eventsEndpoint, {
-          method: "GET",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-    
-        if (!response.ok) {
-          throw new Error('Failed to fetch events');
-        }
-        const eventsData = await response.json();
-    
-        setEvents(eventsData); // Use the setEvents state to store the events data
-      } catch (err) {
-        console.error(err.message);
-        setEvents([]); // Handle errors or set an empty array
-      }
-    };
-
-    fetchEvents();
-  }, [userData, token]);
-
-  const handleCreateEvent = () => {
-    navigate('/event/create');
-  };
+  if (isLoading || !userData) {
+    return <div>Loading...</div>; // Show loading indicator or handle null userData
+  }
 
   return (
     <Box>
       <Navbar />
       <Box width={isNonMobileScreens ? '50%' : '93%'} p="2rem" m="2rem auto" borderRadius="1.5rem" backgroundColor={theme.palette.background.alt}>
         <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
-          Events Happening In Your Scene
+          Edit This Event
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-          onClick={handleCreateEvent}
-        >
-          Don't See Your Event? Create It Here!
-        </Button>
-        <EventsWidget userData={userData} events={events}/>
       </Box>
     </Box>
   );
 };
 
-export default EventPage;
+export default CreateEventPage;

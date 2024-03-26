@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import Dropzone from "react-dropzone";
 import { useNavigate } from "react-router-dom";
+import { useUser } from '../../../src/userContext';
 import LocationAutocomplete from "../../components/LocationAutocomplete"
 
 const eventSchema = yup.object({
@@ -29,6 +30,7 @@ const eventSchema = yup.object({
 
 const initialValues = {
   name: "",
+  sceneId: "",
   location: "",
   venueName: "",
   bands: [],
@@ -39,43 +41,69 @@ const initialValues = {
   facebookLink: "",
 };
 
-const CreateEventForm = () => {
+const CreateEventForm = ({ userData }) => {
   const navigate = useNavigate();
+  const sceneId = userData?.scene;
+  const userContext = useUser();
+  const [formValues, setFormValues] = useState({
+    ...initialValues,
+    username: userContext?.username || '',
+    userId: userContext?.userId || '',
+  });  
   
   // Placeholder for bands and genres. Ideally, fetch these from a server.
   const bands = ["Band 1", "Band 2", "Band 3"];
   const genres = ["Rock", "Jazz", "Metal"];
 
-  const handleEventCreation = async (values, { setSubmitting, resetForm }) => {
+  useEffect(() => {
+    // Check if userData is available and has sceneId before updating formValues
+    if (userData && sceneId) {
+      setFormValues(prevValues => ({
+        ...prevValues,
+        sceneId: sceneId, // Now confident userData.sceneId is not null
+      }));
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    if (userContext?.userId) {
+      setFormValues(prevValues => ({ ...prevValues, username: userContext.username, userId: userContext.userId }));
+    }
+  }, [userContext]);
+
+  useEffect(() => {
+    if (userData?.sceneId) {
+      setFormValues(prevValues => ({ ...prevValues, sceneId: userData.scene }));
+    }
+  }, [userData]);
+
+  const handleEventCreation = async (values, { resetForm }) => {
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach(item => formData.append(`${key}[]`, item));
-      } else {
-        formData.append(key, value instanceof Blob ? value : String(value));
-      }
+      formData.append(key, value instanceof Blob ? value : String(value));
     });
 
-    // Implement the API call logic here. Example:
     try {
-      console.log("Submitting form...", formData);
-      // const response = await fetch("Your API endpoint", { method: "POST", body: formData });
-      // if (!response.ok) throw new Error("Failed to create event.");
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/create`, {
+        method: "POST",
+        body: formData,
+      });
 
-      alert("Event created successfully!"); // Placeholder success feedback
+      if (!response.ok) throw new Error("Failed to register.");
+      
       resetForm();
-      navigate('/events'); // Redirect to the events page or wherever appropriate
+      navigate('/home');
     } catch (error) {
-      console.error("Error during event creation:", error);
-      setSubmitting(false);
+      console.error("Error during registration:", error);
     }
   };
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={formValues}
       validationSchema={eventSchema}
       onSubmit={handleEventCreation}
+      enableReinitialize
     >
       {({
         values,
@@ -182,7 +210,24 @@ const CreateEventForm = () => {
               error={touched.genres && Boolean(errors.genres)}
               helperText={touched.genres && errors.genres}
             />
-
+            <input
+              type="hidden"
+              name="userId"
+              value={values.userId}
+              onChange={handleChange}
+            />
+            <input
+              type="hidden"
+              name="username"
+              value={values.username}
+              onChange={handleChange}
+            />
+            <input
+              type="hidden"
+              name="sceneId"
+              value={values.sceneId}
+              onChange={handleChange}
+            />
             <Button
               type="submit"
               variant="contained"
