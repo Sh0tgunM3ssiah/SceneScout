@@ -24,30 +24,57 @@ const PostWidget = ({
   likes,
   comments,
 }) => {
-  const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.token);
-  const loggedInUserId = '';
-  // const loggedInUserId = userData._id;
-  // const isLiked = Boolean(likes[loggedInUserId]);
-  const isLiked = false;
-  const likeCount = 0;
-
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
+  const token = useSelector((state) => state.token);
+  const loggedInUserId = userData.userId;
+  
+  // Determine if the post is already liked by the user
+  const initialIsLiked = Boolean(likes[loggedInUserId]);
+  // Calculate initial like count
+  const initialLikeCount = Object.keys(likes).length;
+
+  // Use useState to manage like state and count
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const [isComments, setIsComments] = useState(false);
 
   const patchLike = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${postId}/like`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: loggedInUserId }),
-    });
-    const updatedPost = await response.json();
-    dispatch(setPost({ post: updatedPost }));
+    // Optimistically update the UI
+    if (isLiked) {
+      // If it was already liked, decrement the like count and update isLiked
+      setLikeCount(likeCount - 1);
+    } else {
+      // If it was not liked, increment the like count and update isLiked
+      setLikeCount(likeCount + 1);
+    }
+    setIsLiked(!isLiked);
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${postId}/like`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId }),
+      });
+
+      if (!response.ok) {
+        // If the request failed, revert the optimistic update
+        setIsLiked(isLiked);
+        setLikeCount(isLiked ? likeCount + 1 : likeCount - 1);
+        throw new Error('Failed to update like');
+      }
+
+      const updatedPost = await response.json();
+      // Here, you might not need to dispatch if you're already updating the UI optimistically
+      dispatch(setPost({ post: updatedPost }));
+    } catch (error) {
+      console.error("Error updating like:", error);
+    }
   };
 
   return (

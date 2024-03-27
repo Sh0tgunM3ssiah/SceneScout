@@ -20,10 +20,6 @@ const HomePage = () => {
   const userId = user?.userId;
   const userSceneId = user?.scene;
 
-  const addPost = (post) => {
-    setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
-  };
-
   useEffect(() => {
     const authToken = token;
     const fetchUser = async () => {
@@ -87,43 +83,24 @@ const HomePage = () => {
   }, [userId, token]);
 
   useEffect(() => {
-    const fetchPostsAndEvents = async () => {
+    const fetchPosts = async () => {
       if (!userData || !userData.scene) return; // Ensure userData and userData.sceneId are available
-      
-      const postsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/posts?sceneId=${encodeURIComponent(userData.scene)}`;
-      const eventsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/events?sceneId=${encodeURIComponent(userData.scene)}`;
-
-      try {
-        // Fetch both posts and events concurrently
-        const [postsResponse, eventsResponse] = await Promise.all([
-          fetch(postsEndpoint, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(eventsEndpoint, {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        if (!postsResponse.ok || !eventsResponse.ok) {
-          throw new Error('Failed to fetch posts or events');
-        }
-
-        const postsData = await postsResponse.json();
-        const eventsData = await eventsResponse.json();
-
-        // Assuming both posts and events have a createdAt field
-        const combinedData = [...postsData, ...eventsData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-        setPosts(combinedData); // Use the setPosts state to hold combined data
-      } catch (err) {
-        console.error(err.message);
-        setPosts([]); // Handle errors or set an empty array
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/posts?sceneId=${encodeURIComponent(userData.scene)}`;
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setPosts(sortedData); // Update the posts state with the sorted posts
+      } else {
+        // Handle errors or set an empty array
+        setPosts([]);
       }
     };
-
-    fetchPostsAndEvents();
+  
+    fetchPosts();
   }, [userData, token]);
 
   return (
@@ -143,7 +120,7 @@ const HomePage = () => {
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={picturePath} userData={userData} addPost={addPost} />
+          <MyPostWidget picturePath={picturePath} userData={userData} />
           {userData && <PostsWidget userId={_id} isProfile={true} userData={userData} posts={posts} />}
         </Box>
         {isNonMobileScreens && (
