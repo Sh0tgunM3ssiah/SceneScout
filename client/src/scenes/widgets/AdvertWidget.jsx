@@ -1,6 +1,7 @@
-import { Typography, useTheme } from "@mui/material";
+import { Typography, useTheme, Link } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
+import { Link as RouterLink } from 'react-router-dom';
 
 const AdvertWidget = () => {
   const { palette } = useTheme();
@@ -9,29 +10,38 @@ const AdvertWidget = () => {
   const medium = palette.neutral.medium;
 
   return (
+    <Link href="https://www.facebook.com/events/1067426181133071" target="_blank" color="inherit" underline="none">
     <WidgetWrapper>
-      <FlexBetween>
+      <FlexBetween sx={{ justifyContent: 'center' }}>
         <Typography color={dark} variant="h5" fontWeight="500">
-          Sponsored
+          Sponsored By
         </Typography>
-        <Typography color={medium}>Create Ad</Typography>
+      </FlexBetween>
+      <FlexBetween sx={{ justifyContent: 'center' }}>
+      <Typography variant="h4" color={main} mt={"1rem"} mb={"1rem"}>
+        RECOGNITION FEST
+      </Typography>
       </FlexBetween>
       <img
         width="100%"
         height="auto"
         alt="advert"
-        src="http://localhost:3001/assets/info4.jpeg"
+        src="../assets/RecogFest.jpg"
         style={{ borderRadius: "0.75rem", margin: "0.75rem 0" }}
       />
-      <FlexBetween>
-        <Typography color={main}>MikaCosmetics</Typography>
-        <Typography color={medium}>mikacosmetics.com</Typography>
+      <FlexBetween sx={{ justifyContent: 'center' }}>
+        <Typography color={medium}>Pilsen Neighborhood, Chicago</Typography>
       </FlexBetween>
       <Typography color={medium} m="0.5rem 0">
-        Your pathway to stunning and immaculate beauty and made sure your skin
-        is exfoliating skin and shining like light.
+        Mixed Genre Music Fest featuring Live Music and Vendors from the Chicagoland and Northwest Indiana area.
       </Typography>
+      <FlexBetween sx={{ justifyContent: 'center' }}>
+        <Typography color={medium} m="0.5rem 0">
+          April 12 - 13
+        </Typography>
+      </FlexBetween>
     </WidgetWrapper>
+    </Link>
   );
 };
 

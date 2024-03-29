@@ -5,36 +5,52 @@ import { useNavigate } from "react-router-dom";
 import { setFriends } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
+import { useUser } from '../../src/userContext'; // Ensure this path matches your project structure
 
-const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
-  // const dispatch = useDispatch();
+const Friend = ({ friendId, name, subtitle, userPicturePath, userData, friendType }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const { _id } = useSelector((state) => state.user);
-  // const token = useSelector((state) => state.token);
-  // const friends = useSelector((state) => state.user.friends);
+  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.token);
+  const friends = useSelector((state) => state.user.friends);
+  const userId = user?.userId;
+  const userSceneId = user?.scene;
 
   const { palette } = useTheme();
   const primaryLight = palette.primary.light;
   const primaryDark = palette.primary.dark;
   const main = palette.neutral.main;
   const medium = palette.neutral.medium;
+  let isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === friendId);
 
-  // const isFriend = friends.find((friend) => friend._id === friendId);
+  const patchFriend = async () => {
+    // Check if userData._id and friendId match
+    if (userData?._id === friendId) {
+        return;
+    }
 
-  // const patchFriend = async () => {
-  //   const response = await fetch(
-  //     `http://localhost:3001/users/${_id}/${friendId}`,
-  //     {
-  //       method: "PATCH",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   dispatch(setFriends({ friends: data }));
-  // };
+    let endpoint = `${process.env.REACT_APP_BACKEND_URL}/users/${userData?._id}/${friendId}`;
+    try {
+        const response = await fetch(endpoint, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update friend status');
+        }
+
+        const data = await response.json();
+        dispatch(setFriends({ friends: data }));
+
+    } catch (error) {
+        console.error("Error updating friend status:", error);
+        // Handle error, e.g., by showing a notification
+    }
+  };
 
   return (
     <FlexBetween>
@@ -64,16 +80,18 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
           </Typography>
         </Box>
       </FlexBetween>
-      {/* <IconButton
-        onClick={() => patchFriend()}
-        sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
-      >
-        {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: primaryDark }} />
-        ) : (
-          <PersonAddOutlined sx={{ color: primaryDark }} />
-        )}
-      </IconButton> */}
+      {userData?._id !== friendId && (
+        <IconButton
+          onClick={() => patchFriend()}
+          sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+        >
+          {isFriend ? (
+            <PersonRemoveOutlined sx={{ color: primaryDark }} />
+          ) : (
+            <PersonAddOutlined sx={{ color: primaryDark }} />
+          )}
+        </IconButton>
+      )}
     </FlexBetween>
   );
 };

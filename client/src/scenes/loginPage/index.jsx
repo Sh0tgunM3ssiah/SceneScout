@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useDispatch } from "react-redux";
 import Form from './Form';
 import { useUser } from '../../../src/userContext'; // Ensure this path matches your project structure
 import { useSelector } from 'react-redux'; // Assuming you've set up Redux
+import { setLogin } from "state";
 
 const LoginPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const navigate = useNavigate(); // Hook for programmatic navigation
   const token = useSelector((state) => state.token);
   const userContext = useUser();
@@ -56,7 +59,15 @@ const LoginPage = () => {
           setError('Neither user nor artist found');
           throw new Error('Neither user nor artist found');
         }
-  
+        const loggedIn = entity;
+        if (loggedIn) {
+          dispatch(
+            setLogin({
+              user: userId,
+              token: token,
+            })
+          );
+        }
         // If we have either a user or an artist, navigate to the home page
         navigate('/home');
       } catch (err) {

@@ -103,6 +103,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     artistName,
     email,
     friends,
+    followers,
     location,
     genre,
     members,
@@ -122,6 +123,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         email,
         picturePath, // Picture uploaded to Azure Blob
         friends,
+        followers,
         location,
         scene,
         viewedProfile: 0,
@@ -143,6 +145,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         location,
         scene,
         friends,
+        followers,
         viewedProfile: 0,
         impressions: 0,
       });

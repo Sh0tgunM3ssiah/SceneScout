@@ -15,7 +15,7 @@ export const authSlice = createSlice({
       state.mode = state.mode === "light" ? "dark" : "light";
     },
     setLogin: (state, action) => {
-      state.user = action.payload.user;
+      state.user = action.payload;
       state.token = action.payload.token;
     },
     setLogout: (state) => {
@@ -27,6 +27,13 @@ export const authSlice = createSlice({
         state.user.friends = action.payload.friends;
       } else {
         console.error("user friends non-existent :(");
+      }
+    },
+    setFollowers: (state, action) => {
+      if (state.user) {
+        state.user.followers = action.payload.followers;
+      } else {
+        console.error("user followers non-existent :(");
       }
     },
     setPosts: (state, action) => {
@@ -56,6 +63,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, addPost, setEvents, setEvent } =
+export const { setMode, setLogin, setLogout, setFriends, setFollowers, setPosts, setPost, addPost, setEvents, setEvent } =
   authSlice.actions;
 export default authSlice.reducer;

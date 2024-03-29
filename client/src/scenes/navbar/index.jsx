@@ -23,7 +23,7 @@ import {
   Close,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { setMode } from "state"; // Update this path according to your project structure
+import { setMode, setLogout } from "state"; // Update this path according to your project structure
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import { signOut } from 'aws-amplify/auth';
@@ -107,7 +107,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      dispatch({ type: 'USER_LOGOUT' }); // Adjust according to your state management
+      dispatch(setLogout()); // Adjust according to your state management
       navigate('/login'); // Redirect to login or another appropriate page
     } catch (error) {
       console.error('Error signing out: ', error);

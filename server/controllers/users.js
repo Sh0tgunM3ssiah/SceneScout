@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Artist from "../models/Artist.js";
 
 /* READ */
 export const getUser = async (req, res) => {
@@ -85,19 +86,74 @@ export const getUserByEmail = async (req, res) => {
 export const getUserFriends = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    // First, try to find the person as a User
+    let person = await User.findById(id);
+    // If not found as a User, try to find the person as an Artist
+    if (!person) person = await Artist.findById(id);
 
-    const friends = await Promise.all(
-      user.friends.map((id) => User.findById(id))
-    );
-    const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, occupation, location, picturePath }) => {
-        return { _id, firstName, lastName, occupation, location, picturePath };
-      }
-    );
+    // If the person is not found as either a User or an Artist, return a 404 response
+    if (!person) {
+      return res.status(404).json({ message: "User/Artist not found" });
+    }
+
+    // Assuming that the 'friends' array contains IDs of both Users and Artists
+    const friendsPromises = person.friends.map(async (friendId) => {
+      // Attempt to find each friend as a User
+      let friend = await User.findById(friendId);
+      // If not found as a User, try to find the friend as an Artist
+      if (!friend) friend = await Artist.findById(friendId);
+      return friend;
+    });
+
+    // Resolve all promises and filter out any null values (friends not found)
+    const friends = (await Promise.all(friendsPromises)).filter(friend => friend !== null);
+
+    // Format the friends for the response
+    const formattedFriends = friends.map(({ _id, username, scene, location, picturePath }) => {
+      return { _id, username, scene, location, picturePath };
+    });
+
     res.status(200).json(formattedFriends);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    console.error("Error in getUserFriends:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getUserFollowers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // First, try to find the person as a User
+    let person = await User.findById(id);
+    // If not found as a User, try to find the person as an Artist
+    if (!person) person = await Artist.findById(id);
+
+    // If the person is not found as either a User or an Artist, return a 404 response
+    if (!person) {
+      return res.status(404).json({ message: "User/Artist not found" });
+    }
+
+    // Assuming that the 'friends' array contains IDs of both Users and Artists
+    const followersPromises = person.followers.map(async (followerId) => {
+      // Attempt to find each friend as a User
+      let follower = await User.findById(followerId);
+      // If not found as a User, try to find the friend as an Artist
+      if (!follower) follower = await Artist.findById(followerId);
+      return follower;
+    });
+
+    // Resolve all promises and filter out any null values (friends not found)
+    const followers = (await Promise.all(followersPromises)).filter(follower => follower !== null);
+
+    // Format the friends for the response
+    const formattedFollowers = followers.map(({ _id, username, scene, location, picturePath }) => {
+      return { _id, username, scene, location, picturePath };
+    });
+
+    res.status(200).json(formattedFollowers);
+  } catch (err) {
+    console.error("Error in getUserFriends:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -105,30 +161,57 @@ export const getUserFriends = async (req, res) => {
 export const addRemoveFriend = async (req, res) => {
   try {
     const { id, friendId } = req.params;
-    const user = await User.findById(id);
-    const friend = await User.findById(friendId);
 
-    if (user.friends.includes(friendId)) {
-      user.friends = user.friends.filter((id) => id !== friendId);
-      friend.friends = friend.friends.filter((id) => id !== id);
-    } else {
-      user.friends.push(friendId);
-      friend.friends.push(id);
+    // Attempt to find both user and artist for the given id and friendId
+    let person = await User.findById(id);
+    if (!person) person = await Artist.findById(id);
+
+    let friend = await User.findById(friendId);
+    if (!friend) friend = await Artist.findById(friendId);
+
+    // Check if both entities were found
+    if (!person || !friend) {
+      return res.status(404).json({ message: "User/Artist not found" });
     }
-    await user.save();
+
+    // The logic to add or remove friend
+    const isFollowing = person.friends.includes(friendId);
+
+    if (isFollowing) {
+      // Remove friendId from person's friends
+      person.friends = person.friends.filter(fid => fid.toString() !== friendId);
+      // Remove id from friend's friends
+      friend.followers = friend.friends.filter(fid => fid.toString() !== id);
+    } else {
+      // Add friendId to person's friends
+      person.friends.push(friendId);
+      // Add id to friend's friends
+      friend.followers.push(id);
+    }
+
+    await person.save();
     await friend.save();
 
-    const friends = await Promise.all(
-      user.friends.map((id) => User.findById(id))
-    );
-    const formattedFriends = friends.map(
-      ({ _id, firstName, lastName, occupation, location, picturePath }) => {
-        return { _id, firstName, lastName, occupation, location, picturePath };
-      }
-    );
+    // Re-fetch the updated friends list and filter out null values
+    const updatedFriends = (await Promise.all(
+      person.friends.map(async fid => {
+        let friend = await User.findById(fid);
+        if (!friend) {
+          friend = await Artist.findById(fid);
+        }
+        return friend;
+      })
+    )).filter(friend => friend !== null);
+
+    // Format the friends for response
+    const formattedFriends = updatedFriends.map(friend => {
+      const { _id, username, scene, location, picturePath } = friend;
+      return { _id, username, scene, location, picturePath };
+    });
 
     res.status(200).json(formattedFriends);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    console.error("Error in addRemoveFriend:", err);
+    res.status(500).json({ message: err.message });
   }
 };

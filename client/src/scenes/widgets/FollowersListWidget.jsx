@@ -3,34 +3,33 @@ import { Box, Typography, useTheme } from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useDispatch, useSelector } from "react-redux";
-import { setFriends } from "state";
-import { useUser } from '../../../src/userContext'; // Adjust this path as needed
+import { setFollowers } from "state";
+import { useUser } from '../../userContext'; // Adjust this path as needed
 
-const FriendListWidget = ({userData}) => {
+const FollowersListWidget = ({userData}) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);// Use the user from context
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
   // Safely access friends with optional chaining or default to an empty array
-  const friends = useSelector((state) => state.user?.friends || []);
+  const followers = useSelector((state) => state.user?.followers || []);
 
   useEffect(() => {
-    const getFriends = async () => {
+    const getFollowers = async () => {
       if (!user || !userData) return; // Ensure user and userId are available
   
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/users/${userData._id}/friends`, // Use user._id from context
+        `${process.env.REACT_APP_BACKEND_URL}/users/${userData._id}/followers`, // Use user._id from context
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       const data = await response.json();
-      console.log(data)
-      dispatch(setFriends({ friends: data }));
+      dispatch(setFollowers({ followers: data }));
     };
 
-    getFriends();
+    getFollowers();
   }, [user, user?._id, userData, token, dispatch]); // Adjusted dependencies to include optional chaining
 
   return (
@@ -41,17 +40,17 @@ const FriendListWidget = ({userData}) => {
         fontWeight="500"
         sx={{ mb: "1.5rem" }}
       >
-        Following
+        Followers
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
+        {followers.map((follower) => (
           <Friend
-            key={friend._id}
-            friendId={friend._id}
-            name={`${friend.username}`}
-            subtitle={friend.scene}
-            userPicturePath={friend.picturePath}
-            userData={friend}
+            key={follower._id}
+            friendId={follower._id}
+            name={`${follower.username}`}
+            subtitle={follower.scene}
+            userPicturePath={follower.picturePath}
+            userData={follower}
           />
         ))}
       </Box>
@@ -59,4 +58,4 @@ const FriendListWidget = ({userData}) => {
   );
 };
 
-export default FriendListWidget;
+export default FollowersListWidget;

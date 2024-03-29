@@ -58,6 +58,14 @@ const ArtistSchema = new mongoose.Schema(
       default: "",
       max: 1000,
     },
+    friends: {
+      type: Array,
+      default: [],
+    },
+    followers: {
+      type: Array,
+      default: [],
+    },
     viewedProfile: Number,
     impressions: Number,
   },

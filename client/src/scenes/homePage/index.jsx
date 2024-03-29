@@ -6,6 +6,7 @@ import MyPostWidget from "scenes/widgets/MyPostWidget";
 import PostsWidget from "scenes/widgets/PostsWidget";
 import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
+import FollowersListWidget from "scenes/widgets/FollowersListWidget";
 import { useSelector } from "react-redux";
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 
@@ -114,7 +115,12 @@ const HomePage = () => {
         justifyContent="space-between"
       >
         <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <UserWidget userId={_id} picturePath={picturePath} userData={userData} />
+          <Box mb="2rem">
+            <UserWidget userId={_id} picturePath={picturePath} userData={userData} />
+          </Box>
+          {isNonMobileScreens && (
+            <FollowersListWidget userId={_id} userData={userData} />
+          )}
         </Box>
         <Box
           flexBasis={isNonMobileScreens ? "42%" : undefined}
@@ -125,8 +131,10 @@ const HomePage = () => {
         </Box>
         {isNonMobileScreens && (
           <Box flexBasis="26%">
-            <AdvertWidget />
-            <FriendListWidget userId={_id} />
+            <Box mb="2rem">
+              <AdvertWidget />
+            </Box>
+            <FriendListWidget userId={_id} userData={userData} />
           </Box>
         )}
       </Box>
