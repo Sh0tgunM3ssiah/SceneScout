@@ -108,6 +108,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     genre,
     members,
     scene,
+    sceneName,
   } = req.body;
 
   const picturePath = `https://${account}.blob.core.windows.net/${containerName}/${req.file.blobName}`;
@@ -126,6 +127,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         followers,
         location,
         scene,
+        sceneName,
         viewedProfile: 0,
         impressions: 0,
       });
@@ -144,6 +146,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         members,
         location,
         scene,
+        sceneName,
         friends,
         followers,
         viewedProfile: 0,
@@ -164,6 +167,7 @@ app.post("/posts", upload.single("picture"), async (req, res) => {
     userId,
     postType,
     sceneId,
+    sceneName,
     location,
     description,
     userPicturePath
@@ -182,6 +186,7 @@ app.post("/posts", upload.single("picture"), async (req, res) => {
       userId,
       postType,
       sceneId,
+      sceneName,
       location,
       description,
       picturePath,
@@ -202,6 +207,7 @@ app.post("/events/create", upload.single("picture"), async (req, res) => {
     username,
     userId,
     sceneId,
+    sceneName,
     name,
     venueName,
     location,
@@ -225,6 +231,7 @@ app.post("/events/create", upload.single("picture"), async (req, res) => {
       userId,
       postType: "Event",
       sceneId,
+      sceneName,
       eventName: name,
       venueName,
       location,

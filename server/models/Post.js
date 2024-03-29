@@ -25,6 +25,9 @@ const postSchema = new mongoose.Schema(
     sceneId: {
       type: String,
     },
+    sceneName: {
+      type: String,
+    },
     picturePath: String,
     userPicturePath: String,
     likes: {

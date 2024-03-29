@@ -29,6 +29,7 @@ const UserWidget = ({ userData }) => {
     scene,
     picturePath,
     friends = [],
+    followers = [],
     viewedProfile = 0,
     impressions = 0,
   } = userData;
@@ -44,7 +45,8 @@ const UserWidget = ({ userData }) => {
               {/* Conditionally display Artist name or user's full name */}
               {userData.type === 'Artist' ? userData.name : userData.username}
             </Typography>
-            <Typography color={palette.neutral.medium}>{friends.length} friends</Typography>
+            <Typography color={palette.neutral.medium}>{followers.length} followers</Typography>
+            <Typography color={palette.neutral.medium}>{friends.length} following</Typography>
           </Box>
         </FlexBetween>
         <ManageAccountsOutlined />

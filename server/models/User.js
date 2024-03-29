@@ -58,6 +58,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sceneName: {
+      type: String,
+      required: true,
+    },
     viewedProfile: Number,
     impressions: Number,
   },

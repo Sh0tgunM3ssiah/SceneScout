@@ -57,6 +57,7 @@ const MyPostWidget = ({ userData, addPost }) => {
     formData.append('userId', userData._id);
     formData.append('description', post);
     formData.append('sceneId', userData.scene);
+    formData.append('sceneName', userData.sceneName)
     formData.append('postType', userData.accountType)
     formData.append('userPicturePath', userData.picturePath)
     if (image) {

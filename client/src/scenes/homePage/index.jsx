@@ -21,6 +21,10 @@ const HomePage = () => {
   const userId = user?.userId;
   const userSceneId = user?.scene;
 
+  const addPost = (post) => {
+    setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
+  };
+
   useEffect(() => {
     const authToken = token;
     const fetchUser = async () => {
@@ -126,7 +130,7 @@ const HomePage = () => {
           flexBasis={isNonMobileScreens ? "42%" : undefined}
           mt={isNonMobileScreens ? undefined : "2rem"}
         >
-          <MyPostWidget picturePath={picturePath} userData={userData} />
+          <MyPostWidget picturePath={picturePath} userData={userData} addPost={addPost} />
           {userData && <PostsWidget userId={_id} isProfile={true} userData={userData} posts={posts} />}
         </Box>
         {isNonMobileScreens && (
@@ -134,7 +138,7 @@ const HomePage = () => {
             <Box mb="2rem">
               <AdvertWidget />
             </Box>
-            <FriendListWidget userId={_id} userData={userData} />
+            {userData && <FriendListWidget userId={_id} userData={userData} />}
           </Box>
         )}
       </Box>

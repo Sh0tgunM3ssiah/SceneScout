@@ -53,6 +53,7 @@ const initialValues = {
   email: "",
   location: "",
   scene: "",
+  sceneName: "",
   accountType: "",
   genre: "",
   picturePath: "",
@@ -82,7 +83,9 @@ const Form = () => {
     if (userContext?.userId) {
       setFormValues(prevValues => ({ ...prevValues, username: userContext.username, userId: userContext.userId }));
     }
-  }, [userContext]);
+    const initialSceneName = scenes.find(scene => scene._id === userContext?.scene)?.name || '';
+    setFormValues(prevValues => ({ ...prevValues, sceneName: initialSceneName }));
+  }, [scenes, userContext]);
 
   const handleRegistration = async (values, { resetForm }) => {
     const formData = new FormData();
@@ -138,7 +141,11 @@ const Form = () => {
               label="Scene"
               name="scene"
               value={values.scene}
-              onChange={handleChange}
+              onChange={(event) => {
+                handleChange(event);
+                const selectedSceneName = scenes.find(scene => scene._id === event.target.value)?.name || '';
+                setFieldValue('sceneName', selectedSceneName);
+              }}
               onBlur={handleBlur}
               error={touched.scene && Boolean(errors.scene)}
               helpertext={touched.scene && errors.scene}

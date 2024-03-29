@@ -109,8 +109,8 @@ export const getUserFriends = async (req, res) => {
     const friends = (await Promise.all(friendsPromises)).filter(friend => friend !== null);
 
     // Format the friends for the response
-    const formattedFriends = friends.map(({ _id, username, scene, location, picturePath }) => {
-      return { _id, username, scene, location, picturePath };
+    const formattedFriends = friends.map(({ _id, username, scene, sceneName, location, picturePath }) => {
+      return { _id, username, scene, sceneName, location, picturePath };
     });
 
     res.status(200).json(formattedFriends);
@@ -146,8 +146,8 @@ export const getUserFollowers = async (req, res) => {
     const followers = (await Promise.all(followersPromises)).filter(follower => follower !== null);
 
     // Format the friends for the response
-    const formattedFollowers = followers.map(({ _id, username, scene, location, picturePath }) => {
-      return { _id, username, scene, location, picturePath };
+    const formattedFollowers = followers.map(({ _id, username, scene, sceneName, location, picturePath }) => {
+      return { _id, username, scene, sceneName, location, picturePath };
     });
 
     res.status(200).json(formattedFollowers);
@@ -205,8 +205,8 @@ export const addRemoveFriend = async (req, res) => {
 
     // Format the friends for response
     const formattedFriends = updatedFriends.map(friend => {
-      const { _id, username, scene, location, picturePath } = friend;
-      return { _id, username, scene, location, picturePath };
+      const { _id, username, scene, sceneName, location, picturePath } = friend;
+      return { _id, username, scene, sceneName, location, picturePath };
     });
 
     res.status(200).json(formattedFriends);

@@ -44,6 +44,10 @@ const ArtistSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    sceneName: {
+      type: String,
+      required: true,
+    },
     genre: {
       type: String,
       required: true,

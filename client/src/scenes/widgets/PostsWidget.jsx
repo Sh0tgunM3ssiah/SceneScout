@@ -22,6 +22,7 @@ const PostsWidget = ({ posts, userData, isProfile = false }) => {
           postUserId={post.userId} // Assuming this is the ID of the user who made the post
           name={post.username}
           scene={post.scene}
+          sceneName={post.sceneName}
           description={post.description}
           location={post.location}
           picturePath={post.picturePath}

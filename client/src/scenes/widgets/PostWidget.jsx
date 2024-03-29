@@ -19,7 +19,7 @@ const PostWidget = ({
   postUserId,
   name,
   description,
-  location,
+  sceneName,
   picturePath,
   userPicturePath,
   likes,
@@ -83,7 +83,7 @@ const PostWidget = ({
       <Friend
         friendId={postUserId}
         name={name}
-        subtitle={location}
+        subtitle={sceneName}
         userPicturePath={userPicturePath}
         friendType={userData.accountType}
         userData={userData}
