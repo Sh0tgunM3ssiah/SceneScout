@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Typography } from '@mui/material';
 import PostWidget from './PostWidget';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const PostsWidget = ({ posts, userData, isProfile = false }) => {
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return <CircularProgress />;
   }
 
   if (!posts || posts.length === 0) {

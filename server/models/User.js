@@ -23,6 +23,12 @@ const UserSchema = new mongoose.Schema(
       min: 2,
       max: 100,
     },
+    displayName: {
+      type: String,
+      required: true,
+      min: 2,
+      max: 50,
+    },
     firstName: {
       type: String,
       required: true,

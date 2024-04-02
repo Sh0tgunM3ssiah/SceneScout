@@ -18,6 +18,7 @@ import {
   MicOutlined,
   MoreHorizOutlined,
 } from '@mui/icons-material';
+import CircularProgress from '@mui/material/CircularProgress';
 import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
@@ -37,7 +38,7 @@ const MyPostWidget = ({ userData, addPost }) => {
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return <CircularProgress />;
   }
 
   // Destructure the user data for easy access

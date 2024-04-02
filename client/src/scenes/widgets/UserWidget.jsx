@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, Divider, useTheme } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   ManageAccountsOutlined,
   LocationOnOutlined,
@@ -17,7 +18,7 @@ const UserWidget = ({ userData }) => {
 
   // If userData is not loaded yet, return null or a loading indicator
   if (!userData) {
-    return <div>Loading...</div>;
+    return <CircularProgress />
   }
 
   // Destructure the user data for easy access
@@ -37,7 +38,7 @@ const UserWidget = ({ userData }) => {
   return (
     <WidgetWrapper>
       {/* FIRST ROW */}
-      <FlexBetween gap="0.5rem" pb="1.1rem" onClick={() => navigate(`/profile/${userData.username}`)}>
+      <FlexBetween gap="0.5rem" pb="1.1rem" onClick={() => navigate(`/profile/${userData.userId}`)}>
         <FlexBetween gap="1rem">
           <UserImage image={picturePath} />
           <Box>

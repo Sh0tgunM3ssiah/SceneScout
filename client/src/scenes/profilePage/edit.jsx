@@ -1,26 +1,22 @@
-import { Box, useMediaQuery, Button, Typography, Grid, Card, Badge, Avatar, Tabs, Tab } from "@mui/material";
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box, useMediaQuery, Button, Typography, Grid, Card, Badge, Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Navbar from "scenes/navbar";
-import ProfileWidget from "scenes/widgets/ProfileWidget";
+import ProfileEditWidget from "scenes/widgets/ProfileEditWidget";
 import UserProfileImage from "components/UserProfileImage";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
-import FollowersListWidget from "scenes/widgets/FollowersListWidget";
 import MyPostWidget from "scenes/widgets/MyPostWidget";
-import ProfilePostsWidget from "scenes/widgets/ProfilePostsWidget";
+import PostsWidget from "scenes/widgets/PostsWidget";
 import UserWidget from "scenes/widgets/UserWidget";
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 
-const ProfilePage = () => {
+const ProfileEditPage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const id = useSelector((state) => state.user);
-  const [tabValue, setTabValue] = useState(0);
   const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
   const [userData, setUserData] = useState(null);
@@ -28,8 +24,8 @@ const ProfilePage = () => {
   const token = useSelector((state) => state.token);
   const { userId } = useParams();
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
+  const addPost = (post) => {
+    setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
   };
 
   useEffect(() => {
@@ -95,9 +91,9 @@ const ProfilePage = () => {
   }, [userId, token]);
 
   useEffect(() => {
-    const fetchUserPosts = async () => {
+    const fetchPosts = async () => {
       if (!userData || !userData.scene) return; // Ensure userData and userData.sceneId are available
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/posts/${encodeURIComponent(userData._id)}/posts`;
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/posts?sceneId=${encodeURIComponent(userData.scene)}`;
       const response = await fetch(endpoint, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -112,83 +108,20 @@ const ProfilePage = () => {
       }
     };
   
-    fetchUserPosts();
+    fetchPosts();
   }, [userData, token]);
 
-  if(!userData) {
-    return (
-      <CircularProgress />
-    );
-  }
-
+  const handleNavigateToEditProfile = () => {
+    navigate(`/profile/edit/${userData.userId}`);
+  };
   return (
     <Box>
       <Navbar />
-      <Box
-        width="100%"
-        padding="2rem 6%"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap="0.5rem"
-      >
-        <Box width="90%" mb="2rem">
-          <ProfileWidget user={user} userData={userData} id={id} />
-        </Box>
-
-        <Box width="90%">
-          <Tabs value={tabValue} onChange={handleTabChange} centered>
-            <Tab label="Posts" />
-            <Tab label="Following" />
-            <Tab label="Followers" />
-          </Tabs>
-
-          <TabPanel value={tabValue} index={0}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <Box sx={{ width: { xs: '100%', md: '50%' } }}>
-                <ProfilePostsWidget userId={user._id} isProfile={true} userData={userData} posts={posts} />
-              </Box>
-            </Box>
-          </TabPanel>
-          <TabPanel value={tabValue} index={1}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <Box sx={{ width: { xs: '100%', md: '50%' } }}>
-                <FriendListWidget userId={user._id} userData={userData} />
-              </Box>
-            </Box>
-          </TabPanel>
-          <TabPanel value={tabValue} index={2}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              <Box sx={{ width: { xs: '100%', md: '50%' } }}>
-                <FollowersListWidget userId={user._id} userData={userData} />
-              </Box>
-            </Box>
-          </TabPanel>
-        </Box>
+      <Box>
+        <ProfileEditWidget user={user} userData={userData} />
       </Box>
     </Box>
   );
 };
 
-// TabPanel component
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ pt: 3 }}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-export default ProfilePage;
+export default ProfileEditPage;

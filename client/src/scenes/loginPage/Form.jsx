@@ -33,6 +33,10 @@ const registerSchema = yup.object({
     is: "User",
     then: yup.string().required("Last name is required"),
   }),
+  displayName: yup.string().when("accountType", {
+    is: "User",
+    then: yup.string().required("Display name is required"),
+  }),
   email: yup.string().email("Invalid email").required("Email is required"),
   location: yup.string().required("Location is required"),
   scene: yup.string().required("Scene is required"),
@@ -47,6 +51,7 @@ const registerSchema = yup.object({
 const initialValues = {
   userId: "",
   username: "",
+  displayName: "",
   artistName: "",
   firstName: "",
   lastName: "",
@@ -220,6 +225,16 @@ const Form = () => {
                   onBlur={handleBlur}
                   error={Boolean(touched.lastName) && Boolean(errors.lastName)}
                   helpertext={touched.lastName && errors.lastName}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                <TextField
+                  label="Display Name"
+                  name="displayName"
+                  value={values.displayName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={Boolean(touched.displayName) && Boolean(errors.displayName)}
+                  helpertext={touched.displayName && errors.displayName}
                   sx={{ gridColumn: "span 2" }}
                 />
               </>

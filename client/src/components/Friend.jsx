@@ -7,7 +7,7 @@ import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 import { useUser } from '../../src/userContext'; // Ensure this path matches your project structure
 
-const Friend = ({ friendId, name, subtitle, userPicturePath, userData, friendType }) => {
+const Friend = ({ friendId, friendUserId, name, subtitle, userPicturePath, userData, friendType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
@@ -51,6 +51,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, userData, friendTyp
         // Handle error, e.g., by showing a notification
     }
   };
+  
 
   return (
     <FlexBetween>
@@ -58,7 +59,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath, userData, friendTyp
         <UserImage image={userPicturePath} size="55px" />
         <Box
           onClick={() => {
-            navigate(`/profile/${friendId}`);
+            navigate(`/profile/${friendUserId}`);
             navigate(0);
           }}
         >

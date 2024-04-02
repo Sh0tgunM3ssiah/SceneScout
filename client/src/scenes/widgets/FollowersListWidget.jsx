@@ -47,6 +47,7 @@ const FollowersListWidget = ({userData}) => {
           <Friend
             key={follower._id}
             friendId={follower._id}
+            friendUserId={follower.userId}
             name={`${follower.username}`}
             subtitle={follower.sceneName}
             userPicturePath={follower.picturePath}

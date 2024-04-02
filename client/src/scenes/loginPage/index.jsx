@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useDispatch } from "react-redux";
 import Form from './Form';
@@ -65,6 +66,7 @@ const LoginPage = () => {
             setLogin({
               user: userId,
               token: token,
+              id: loggedIn._id
             })
           );
         }
@@ -81,7 +83,7 @@ const LoginPage = () => {
   }, [userId, token, navigate, setLoading, setError]); // Ensure all used state setters and navigate are in the dependency array  
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return <CircularProgress />;
   }
 
   return (

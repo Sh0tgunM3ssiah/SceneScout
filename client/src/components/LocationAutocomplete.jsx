@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TextField, CircularProgress } from '@mui/material';
+import { TextField } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useLoadScript } from '@react-google-maps/api';
 
 const libraries = ['places'];

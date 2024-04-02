@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import PostWidget from './PostWidget';
 
-const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
+const ProfilePostsWidget = ({ posts, userData, isProfile = false }) => {
 
   if (!userData) {
-    return <CircularProgress />
+    return <CircularProgress />;
   }
 
   if (!posts || posts.length === 0) {
@@ -14,7 +14,6 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
   }
 
   return (
-    <Grid container spacing={3}>
     <>
       {posts.map((post) => (
         <PostWidget
@@ -24,6 +23,7 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
           postUserId={post.userId} // Assuming this is the ID of the user who made the post
           name={post.username}
           scene={post.scene}
+          sceneName={post.sceneName}
           description={post.description}
           location={post.location}
           picturePath={post.picturePath}
@@ -33,8 +33,7 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
         />
       ))}
     </>
-    </Grid>
   );
 };
 
-export default SceneSearchPostsWidget;
+export default ProfilePostsWidget;

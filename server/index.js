@@ -97,6 +97,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
   const {
     userId,
     username,
+    displayName,
     accountType,
     firstName,
     lastName,
@@ -118,6 +119,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
       const newUser = new User({
         userId,
         username,
+        displayName,
         firstName,
         lastName,
         accountType,

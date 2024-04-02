@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from 'scenes/homePage';
 import LoginPage from 'scenes/loginPage';
 import ProfilePage from 'scenes/profilePage';
+import ProfileEditPage from 'scenes/profilePage/edit';
 import SearchPage from 'scenes/searchPage';
 import CreateEventPage from 'scenes/eventPage/create';
 import ClassifiedPage from 'scenes/classifiedPage';
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/" element={<HomePage/>} />
                 <Route path="/home" element={<HomePage/>} />
                 <Route path="/profile/:userId" element={<ProfilePage/>} />
+                <Route path="/profile/edit/:userId" element={<ProfileEditPage/>} />
                 <Route path="/search" element={<SearchPage/>} />
                 <Route path="/event" element={<EventsPage/>} />
                 <Route path="/event/:id" element={<EventsEditPage/>} />

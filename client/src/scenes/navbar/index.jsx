@@ -168,9 +168,9 @@ const Navbar = () => {
               <Event sx={{ fontSize: "25px" }} />
             </IconButton>
           )}
-          <IconButton onClick={handleNavigateToClassifieds}>
+          {/* <IconButton onClick={handleNavigateToClassifieds}>
             <Assignment sx={{ fontSize: "25px" }} />
-          </IconButton>
+          </IconButton> */}
           <Button onClick={handleLogout} variant="outlined" color="inherit">
             Log Out
           </Button>
@@ -221,9 +221,9 @@ const Navbar = () => {
                 <Event sx={{ fontSize: "25px" }} />
               </IconButton>
             )}
-            <IconButton onClick={handleNavigateToClassifieds}>
+            {/* <IconButton onClick={handleNavigateToClassifieds}>
               <Assignment/>
-            </IconButton>
+            </IconButton> */}
             <Button onClick={handleLogout} variant="outlined" color="inherit">
               Log Out
             </Button>

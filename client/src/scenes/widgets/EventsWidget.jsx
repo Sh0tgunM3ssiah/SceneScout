@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import EventWidget from './EventWidget';
 
 const EventsWidget = ({ events, userData, isProfile = false }) => {
 
   if (!userData) {
-    return <div>Loading...</div>;
+    return <CircularProgress />;
   }
   
   if (!events || events.length === 0) {

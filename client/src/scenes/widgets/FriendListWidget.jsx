@@ -26,7 +26,6 @@ const FriendListWidget = ({userData}) => {
         }
       );
       const data = await response.json();
-      console.log(data)
       dispatch(setFriends({ friends: data }));
     };
 
@@ -48,6 +47,7 @@ const FriendListWidget = ({userData}) => {
           <Friend
             key={friend._id}
             friendId={friend._id}
+            friendUserId={friend.userId}
             name={`${friend.username}`}
             subtitle={friend.sceneName}
             userPicturePath={friend.picturePath}
