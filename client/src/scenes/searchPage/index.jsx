@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useMediaQuery, Typography } from "@mui/material";
+import { Box, useMediaQuery, Typography, CircularProgress } from "@mui/material";
 import Navbar from "scenes/navbar";
 import SearchSceneWidget from "scenes/widgets/SearchSceneWidget";
 import { useSelector } from "react-redux";
-import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 
 const SearchPage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const user = useUser() ?? {}; // Use useUser hook to access the user context
-  const { _id, picturePath } = user; // Destructure the needed properties from the user object
-
+  const user = useSelector((state) => state.user);
   const [userData, setUserData] = useState(null);
   const token = useSelector((state) => state.token);
-  const userId = user?.userId;
-
+  const userId = user?.user;
+  
   useEffect(() => {
     const authToken = token;
-    const fetchUserByUsername = async () => {
+    const fetchUser = async () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
@@ -73,8 +70,12 @@ const SearchPage = () => {
       }
     };
   
-    fetchUserByUsername();
+    fetchUser();
   }, [userId, token]);
+
+  if (!userData) {
+    return <CircularProgress />
+  }
 
   return (
     <Box>
@@ -90,7 +91,7 @@ const SearchPage = () => {
           <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
             Welcome to the Search Engine
           </Typography>
-          <SearchSceneWidget userId={_id} picturePath={picturePath} userData={userData} />
+          <SearchSceneWidget userId={userData._id} picturePath={userData.picturePath} userData={userData} />
         </Box>
       </Box>
     </Box>

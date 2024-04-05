@@ -20,8 +20,8 @@ const eventSchema = yup.object({
   name: yup.string().required("Event name is required"),
   location: yup.string().required("Location is required"),
   venueName: yup.string().required("Venue name is required"),
-  bands: yup.array().of(yup.string()).min(1, "At least one band is required"),
-  genres: yup.array().of(yup.string()).min(1, "At least one genre is required"),
+  bands: yup.array().of(yup.string()),
+  genres: yup.array().of(yup.string()),
   details: yup.string().required("Details are required"),
   picture: yup.mixed(),
   ticketLink: yup.string().url("Enter a valid URL"),
@@ -66,10 +66,15 @@ const CreateEventForm = ({ userData }) => {
   }, [userData]);
 
   useEffect(() => {
-    if (userContext?.userId) {
-      setFormValues(prevValues => ({ ...prevValues, username: userContext.username, userId: userContext.userId }));
+    if (userData?.userId) {
+      const usernameValue = userData.accountType === "Artist" ? userData.name : userData.displayName;
+      setFormValues(prevValues => ({
+        ...prevValues,
+        username: usernameValue,
+        userId: userData.userId // Assuming you meant to use userData.userId here instead of userContext.userId based on your initial code
+      }));
     }
-  }, [userContext]);
+  }, [userData]);  
 
   useEffect(() => {
     if (userData?.sceneId) {

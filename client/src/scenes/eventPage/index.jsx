@@ -11,16 +11,14 @@ const EventPage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
-  const user = useUser() ?? {}; // Use useUser hook to access the user context
-  const { _id, picturePath } = user; // Destructure the needed properties from the user object
-
+  const user = useSelector((state) => state.user);
   const [userData, setUserData] = useState(null);
   const token = useSelector((state) => state.token);
-  const userId = user?.userId;
+  const userId = user?.user;
 
   useEffect(() => {
     const authToken = token;
-    const fetchUserByUsername = async () => {
+    const fetchUser = async () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
@@ -77,7 +75,7 @@ const EventPage = () => {
       }
     };
   
-    fetchUserByUsername();
+    fetchUser();
   }, [userId, token]);
 
   useEffect(() => {

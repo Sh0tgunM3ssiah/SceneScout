@@ -34,12 +34,11 @@ const Navbar = () => {
   const { logout } = useUser(); // Destructure logout function from the context
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useUser() ?? {}; // Use useUser hook to access the user context
-  const { _id, picturePath } = user; // Destructure the needed properties from the user object
+  const user = useSelector((state) => state.user);
   const [userData, setUserData] = useState(null);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
-  const userId = user?.userId;
+  const userId = user?.user;
   const token = useSelector((state) => state.token);
   const userSceneId = user?.scene;
 
@@ -164,7 +163,7 @@ const Navbar = () => {
           <IconButton onClick={handleNavigateToSearch}>
             <Search sx={{ fontSize: "25px" }} />
           </IconButton>
-          {userData?.type === 'artist' && (
+          {userData?.accountType === 'Artist' && (
             <IconButton onClick={handleNavigateToCreateEvent}>
               <Event sx={{ fontSize: "25px" }} />
             </IconButton>

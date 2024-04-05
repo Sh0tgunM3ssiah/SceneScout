@@ -129,7 +129,7 @@ const PostWidget = ({
             <Typography>{likeCount}</Typography>
           </FlexBetween>
 
-          <FlexBetween gap="0.3rem">
+          <FlexBetween gap="0.3rem" sx={{ ml:"10px" }}>
             <Typography>{formatCreatedAt(createdAt)}</Typography>
           </FlexBetween>
         </FlexBetween>

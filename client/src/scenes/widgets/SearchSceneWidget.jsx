@@ -5,18 +5,23 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
+  useMediaQuery
 } from '@mui/material';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useSelector } from 'react-redux';
 import SceneSearchPostsWidget from './SceneSearchPostsWidget';
 
 const SearchSceneWidget = ({ userSceneId, userData }) => {
+  const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [sceneFilter, setSceneFilter] = useState(userSceneId || '');
   const [genreFilter, setGenreFilter] = useState('');
   const [postTypeFilter, setPostTypeFilter] = useState('');
-  const [scenes, setScenes] = useState([]); // Will hold fetched scenes
+  const [sceneName, setSceneName] = useState("");
+  const [scene, setScene] = useState("");
+  const [scenes, setScenes] = useState([]);
   const token = useSelector((state) => state.token); // Assuming token is stored in redux for API authorization
 
   useEffect(() => {
@@ -47,9 +52,12 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
         const eventsData = await eventsResponse.json();
 
         // Assuming both posts and events have a createdAt field
-        const combinedData = [...postsData, ...eventsData].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-        setPosts(combinedData); // Assuming data is the array of posts
+        const combinedData = [
+          ...postsData.map(post => ({ ...post, type: 'post' })),
+          ...eventsData.map(event => ({ ...event, type: 'event' }))
+        ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        setPosts(combinedData);
         filterPosts(combinedData, sceneFilter, genreFilter, postTypeFilter);
       } catch (err) {
         console.error(err.message);
@@ -71,6 +79,26 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
     setFilteredPosts(filtered);
   };
 
+  useEffect(() => {
+    const fetchScenes = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/`);
+        if (!response.ok) throw new Error('Failed to fetch scenes');
+        const data = await response.json();
+        setScenes(data);
+        // Set the user's current scene based on their sceneId
+        if (userData?.scene) {
+          const userScene = data.find(scene => scene._id === userData.scene);
+          setSceneName(userScene?.name || '');
+          setScene(userScene?._id || '');
+        }
+      } catch (error) {
+        console.error('Error fetching scenes:', error);
+      }
+    };
+    fetchScenes();
+  }, [userData]);
+
   // Update filters
   const handleSceneFilterChange = (event) => {
     setSceneFilter(event.target.value);
@@ -83,73 +111,88 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
   const handlePostTypeFilterChange = (event) => {
     setPostTypeFilter(event.target.value);
   };
-
-  return (
-    <WidgetWrapper>
-      <Box display="flex" flexDirection="column" gap="1rem">
-        {/* Filters */}
+  if (userData) {
+    return (
+      <WidgetWrapper>
         <Box display="flex" flexDirection="column" gap="1rem">
-          <FormControl variant="filled" sx={{ width: '100%' }}>
-            <InputLabel id="scene-select-label">Scene</InputLabel>
-            <Select
-              labelId="scene-select-label"
-              id="scene-select"
-              value={sceneFilter}
-              onChange={handleSceneFilterChange}
-            >
-              <MenuItem value="">
-                <em>Default Scene</em>
-              </MenuItem>
-              {scenes.map((scene) => (
-                <MenuItem key={scene._id} value={scene._id}>{scene.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl variant="filled" sx={{ width: '100%' }}>
-            <InputLabel id="post-type-select-label">Post Type</InputLabel>
-            <Select
-              labelId="post-type-select-label"
-              id="post-type-select"
-              value={postTypeFilter}
-              onChange={handlePostTypeFilterChange}
-            >
-              <MenuItem value="">
-                <em>All</em>
-              </MenuItem>
-              <MenuItem value="User">Fan Posts</MenuItem>
-              <MenuItem value="Artist">Artist Posts</MenuItem>
-              <MenuItem value="Event">Events</MenuItem>
-            </Select>
-          </FormControl>
-          
-          {/* Conditionally render the Genre filter based on the postTypeFilter */}
-          {(postTypeFilter === 'Artist' || postTypeFilter === 'Event') && (
+          {/* Filters */}
+          <Box display="flex" flexDirection="column" gap="1rem">
             <FormControl variant="filled" sx={{ width: '100%' }}>
-              <InputLabel id="genre-select-label">Genre</InputLabel>
+              <InputLabel id="scene-select-label">Scene</InputLabel>
               <Select
-                labelId="genre-select-label"
-                id="genre-select"
-                value={genreFilter}
-                onChange={handleGenreFilterChange}
+                labelId="scene-select-label"
+                id="scene-select"
+                value={sceneFilter}
+                onChange={handleSceneFilterChange}
+              >
+                <MenuItem value="">
+                  <em>Default Scene</em>
+                </MenuItem>
+                {scenes.map((scene) => (
+                  <MenuItem key={scene._id} value={scene._id}>{scene.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" sx={{ width: '100%' }}>
+              <InputLabel id="post-type-select-label">Post Type</InputLabel>
+              <Select
+                labelId="post-type-select-label"
+                id="post-type-select"
+                value={postTypeFilter}
+                onChange={handlePostTypeFilterChange}
               >
                 <MenuItem value="">
                   <em>All</em>
                 </MenuItem>
-                <MenuItem value="rock">Rock</MenuItem>
-                <MenuItem value="pop">Pop</MenuItem>
-                <MenuItem value="jazz">Jazz</MenuItem>
-                <MenuItem value="metal">Metal</MenuItem>
-                {/* Add more genres as needed */}
+                <MenuItem value="User">Fan Posts</MenuItem>
+                <MenuItem value="Artist">Artist Posts</MenuItem>
+                <MenuItem value="Event">Events</MenuItem>
               </Select>
             </FormControl>
-          )}
+            
+            {/* Conditionally render the Genre filter based on the postTypeFilter */}
+            {(postTypeFilter === 'Artist' || postTypeFilter === 'Event') && (
+              <FormControl variant="filled" sx={{ width: '100%' }}>
+                <InputLabel id="genre-select-label">Genre</InputLabel>
+                <Select
+                  labelId="genre-select-label"
+                  id="genre-select"
+                  value={genreFilter}
+                  onChange={handleGenreFilterChange}
+                >
+                  <MenuItem value="">
+                    <em>All</em>
+                  </MenuItem>
+                  <MenuItem value="rock">Rock</MenuItem>
+                  <MenuItem value="pop">Pop</MenuItem>
+                  <MenuItem value="jazz">Jazz</MenuItem>
+                  <MenuItem value="metal">Metal</MenuItem>
+                  {/* Add more genres as needed */}
+                </Select>
+              </FormControl>
+            )}
+          </Box>
+          
+          {/* Display filtered posts */}
+          <SceneSearchPostsWidget posts={filteredPosts} userData={userData} />
         </Box>
-        
-        {/* Display filtered posts */}
-        <SceneSearchPostsWidget posts={filteredPosts} userData={userData} />
-      </Box>
-    </WidgetWrapper>
-  );
+      </WidgetWrapper>
+    );
+  } else {
+    return (
+      <WidgetWrapper>
+        <Box
+          width="100%"
+          padding="2rem 6%"
+          display={isNonMobileScreens ? "flex" : "block"}
+          gap="0.5rem"
+          justifyContent="space-between"
+        >
+          <CircularProgress />
+        </Box>
+      </WidgetWrapper>
+    );
+  }
 };
 
 export default SearchSceneWidget;

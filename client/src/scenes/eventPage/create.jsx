@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Typography, useTheme, useMediaQuery, CircularProgress } from '@mui/material';
 import Navbar from "scenes/navbar";
 import { useSelector } from "react-redux";
-import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 import Form from './Form.jsx';
 import { useNavigate } from "react-router-dom";
 
@@ -10,13 +9,11 @@ const CreateEventPage = () => {
     const theme = useTheme();
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
     const navigate = useNavigate();
-    const user = useUser() ?? {}; // Use useUser hook to access the user context
-    const { _id, picturePath } = user; // Destructure the needed properties from the user object
-  
+    const user = useSelector((state) => state.user);
     const [userData, setUserData] = useState(null);
     const [posts, setPosts] = useState([]);
     const token = useSelector((state) => state.token);
-    const userId = user?.userId;
+    const userId = user?.user;
     const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -87,7 +84,7 @@ const CreateEventPage = () => {
   }, [userId, token]);
 
   if (isLoading || !userData) {
-    return <div>Loading...</div>; // Show loading indicator or handle null userData
+    return <CircularProgress />;
   }
 
   return (

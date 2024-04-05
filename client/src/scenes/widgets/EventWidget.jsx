@@ -15,47 +15,78 @@ import { setEvent } from "state";
 const EventWidget = ({
   userData,
   eventId,
+  eventName,
   eventUserId,
   name,
+  venueName,
   description,
   location,
   picturePath,
   likes,
   comments,
+  post
 }) => {
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
-  const loggedInUserId = '';
-  // const loggedInUserId = userData._id;
-  // const isLiked = Boolean(likes[loggedInUserId]);
-  const isLiked = false;
-  const likeCount = 0;
-
+  const user = useSelector((state) => state.user);
+  const userId = user?.user;
   const { palette } = useTheme();
   const main = palette.neutral.main;
   const primary = palette.primary.main;
+  const loggedInUserId = user?.user;
+  
+  // Determine if the post is already liked by the user
+  const initialIsLiked = Boolean(likes[loggedInUserId]);
+  // Calculate initial like count
+  const initialLikeCount = Object.keys(likes).length;
+
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [likeCount, setLikeCount] = useState(initialLikeCount);
 
   const patchLike = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/${eventId}/like`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: loggedInUserId }),
-    });
-    const updatedEvent = await response.json();
-    dispatch(setEvent({ post: updatedEvent }));
+    // Optimistically update the UI for a responsive feel
+    setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+  
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/events/${eventId}/like`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        // Ensure you're using the correct user ID field here
+        body: JSON.stringify({ userId: user?.user }), // Replace `loggedInUserId` with the actual user ID variable if different
+      });
+  
+      if (!response.ok) {
+        // Revert the optimistic UI update in case of failure
+        setIsLiked(!isLiked);
+        setLikeCount(isLiked ? likeCount : likeCount - 1 + 1);
+        throw new Error('Failed to update like for event');
+      }
+  
+      const updatedEvent = await response.json();
+      // Dispatch the update if necessary. Depending on your state management, you might not need this.
+      dispatch(setEvent({ event: updatedEvent })); // Ensure you have a corresponding action creator `setEvent`
+    } catch (error) {
+      console.error("Error updating like for event:", error);
+    }
   };
 
   return (
     <WidgetWrapper m="2rem 0">
-      <Friend
-        name={name}
-        subtitle={location}
-      />
-      <Typography color={main} sx={{ mt: "1rem" }}>
+      <Typography color={main} variant="h5" fontWeight="500" sx={{ mt: "1rem" }}>
+        {eventName}
+      </Typography>
+      <Typography color={main}>
+        {venueName}
+      </Typography>
+      <Typography color={main}>
+        {location}
+      </Typography>
+      <Typography color={main}>
         {description}
       </Typography>
       {picturePath && (
@@ -63,7 +94,7 @@ const EventWidget = ({
           width="100%"
           height="auto"
           alt="post"
-          style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
+          style={{ borderRadius: "0.75rem", marginTop: "0.75rem", maxHeight:"500px", maxWidth:"500px" }}
           src={`${picturePath}?${process.env.REACT_APP_SAS_TOKEN}`}
         />
       )}
@@ -79,20 +110,13 @@ const EventWidget = ({
             </IconButton>
             <Typography>{likeCount}</Typography>
           </FlexBetween>
-
-          <FlexBetween gap="0.3rem">
-            <IconButton onClick={() => setIsComments(!isComments)}>
-              <ChatBubbleOutlineOutlined />
-            </IconButton>
-            <Typography>{comments.length}</Typography>
-          </FlexBetween>
         </FlexBetween>
 
         <IconButton>
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
-      {isComments && (
+      {/* {isComments && (
         <Box mt="0.5rem">
           {comments.map((comment, i) => (
             <Box key={`${name}-${i}`}>
@@ -104,7 +128,7 @@ const EventWidget = ({
           ))}
           <Divider />
         </Box>
-      )}
+      )} */}
     </WidgetWrapper>
   );
 };

@@ -22,6 +22,8 @@ const EventsWidget = ({ events, userData, isProfile = false }) => {
           postId={post._id}
           postUserId={post.userId} // Assuming this is the ID of the user who made the post
           name={post.username}
+          eventName={post.eventName}
+          venueName={post.venueName}
           scene={post.scene}
           description={post.description}
           location={post.location}
@@ -29,6 +31,8 @@ const EventsWidget = ({ events, userData, isProfile = false }) => {
           userPicturePath={post.userPicturePath}
           likes={post.likes}
           comments={post.comments}
+          post={post}
+          eventId={post._id}
         />
       ))}
     </>

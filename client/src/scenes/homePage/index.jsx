@@ -13,7 +13,6 @@ import { useUser } from '../../../src/userContext.js'; // Ensure this path match
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const user = useSelector((state) => state.user);
-
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const token = useSelector((state) => state.token);

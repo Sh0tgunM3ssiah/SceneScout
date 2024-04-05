@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import PostWidget from './PostWidget';
+import EventWidget from './EventWidget';
 
 const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
 
@@ -17,6 +18,7 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
     <Grid container spacing={3}>
     <>
       {posts.map((post) => (
+        post.type === 'post' ? (
         <PostWidget
           userData={userData}
           key={post._id}
@@ -30,7 +32,28 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
           userPicturePath={post.userPicturePath}
           likes={post.likes}
           comments={post.comments}
+          createdAt={post.createdAt}
         />
+        ) : (
+          <EventWidget
+            userData={userData}
+            key={post._id}
+            postId={post._id}
+            postUserId={post.userId} // Assuming this is the ID of the user who made the post
+            name={post.username}
+            eventName={post.eventName}
+            venueName={post.venueName}
+            scene={post.scene}
+            description={post.description}
+            location={post.location}
+            picturePath={post.picturePath}
+            userPicturePath={post.userPicturePath}
+            likes={post.likes}
+            comments={post.comments}
+            post={post}
+            eventId={post._id}
+          />
+        )
       ))}
     </>
     </Grid>
