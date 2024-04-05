@@ -26,6 +26,10 @@ const LocationAutocomplete = ({ value, error, helperText, onChange }) => {
     }
   }, [isLoaded, onChange]);
 
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
+
   const handleChange = (e) => {
     setInputValue(e.target.value);
   };
@@ -40,9 +44,7 @@ const LocationAutocomplete = ({ value, error, helperText, onChange }) => {
       error={error}
       helperText={helperText}
       fullWidth
-      inputRef={autoCompleteRef} // Use the ref
-      // You might want to remove the onChange prop to prevent manual edits,
-      // or handle it differently based on your requirements.
+      inputRef={autoCompleteRef}
     />
   );
 };

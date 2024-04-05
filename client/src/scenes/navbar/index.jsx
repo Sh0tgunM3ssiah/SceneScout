@@ -31,6 +31,7 @@ import { useUser } from '../../../src/userContext.js'; // Ensure this path match
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
+  const { logout } = useUser(); // Destructure logout function from the context
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useUser() ?? {}; // Use useUser hook to access the user context
@@ -106,7 +107,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      await logout();
       dispatch(setLogout()); // Adjust according to your state management
       navigate('/login'); // Redirect to login or another appropriate page
     } catch (error) {

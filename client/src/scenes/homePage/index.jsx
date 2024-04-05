@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, useMediaQuery } from "@mui/material";
 import Navbar from "scenes/navbar";
 import UserWidget from "scenes/widgets/UserWidget";
 import MyPostWidget from "scenes/widgets/MyPostWidget";
@@ -13,7 +13,6 @@ import { useUser } from '../../../src/userContext.js'; // Ensure this path match
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
   const user = useSelector((state) => state.user);
-  const { _id, picturePath } = user; // Destructure the needed properties from the user object
 
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -108,44 +107,59 @@ const HomePage = () => {
     fetchPosts();
   }, [userData, token]);
 
-  return (
-    <Box>
-      <Navbar />
-      <Box
-        width="100%"
-        padding="2rem 6%"
-        display={isNonMobileScreens ? "flex" : "block"}
-        gap="0.5rem"
-        justifyContent="space-between"
-      >
-        <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
-          <Box mb="2rem">
-            <UserWidget userId={_id} picturePath={picturePath} userData={userData} />
+  if (userData) {
+    return (
+      <Box>
+        <Navbar />
+        <Box
+          width="100%"
+          padding="2rem 6%"
+          display={isNonMobileScreens ? "flex" : "block"}
+          gap="0.5rem"
+          justifyContent="space-between"
+        >
+          <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
+            <Box mb="2rem">
+              {userData && <UserWidget userId={userData._id} picturePath={userData.picturePath} userData={userData} />}
+            </Box>
+            {isNonMobileScreens && userData && <FollowersListWidget userId={userData._id} userData={userData} />}
+          </Box>
+          <Box
+            flexBasis={isNonMobileScreens ? "42%" : undefined}
+            mt={isNonMobileScreens ? undefined : "2rem"}
+          >
+            {userData && <MyPostWidget picturePath={userData.picturePath} userData={userData} addPost={addPost} />}
+            <Box mt="2rem">
+              {userData && <PostsWidget userId={userData._id} isProfile={true} userData={userData} posts={posts} />}
+            </Box>
           </Box>
           {isNonMobileScreens && (
-            <FollowersListWidget userId={_id} userData={userData} />
+            <Box flexBasis="26%">
+              <Box mb="2rem">
+                <AdvertWidget />
+              </Box>
+              {userData && <FriendListWidget userId={userData._id} userData={userData} />}
+            </Box>
           )}
         </Box>
-        <Box
-          flexBasis={isNonMobileScreens ? "42%" : undefined}
-          mt={isNonMobileScreens ? undefined : "2rem"}
-        >
-          <MyPostWidget picturePath={picturePath} userData={userData} addPost={addPost} />
-          <Box mt="2rem">
-            {userData && <PostsWidget userId={_id} isProfile={true} userData={userData} posts={posts} />}
-          </Box>
-        </Box>
-        {isNonMobileScreens && (
-          <Box flexBasis="26%">
-            <Box mb="2rem">
-              <AdvertWidget />
-            </Box>
-            {userData && <FriendListWidget userId={_id} userData={userData} />}
-          </Box>
-        )}
       </Box>
-    </Box>
-  );
+    );
+  } else {
+    return (
+      <Box>
+        <Navbar />
+        <Box
+          width="100%"
+          padding="2rem 6%"
+          display={isNonMobileScreens ? "flex" : "block"}
+          gap="0.5rem"
+          justifyContent="space-between"
+        >
+          <CircularProgress />
+        </Box>
+      </Box>
+    );
+  }
 };
 
 export default HomePage;

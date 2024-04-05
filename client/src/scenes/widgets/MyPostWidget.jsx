@@ -54,7 +54,8 @@ const MyPostWidget = ({ userData, addPost }) => {
     }
 
     const formData = new FormData();
-    formData.append('username', userData.username)
+    const usernameValue = userData.accountType === "Artist" ? userData.name : userData.displayName;
+    formData.append('username', usernameValue);
     formData.append('userId', userData._id);
     formData.append('description', post);
     formData.append('sceneId', userData.scene);

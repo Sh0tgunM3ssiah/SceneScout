@@ -97,10 +97,18 @@ const ProfileWidget = ({user, userData, id}) => {
       >
         <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
           <UserProfileImage image={userData?.picturePath} />
-          <Typography sx={{ mt: "1rem" }} variant="h4">{userData?.type === 'Artist' ? userData?.name : userData?.username}</Typography>
-          <Typography variant="h6" color="text.secondary">{userData?.sceneName}</Typography>
+          <Typography sx={{ mt: "1rem", mb:"1rem" }} variant="h4">{userData?.accountType === 'Artist' ? userData?.name : userData?.displayName}</Typography>
+          <Typography variant="h6" color="text.secondary">
+            {userData?.location 
+              ? `${userData.location.split(', ')[0]}, ${userData.location.split(', ')[1]?.split(' ')[0] ?? ''}` 
+              : ''}
+          </Typography>
+          <Typography variant="h6" color="text.secondary" sx={{ mb:"1rem" }}>{userData?.sceneName}</Typography>
           <Typography variant="h6" color="text.secondary">{userData?.friends.length} friends</Typography>
           <Typography variant="h6" color="text.secondary">{userData?.followers.length} followers</Typography>
+        </Grid>
+        <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+          <Typography color="text.secondary">{userData?.bio}</Typography>
         </Grid>
         {user.user === userData?.userId ? (
           <Grid item sx={{ width: { xs: '50%', md: '30%' }, px: "16px" }}>

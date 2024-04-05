@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, CircularProgress } from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { useUser } from '../../../src/userContext'; // Adjust this path as neede
 
 const FriendListWidget = ({userData}) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);// Use the user from context
+  const user = useSelector((state) => state.user);// Use the user from context
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
   // Safely access friends with optional chaining or default to an empty array
@@ -30,33 +30,41 @@ const FriendListWidget = ({userData}) => {
     };
 
     getFriends();
-  }, [user, user?._id, userData, token, dispatch]); // Adjusted dependencies to include optional chaining
+  }, [userData, token, dispatch]); // Adjusted dependencies to include optional chaining
 
-  return (
-    <WidgetWrapper>
-      <Typography
-        color={palette.neutral.dark}
-        variant="h5"
-        fontWeight="500"
-        sx={{ mb: "1.5rem" }}
-      >
-        Following
-      </Typography>
-      <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
-          <Friend
-            key={friend._id}
-            friendId={friend._id}
-            friendUserId={friend.userId}
-            name={`${friend.username}`}
-            subtitle={friend.sceneName}
-            userPicturePath={friend.picturePath}
-            userData={friend}
-          />
-        ))}
-      </Box>
-    </WidgetWrapper>
-  );
+  if (!user || !userData) {
+    return (
+      <CircularProgress />
+    );
+  }
+
+  if (friends) {
+    return (
+      <WidgetWrapper>
+        <Typography
+          color={palette.neutral.dark}
+          variant="h5"
+          fontWeight="500"
+          sx={{ mb: "1.5rem" }}
+        >
+          Following
+        </Typography>
+        <Box display="flex" flexDirection="column" gap="1.5rem">
+          {friends.map((friend) => (
+            <Friend
+              key={friend._id}
+              friendId={friend._id}
+              friendUserId={friend.userId}
+              name={`${friend.username}`}
+              subtitle={friend.sceneName}
+              userPicturePath={friend.picturePath}
+              userData={friend}
+            />
+          ))}
+        </Box>
+      </WidgetWrapper>
+    );
+  }
 };
 
 export default FriendListWidget;

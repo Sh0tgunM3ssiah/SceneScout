@@ -57,6 +57,7 @@ const ArtistSchema = new mongoose.Schema(
       default: [],
     },
     location: String,
+    bio: String,
     biography: {
       type: String,
       default: "",

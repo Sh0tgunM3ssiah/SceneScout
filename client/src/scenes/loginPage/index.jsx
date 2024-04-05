@@ -14,8 +14,10 @@ const LoginPage = () => {
   const navigate = useNavigate(); // Hook for programmatic navigation
   const token = useSelector((state) => state.token);
   const userContext = useUser();
-  const userId = userContext?.userId;
+  const userId = userContext?.currentUser?.userId || null;
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
+
+  console.log(userContext);
 
   // Optional: State for loading and error handling
   const [loading, setLoading] = useState(false);

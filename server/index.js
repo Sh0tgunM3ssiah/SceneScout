@@ -25,6 +25,7 @@ import User from './models/User.js'; // Adjust the import path according to your
 import Artist from './models/Artist.js';
 import Post from './models/Post.js';
 import Event from './models/Event.js';
+import {editUser} from './controllers/users.js';
 
 /* AZURE BLOB STORAGE SETUP */
 const account = process.env.ACCOUNT_NAME;
@@ -110,6 +111,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     members,
     scene,
     sceneName,
+    bio,
   } = req.body;
 
   const picturePath = `https://${account}.blob.core.windows.net/${containerName}/${req.file.blobName}`;
@@ -130,6 +132,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         location,
         scene,
         sceneName,
+        bio,
         viewedProfile: 0,
         impressions: 0,
       });
@@ -151,6 +154,7 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
         sceneName,
         friends,
         followers,
+        bio,
         viewedProfile: 0,
         impressions: 0,
       });
@@ -253,6 +257,7 @@ app.post("/events/create", upload.single("picture"), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.post('/users/edit/:id', upload.single('image'), editUser);
 
 
 /* ROUTES */

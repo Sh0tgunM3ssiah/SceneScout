@@ -28,6 +28,7 @@ const UserWidget = ({ userData }) => {
     lastName,
     location,
     scene,
+    displayName,
     picturePath,
     friends = [],
     followers = [],
@@ -44,7 +45,7 @@ const UserWidget = ({ userData }) => {
           <Box>
             <Typography variant="h4" color={palette.neutral.dark} fontWeight="500" sx={{ "&:hover": { cursor: "pointer", color: palette.primary.light } }}>
               {/* Conditionally display Artist name or user's full name */}
-              {userData.type === 'Artist' ? userData.name : userData.username}
+              {userData.accountType === 'Artist' ? userData.name : userData.displayName}
             </Typography>
             <Typography color={palette.neutral.medium}>{followers.length} followers</Typography>
             <Typography color={palette.neutral.medium}>{friends.length} following</Typography>
@@ -59,7 +60,7 @@ const UserWidget = ({ userData }) => {
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
           <LocationOnOutlined fontSize="large" sx={{ color: palette.neutral.main }} />
-          <Typography color={palette.neutral.medium}>{location}</Typography>
+          <Typography color={palette.neutral.medium}>{location ? `${location.split(', ')[0]}, ${location.split(', ')[1].split(' ')[0]}` : ''}</Typography>
         </Box>
         <Box display="flex" alignItems="center" gap="1rem">
           <WorkOutlineOutlined fontSize="large" sx={{ color: palette.neutral.main }} />

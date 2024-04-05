@@ -30,6 +30,7 @@ const PostsWidget = ({ posts, userData, isProfile = false }) => {
           userPicturePath={post.userPicturePath}
           likes={post.likes}
           comments={post.comments}
+          createdAt={post.createdAt}
         />
       ))}
     </>

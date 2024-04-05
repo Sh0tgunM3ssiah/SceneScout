@@ -60,6 +60,7 @@ const UserSchema = new mongoose.Schema(
       default: [],
     },
     location: String,
+    bio: String,
     scene: {
       type: String,
       required: true,

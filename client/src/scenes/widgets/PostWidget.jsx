@@ -11,6 +11,7 @@ import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
+import { format, formatDistanceToNow } from 'date-fns';
 
 const PostWidget = ({
   userData,
@@ -23,6 +24,7 @@ const PostWidget = ({
   picturePath,
   userPicturePath,
   likes,
+  createdAt,
   comments,
 }) => {
   const dispatch = useDispatch();
@@ -78,6 +80,20 @@ const PostWidget = ({
     }
   };
 
+  const formatCreatedAt = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+  
+    // If the date is more than a week ago, format it as mm/dd/yyyy
+    if (date < oneWeekAgo) {
+      return format(date, 'MM/dd/yyyy');
+    } else {
+      // Otherwise, use formatDistanceToNow to show it in a "time ago" format
+      return `${formatDistanceToNow(date, { addSuffix: true })}`;
+    }
+  };
+
   return (
     <WidgetWrapper mb="2rem">
       <Friend
@@ -114,18 +130,23 @@ const PostWidget = ({
           </FlexBetween>
 
           <FlexBetween gap="0.3rem">
+            <Typography>{formatCreatedAt(createdAt)}</Typography>
+          </FlexBetween>
+        </FlexBetween>
+
+          {/* <FlexBetween gap="0.3rem">
             <IconButton onClick={() => setIsComments(!isComments)}>
               <ChatBubbleOutlineOutlined />
             </IconButton>
             <Typography>{comments.length}</Typography>
           </FlexBetween>
-        </FlexBetween>
+        </FlexBetween> */}
 
         <IconButton>
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
-      {isComments && (
+      {/* {isComments && (
         <Box mt="0.5rem">
           {comments.map((comment, i) => (
             <Box key={`${name}-${i}`}>
@@ -137,7 +158,7 @@ const PostWidget = ({
           ))}
           <Divider />
         </Box>
-      )}
+      )} */}
     </WidgetWrapper>
   );
 };

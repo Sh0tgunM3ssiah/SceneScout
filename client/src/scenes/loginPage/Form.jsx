@@ -199,8 +199,9 @@ const Form = () => {
                     <MenuItem value="Rock">Rock</MenuItem>
                     <MenuItem value="Metal">Metal</MenuItem>
                     <MenuItem value="Jazz">Jazz</MenuItem>
-                    <MenuItem value="Hip Hop">Hip Hop</MenuItem>
-                    {/* Additional genres can be listed here */}
+                    <MenuItem value="Hip-Hop">Hip-Hop</MenuItem>
+                    <MenuItem value="Electronic">Electronic</MenuItem>
+                    <MenuItem value="Pop">Pop</MenuItem>
                   </Select>
                 </FormControl>
               </>

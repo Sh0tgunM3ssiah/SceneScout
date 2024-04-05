@@ -1,5 +1,5 @@
 import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, IconButton, Typography, useTheme, CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setFriends } from "state";
@@ -51,6 +51,12 @@ const Friend = ({ friendId, friendUserId, name, subtitle, userPicturePath, userD
         // Handle error, e.g., by showing a notification
     }
   };
+
+  if (!user || !userData) {
+    return (
+      <CircularProgress />
+    );
+  }
   
 
   return (

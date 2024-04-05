@@ -1,5 +1,15 @@
+import dotenv from "dotenv";
+dotenv.config();
 import User from "../models/User.js";
 import Artist from "../models/Artist.js";
+import Post from "../models/Post.js";
+import { BlobServiceClient } from "@azure/storage-blob";
+
+const account = process.env.ACCOUNT_NAME;
+const sas = process.env.SAS_TOKEN;
+const containerName = process.env.CONTAINER_NAME;
+const blobServiceClient = new BlobServiceClient(`https://${account}.blob.core.windows.net/?${sas}`);
+const containerClient = blobServiceClient.getContainerClient(containerName);
 
 /* READ */
 export const getUser = async (req, res) => {
@@ -152,7 +162,7 @@ export const getUserFollowers = async (req, res) => {
 
     res.status(200).json(formattedFollowers);
   } catch (err) {
-    console.error("Error in getUserFriends:", err);
+    console.error("Error in getUserFollowes:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -213,5 +223,77 @@ export const addRemoveFriend = async (req, res) => {
   } catch (err) {
     console.error("Error in addRemoveFriend:", err);
     res.status(500).json({ message: err.message });
+  }
+};
+
+// This function should be defined in your controllers/users.js
+export const editUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Initially consider the entity as a User
+    let entity = await User.findById(id);
+    let accountType = 'User';
+    
+    // If not found, then consider the entity as an Artist
+    if (!entity) {
+      entity = await Artist.findById(id);
+      accountType = 'Artist';
+    }
+
+    if (!entity) {
+      return res.status(404).json({ message: "User/Artist not found" });
+    }
+
+    // For Artist, use 'name' from req.body or entity.name, else use 'displayName'
+    const newNameOrDisplayName = accountType === 'Artist' ? (req.body.name || entity.name) : (req.body.displayName || entity.displayName);
+
+    let picturePath = entity.picturePath; // Keep existing picturePath by default
+    if (req.file) {
+      // Generate new image path
+      picturePath = `https://${process.env.ACCOUNT_NAME}.blob.core.windows.net/${process.env.CONTAINER_NAME}/${req.file.blobName}`;
+      
+      // Delete old image from Azure Blob Storage if it exists
+      if (entity.picturePath) {
+        const parts = entity.picturePath.split('/');
+        const partialPath = parts.slice(3).join('/');
+        const existingBlobName = partialPath.startsWith('blobby/') ? partialPath.substring('blobby/'.length) : partialPath;
+
+        try {
+          await containerClient.deleteBlob(existingBlobName);
+        } catch (error) {
+          console.error(`Failed to delete existing blob: ${existingBlobName}`, error);
+        }
+      }
+      
+      // Update the entity's picturePath
+      entity.picturePath = picturePath;
+    }
+
+    // Apply other updates
+    Object.keys(req.body).forEach(key => {
+      if (key === 'displayName' && accountType === 'Artist') {
+        // If the account is an Artist and key is displayName, update name instead
+        entity['name'] = req.body[key];
+      } else if (key in entity) {
+        // For all other cases, update the entity directly
+        entity[key] = req.body[key];
+      }
+    });
+
+    await entity.save();
+
+    // Update posts with new picturePath and username/displayName
+    await Post.updateMany(
+      { userId: entity._id }, 
+      { 
+        userPicturePath: picturePath, // Use the updated picturePath
+        username: newNameOrDisplayName // Use the updated name or displayName for posts
+      }
+    );
+
+    res.status(200).json({ message: `${accountType} updated successfully`, data: entity });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

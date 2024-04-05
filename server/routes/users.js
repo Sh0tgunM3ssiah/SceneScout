@@ -6,6 +6,7 @@ import {
   getUserFriends,
   addRemoveFriend,
   getUserFollowers,
+  editUser
 } from "../controllers/users.js";
 
 const router = express.Router();
