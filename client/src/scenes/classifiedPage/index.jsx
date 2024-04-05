@@ -20,39 +20,24 @@ const ClassifiedPage = () => {
 
   useEffect(() => {
     const authToken = token;
-    const fetchUserByUsername = async () => {
+    const fetchUser = async () => {
       if (!userId) return; // Do not attempt to fetch if username is not available
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
-        const artistUrl = `${process.env.REACT_APP_BACKEND_URL}/artists/${encodeURIComponent(userId)}`;
-        // Concurrently fetch user and artist data
-        const [userResponse, artistResponse] = await Promise.all([
-          fetch(userUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          }),
-          fetch(artistUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          })
-        ]);
+
+      const userResponse = await fetch(userUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`,
+        },
+      });
+
+      if (!userResponse.ok) throw new Error('User not found');
+
+      const user = await userResponse.json();
   
-        let entity; // This will hold either the user or the artist
-        if (userResponse.ok) {
-          const user = await userResponse.json();
-          entity = { ...user, type: 'user' };
-        } else if (artistResponse.ok) {
-          const artist = await artistResponse.json();
-          entity = { ...artist, type: 'artist' };
-        } else {
-          throw new Error('Neither user nor artist found');
-        }
+      let entity = { ...user, type: user.accountType };
   
         // Now we have either a user or artist, check if they have a scene
         if (entity.scene) {
@@ -77,7 +62,7 @@ const ClassifiedPage = () => {
       }
     };
   
-    fetchUserByUsername();
+    fetchUser();
   }, [userId, token]);
 
   return (

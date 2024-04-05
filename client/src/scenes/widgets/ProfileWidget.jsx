@@ -1,43 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
-  Box,
   Card,
   Grid,
   Typography,
-  Avatar,
-  Badge,
   Button,
-  useTheme,
 } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import UserProfileImage from "components/UserProfileImage";
 import { useNavigate } from "react-router-dom";
 import { setFriends } from "state";
 import { useDispatch, useSelector } from "react-redux";
-// Other imports...
 
-const ProfileWidget = ({user, userData, id}) => {
+const ProfileWidget = ({user, userData, friends, id}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
-  const userId = user?.userId;
-  const userSceneId = user?.scene;
-
-  const { palette } = useTheme();
-  const primaryLight = palette.primary.light;
-  const primaryDark = palette.primary.dark;
-  const main = palette.neutral.main;
-  const medium = palette.neutral.medium;
-  let isFriend = Array.isArray(friends) && friends.some((friend) => friend.userId === userData.userId);
+  let isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === userData._id);
 
   const handleFollowClick = async () => {
     if (user.user === userData.userId) {
-      return;
+        return;
     }
 
-    let endpoint = `${process.env.REACT_APP_BACKEND_URL}/users/${user.id}/${userData._id}`;
+    let endpoint = `${process.env.REACT_APP_BACKEND_URL}/users/${user.id}/${userData?._id}`;
     try {
         const response = await fetch(endpoint, {
             method: "PATCH",
@@ -59,24 +44,7 @@ const ProfileWidget = ({user, userData, id}) => {
         // Handle error, e.g., by showing a notification
     }
   };
-  const styles = {
-    details: {
-      padding: "0 16px",
-    },
-    value: {
-      padding: "0 16px",
-      textAlign: "right",
-    },
-  };
 
-  // Assuming `props` are passed to this component for `name`, `sub`, `dt1`, `dt2`, and `dt3`
-  const props = {
-    name: "Your Name",
-    sub: "Your Subtitle",
-    dt1: "Detail 1 Value",
-    dt2: "Detail 2 Value",
-    dt3: "Detail 3 Value",
-  };
   const handleNavigateToEditProfile = () => {
     navigate(`/profile/edit/${userData.userId}`);
   };
@@ -129,7 +97,7 @@ const ProfileWidget = ({user, userData, id}) => {
               sx={{ width: "100%", p: 1, my: 2 }}
               onClick={handleFollowClick}
             >
-              {isFriend ? "Following" : "Follow"}
+              {isFriend ? "UnFollow" : "Follow"}
             </Button>
           </Grid>
         )}

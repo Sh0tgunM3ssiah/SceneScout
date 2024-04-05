@@ -8,56 +8,37 @@ import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import FollowersListWidget from "scenes/widgets/FollowersListWidget";
 import { useSelector } from "react-redux";
-import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
-  const user = useSelector((state) => state.user);
+  const user = useSelector(state => state.user);
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
-  const token = useSelector((state) => state.token);
-  const userId = user?.user;
-  const userSceneId = user?.scene;
+  const token = useSelector(state => state.token);
 
   const addPost = (post) => {
     setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
   };
 
   useEffect(() => {
-    const authToken = token;
     const fetchUser = async () => {
-      if (!userId) return; // Do not attempt to fetch if username is not available
+      if (!user) return; // Do not attempt to fetch if username is not available
       try {
-        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
-        const artistUrl = `${process.env.REACT_APP_BACKEND_URL}/artists/${encodeURIComponent(userId)}`;
-        // Concurrently fetch user and artist data
-        const [userResponse, artistResponse] = await Promise.all([
-          fetch(userUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          }),
-          fetch(artistUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
-            },
-          })
-        ]);
-  
-        let entity; // This will hold either the user or the artist
-        if (userResponse.ok) {
-          const user = await userResponse.json();
-          entity = { ...user, type: 'user' };
-        } else if (artistResponse.ok) {
-          const artist = await artistResponse.json();
-          entity = { ...artist, type: 'artist' };
-        } else {
-          throw new Error('Neither user nor artist found');
-        }
+        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(user.user)}`;
+
+        const userResponse = await fetch(userUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!userResponse.ok) throw new Error('User not found');
+
+        const fetched = await userResponse.json();
+    
+        let entity = { ...fetched, type: fetched.accountType };
   
         // Now we have either a user or artist, check if they have a scene
         if (entity.scene) {
@@ -65,7 +46,7 @@ const HomePage = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authToken}`,
+              "Authorization": `Bearer ${token}`,
             },
           });
   
@@ -83,7 +64,7 @@ const HomePage = () => {
     };
   
     fetchUser();
-  }, [userId, token]);
+  }, [token]);
 
   useEffect(() => {
     const fetchPosts = async () => {
