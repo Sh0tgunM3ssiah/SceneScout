@@ -18,6 +18,7 @@ import FlexBetween from "components/FlexBetween";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../../../src/userContext';
 import LocationAutocomplete from "../../components/LocationAutocomplete"
+import ScenesDropdown from "../../components/scenesDropdown"
 
 const registerSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -70,6 +71,7 @@ const Form = () => {
   const navigate = useNavigate(); // Hook for programmatic navigation
   const userContext = useUser();
   const [scenes, setScenes] = useState([]);
+  const [scene, setScene] = useState("");
   const [formValues, setFormValues] = useState({ ...initialValues, username: userContext?.username, userId: userContext?.userId });
 
   useEffect(() => {
@@ -140,28 +142,11 @@ const Form = () => {
               disabled
               sx={{ gridColumn: "span 4" }}
             />
-            <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
-              <InputLabel>Scene</InputLabel>
-              <Select
-              label="Scene"
-              name="scene"
-              value={values.scene}
-              onChange={(event) => {
-                handleChange(event);
-                const selectedSceneName = scenes.find(scene => scene._id === event.target.value)?.name || '';
-                setFieldValue('sceneName', selectedSceneName);
-              }}
-              onBlur={handleBlur}
-              error={touched.scene && Boolean(errors.scene)}
-              helpertext={touched.scene && errors.scene}
-            >
-              {scenes.map((scene) => (
-                <MenuItem key={scene._id} value={scene._id}>
-                  {scene.name}
-                </MenuItem>
-              ))}
-            </Select>
-            </FormControl>
+            <ScenesDropdown
+                label="Scene"
+                value={scene}
+                onChange={(e) => setScene(e.target.value)}
+            />
             <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
               <InputLabel>Account Type</InputLabel>
               <Select

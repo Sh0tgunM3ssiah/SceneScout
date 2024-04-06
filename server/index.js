@@ -14,6 +14,7 @@ import postRoutes from "./routes/posts.js";
 import sceneRoutes from "./routes/scenes.js";
 import artistRoutes from "./routes/artists.js";
 import eventsRoutes from "./routes/events.js";
+import serviceRoutes from "./routes/services.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
@@ -267,6 +268,7 @@ app.use("/posts", postRoutes);
 app.use("/scenes", sceneRoutes);
 app.use("/artists", artistRoutes);
 app.use("/events", eventsRoutes);
+app.use("/services", serviceRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001;

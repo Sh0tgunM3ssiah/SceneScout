@@ -1,11 +1,12 @@
 import Scene from "../models/Scene.js";
+import Genre from "../models/Genre.js";
 
 /* READ */
 export const getScene = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await Scene.findById(id);
-    res.status(200).json(user);
+    const scene = await Scene.findById(id);
+    res.status(200).json(scene);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -19,6 +20,30 @@ export const getAllScenes = async (req, res) => {
       } else {
           // Handle the case where no scenes are found
           res.status(404).json({ message: "No scenes found" });
+      }
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
+};
+
+export const getGenre = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const genre = await Genre.findById(id);
+    res.status(200).json(genre);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
+export const getAllGenres = async (req, res) => {
+  try {
+      const genres = await Genre.find();
+      if (genres.length > 0) {
+          res.status(200).json(genres);
+      } else {
+          // Handle the case where no scenes are found
+          res.status(404).json({ message: "No genres found" });
       }
   } catch (err) {
       res.status(500).json({ error: err.message });

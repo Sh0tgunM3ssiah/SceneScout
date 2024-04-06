@@ -12,6 +12,7 @@ const SceneSchema = new mongoose.Schema(
     location: String,
     longitude: String,
     latitude: String,
+    state: String,
   },
   { timestamps: true }
 );

@@ -19,6 +19,7 @@ import UserProfileImage from "components/UserProfileImage";
 import { useNavigate } from "react-router-dom";
 import { format } from 'date-fns';
 import LocationAutocomplete from "../../components/LocationAutocomplete";
+import ScenesDropdown from "../../components/scenesDropdown";
 import ImageUpdateModal from '../../components/imageUpdateModal';
 
 
@@ -233,24 +234,11 @@ const ProfileEditWidget = ({ user, userData }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Scene</InputLabel>
-                <Select
-                  value={scene}
-                  label="Scene"
-                  onChange={(e) => {
-                    setScene(e.target.value);
-                    const selectedScene = scenes.find(scene => scene._id === e.target.value);
-                    setSceneName(selectedScene?.name || '');
-                  }}
-                >
-                  {scenes.map((scene) => (
-                    <MenuItem key={scene._id} value={scene._id}>
-                      {scene.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <ScenesDropdown
+                label="Scene"
+                value={scene}
+                onChange={(e) => setScene(e.target.value)}
+              />
             </Grid>
             {userData.accountType !== "Artist" && (
             <>

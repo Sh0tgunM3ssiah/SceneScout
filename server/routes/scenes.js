@@ -3,7 +3,7 @@ import {
   getScene,
   getSceneByName,
   getAllScenes,
-} from "../controllers/scenes.js";
+} from "../controllers/services.js";
 
 const router = express.Router();
 

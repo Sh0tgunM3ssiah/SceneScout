@@ -11,6 +11,7 @@ import {
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useSelector } from 'react-redux';
 import SceneSearchPostsWidget from './SceneSearchPostsWidget';
+import ScenesDropdown from "../../components/scenesDropdown"
 
 const SearchSceneWidget = ({ userSceneId, userData }) => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -101,7 +102,10 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
 
   // Update filters
   const handleSceneFilterChange = (event) => {
-    setSceneFilter(event.target.value);
+    const selectedSceneId = event.target.value;
+    setScene(selectedSceneId); // Update the scene state for display
+    setSceneFilter(selectedSceneId); // Update the scene filter for filtering posts
+    // Optionally, trigger a re-fetch or re-filter of posts based on the new scene
   };
 
   const handleGenreFilterChange = (event) => {
@@ -117,22 +121,11 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
         <Box display="flex" flexDirection="column" gap="1rem">
           {/* Filters */}
           <Box display="flex" flexDirection="column" gap="1rem">
-            <FormControl variant="filled" sx={{ width: '100%' }}>
-              <InputLabel id="scene-select-label">Scene</InputLabel>
-              <Select
-                labelId="scene-select-label"
-                id="scene-select"
-                value={sceneFilter}
+          <ScenesDropdown
+                label="Scene"
+                value={scene}
                 onChange={handleSceneFilterChange}
-              >
-                <MenuItem value="">
-                  <em>Default Scene</em>
-                </MenuItem>
-                {scenes.map((scene) => (
-                  <MenuItem key={scene._id} value={scene._id}>{scene.name}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              />
             <FormControl variant="filled" sx={{ width: '100%' }}>
               <InputLabel id="post-type-select-label">Post Type</InputLabel>
               <Select
