@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { Grid, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Grid, Typography, Button, Box } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import PostWidget from './PostWidget';
 import EventWidget from './EventWidget';
 
 const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
+  const [displayLimit, setDisplayLimit] = useState(5);
 
   if (!userData) {
     return <CircularProgress />
@@ -14,49 +15,40 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
     return <Typography variant="body1">No posts available.</Typography>;
   }
 
+  const handleSeeMore = () => {
+    setDisplayLimit((prevLimit) => prevLimit + 10);
+  };
+
   return (
-    <Grid container spacing={3}>
     <>
-      {posts.map((post) => (
-        post.type === 'post' ? (
-        <PostWidget
-          userData={userData}
-          key={post._id}
-          postId={post._id}
-          postUserId={post.userId} // Assuming this is the ID of the user who made the post
-          name={post.username}
-          scene={post.scene}
-          description={post.description}
-          location={post.location}
-          picturePath={post.picturePath}
-          userPicturePath={post.userPicturePath}
-          likes={post.likes}
-          comments={post.comments}
-          createdAt={post.createdAt}
-        />
-        ) : (
-          <EventWidget
-            userData={userData}
-            key={post._id}
-            postId={post._id}
-            postUserId={post.userId} // Assuming this is the ID of the user who made the post
-            name={post.username}
-            eventName={post.eventName}
-            venueName={post.venueName}
-            scene={post.scene}
-            description={post.description}
-            location={post.location}
-            picturePath={post.picturePath}
-            userPicturePath={post.userPicturePath}
-            likes={post.likes}
-            comments={post.comments}
-            post={post}
-            eventId={post._id}
-          />
-        )
-      ))}
+      <Grid container spacing={3} justifyContent="center"> {/* Added justifyContent here */}
+        {posts.slice(0, displayLimit).map((post) => (
+          post.type === 'post' ? (
+            <Grid item xs={12} sm={6} key={post._id}>
+              <PostWidget
+                {...post} // Assuming destructuring props like this is possible for simplicity
+                userData={userData}
+              />
+            </Grid>
+          ) : (
+            <Grid item xs={12} key={post._id}>
+              <Box display="flex" justifyContent="center"> {/* Wrapper for centering */}
+                <EventWidget
+                  {...post} // Assuming destructuring props like this is possible for simplicity
+                  userData={userData}
+                  style={{ maxWidth: '600px', margin: 'auto' }} // You can adjust the maxWidth as needed
+                />
+              </Box>
+            </Grid>
+          )
+        ))}
+      </Grid>
+      {displayLimit < posts.length && (
+        <Button onClick={handleSeeMore} style={{ marginTop: '20px' }}>
+          See More Posts
+        </Button>
+      )}
     </>
-    </Grid>
   );
 };
 

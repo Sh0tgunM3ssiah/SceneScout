@@ -10,13 +10,11 @@ const CreateEventPage = () => {
     const theme = useTheme();
     const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
     const navigate = useNavigate();
-    const user = useUser() ?? {}; // Use useUser hook to access the user context
-    const { _id, picturePath } = user; // Destructure the needed properties from the user object
-  
+    const user = useSelector((state) => state.user);
     const [userData, setUserData] = useState(null);
     const [posts, setPosts] = useState([]);
     const token = useSelector((state) => state.token);
-    const userId = user?.userId;
+    const userId = user?.user;
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

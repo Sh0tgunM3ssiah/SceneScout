@@ -63,7 +63,7 @@ const CreateEventPage = () => {
       fetchUser();
     }, [userId, token]);
 
-  if (isLoading || !userData) {
+  if (!userData) {
     return <CircularProgress />;
   }
 

@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
-import { Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import React, { useState } from 'react';
+import { Typography, Button, Grid, CircularProgress } from '@mui/material';
 import EventWidget from './EventWidget';
 
+const INITIAL_EVENTS_COUNT = 5; // Initial number of events to display
+const MORE_EVENTS_COUNT = 10; // Number of events to add each time the user clicks "Load More"
+
 const EventsWidget = ({ events, userData, isProfile = false }) => {
+  const [visibleEventsCount, setVisibleEventsCount] = useState(INITIAL_EVENTS_COUNT);
 
   if (!userData) {
     return <CircularProgress />;
@@ -13,28 +16,31 @@ const EventsWidget = ({ events, userData, isProfile = false }) => {
     return <Typography variant="body1">No events available.</Typography>;
   }
 
+  const showMoreEvents = () => {
+    setVisibleEventsCount(prevCount => prevCount + MORE_EVENTS_COUNT);
+  };
+
   return (
     <>
-      {events.map((post) => (
-        <EventWidget
-          userData={userData}
-          key={post._id}
-          postId={post._id}
-          postUserId={post.userId} // Assuming this is the ID of the user who made the post
-          name={post.username}
-          eventName={post.eventName}
-          venueName={post.venueName}
-          scene={post.scene}
-          description={post.description}
-          location={post.location}
-          picturePath={post.picturePath}
-          userPicturePath={post.userPicturePath}
-          likes={post.likes}
-          comments={post.comments}
-          post={post}
-          eventId={post._id}
-        />
-      ))}
+      <Grid container spacing={3} justifyContent="center">
+        {events.slice(0, visibleEventsCount).map((event) => (
+          <Grid item xs={12} key={event._id} display="flex" justifyContent="center">
+            {/* Assuming EventWidget can handle being centered through its internal styling */}
+            <EventWidget
+              userData={userData}
+              {...event}
+            />
+          </Grid>
+        ))}
+      </Grid>
+      {visibleEventsCount < events.length && (
+        <Button 
+          onClick={showMoreEvents} 
+          style={{ display: 'block', margin: '20px auto' }}
+        >
+          Load More Events
+        </Button>
+      )}
     </>
   );
 };

@@ -112,7 +112,7 @@ const PostWidget = ({
           width="100%"
           height="auto"
           alt="post"
-          style={{ borderRadius: "0.75rem", marginTop: "0.75rem" }}
+          style={{ borderRadius: "0.75rem", marginTop: "0.75rem", maxHeight:"400px", maxWidth:"400px" }}
           src={`${picturePath}?${process.env.REACT_APP_SAS_TOKEN}`}
         />
       )}

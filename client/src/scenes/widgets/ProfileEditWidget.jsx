@@ -186,7 +186,7 @@ const ProfileEditWidget = ({ user, userData }) => {
             </Badge>
             {/* This could be made editable or kept static depending on your use case */}
             <Typography sx={{ mt: "1rem" }} variant="h4">
-              {userData?.type === "Artist" ? userData?.name : userData?.username}
+              {userData?.username}
             </Typography>
             <Typography sx={{ mb: "1rem" }}>Member Since: {createdAt}</Typography>
             <Typography>{email}</Typography>
