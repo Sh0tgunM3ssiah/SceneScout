@@ -91,7 +91,7 @@ const SearchPage = () => {
           <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
             Welcome to the Search Engine
           </Typography>
-          <SearchSceneWidget userId={userData._id} picturePath={userData.picturePath} userData={userData} />
+          <SearchSceneWidget userId={userData._id} userSceneId={userData.scene} picturePath={userData.picturePath} userData={userData} />
         </Box>
       </Box>
     </Box>

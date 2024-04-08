@@ -1,5 +1,6 @@
 import Scene from "../models/Scene.js";
 import Genre from "../models/Genre.js";
+import SubGenre from "../models/Genre.js";
 
 /* READ */
 export const getScene = async (req, res) => {
@@ -38,15 +39,34 @@ export const getGenre = async (req, res) => {
 
 export const getAllGenres = async (req, res) => {
   try {
-      const genres = await Genre.find();
-      if (genres.length > 0) {
-          res.status(200).json(genres);
-      } else {
-          // Handle the case where no scenes are found
-          res.status(404).json({ message: "No genres found" });
-      }
+    const genresWithSubGenres = await Genre.aggregate([
+      {
+        $lookup: {
+          from: "subgenres", // This should be the actual name of the collection in your MongoDB. Use the collection name, not the model name.
+          localField: "genreId",
+          foreignField: "parentId",
+          as: "subGenres",
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          genreId: 1,
+          subGenres: {
+            name: 1,
+            parentId: 1,
+          },
+        },
+      },
+    ]);
+
+    if (genresWithSubGenres.length > 0) {
+      res.status(200).json(genresWithSubGenres);
+    } else {
+      res.status(404).json({ message: "No genres found" });
+    }
   } catch (err) {
-      res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 };
 

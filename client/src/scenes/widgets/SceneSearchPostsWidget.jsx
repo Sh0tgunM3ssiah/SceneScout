@@ -28,6 +28,19 @@ const SceneSearchPostsWidget = ({ posts, userData, isProfile = false }) => {
               <PostWidget
                 {...post} // Assuming destructuring props like this is possible for simplicity
                 userData={userData}
+                key={post._id}
+                postId={post._id}
+                postUserId={post.userId}
+                name={post.username}
+                scene={post.scene}
+                sceneName={post.sceneName}
+                description={post.description}
+                location={post.location}
+                picturePath={post.picturePath}
+                userPicturePath={post.userPicturePath}
+                likes={post.likes}
+                comments={post.comments}
+                createdAt={post.createdAt}
               />
             </Grid>
           ) : (

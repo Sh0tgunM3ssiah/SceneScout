@@ -115,7 +115,10 @@ app.post("/auth/register", upload.single("picture"), async (req, res) => {
     bio,
   } = req.body;
 
-  const picturePath = `https://${account}.blob.core.windows.net/${containerName}/${req.file.blobName}`;
+  let picturePath = '';
+  if(req.file){
+    picturePath = `https://${account}.blob.core.windows.net/${containerName}/${req.file.blobName}`;
+  }
 
   try {
     if (accountType === 'User') {

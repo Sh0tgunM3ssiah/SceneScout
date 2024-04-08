@@ -9,9 +9,12 @@ import {
   FormControl,
   InputLabel,
   Select,
+  CircularProgress,
+  ListSubheader
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Formik } from "formik";
+import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
@@ -19,6 +22,8 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../../../src/userContext';
 import LocationAutocomplete from "../../components/LocationAutocomplete"
 import ScenesDropdown from "../../components/scenesDropdown"
+import GenresDropdown from "../../components/GenresDropdown"
+import { setLogin } from "state";
 
 const registerSchema = yup.object({
   username: yup.string().required("Username is required"),
@@ -46,7 +51,7 @@ const registerSchema = yup.object({
     is: "Artist",
     then: yup.string().required("Genre is required"),
   }),
-  picture: yup.mixed().required("A profile picture is required"),
+  picture: yup.mixed(),
 });
 
 const initialValues = {
@@ -68,36 +73,88 @@ const initialValues = {
 
 const Form = () => {
   const { palette } = useTheme();
+  const theme = useTheme();
+  const dispatch = useDispatch();
   const navigate = useNavigate(); // Hook for programmatic navigation
   const userContext = useUser();
   const [scenes, setScenes] = useState([]);
   const [scene, setScene] = useState("");
-  const [formValues, setFormValues] = useState({ ...initialValues, username: userContext?.username, userId: userContext?.userId });
+  const [formValues, setFormValues] = useState({
+    ...initialValues,
+    username: userContext?.currentUser?.username || '', // Provide default empty string if username is not available
+    userId: userContext?.currentUser?.userId || '', // Provide default empty string if userId is not available
+  });  
+  const [sceneError, setSceneError] = useState(false);
+  const [genre, setGenre] = useState("");
+  const [genreError, setGenreError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [groupedScenes, setGroupedScenes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Once userContext is available and not null, update formValues
+    if (userContext && userContext.currentUser) {
+      setFormValues(currentValues => ({
+        ...currentValues,
+        username: userContext.currentUser.username || '',
+        userId: userContext.currentUser.userId || '',
+      }));
+    }
+  }, [userContext]);
 
   useEffect(() => {
     const fetchScenes = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes/`);
-        if (!response.ok) throw new Error('Failed to fetch scenes');
-        const data = await response.json();
-        setScenes(data);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/scenes`);
+        if (!response.ok) {
+          throw new Error('Could not fetch scenes');
+        }
+        const scenes = await response.json();
+        
+        // Group scenes by state
+        const grouped = scenes.reduce((acc, scene) => {
+          acc[scene.state] = acc[scene.state] || [];
+          acc[scene.state].push(scene);
+          return acc;
+        }, {});
+        
+        // Sort states and scenes within each state
+        const sortedGroupedScenes = Object.keys(grouped).sort().map(state => ({
+          state,
+          scenes: grouped[state].sort((a, b) => a.name.localeCompare(b.name))
+        }));
+
+        setGroupedScenes(sortedGroupedScenes);
       } catch (error) {
-        console.error('Error fetching scenes:', error);
+        console.error("Failed to fetch scenes:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchScenes();
-    if (userContext?.userId) {
-      setFormValues(prevValues => ({ ...prevValues, username: userContext.username, userId: userContext.userId }));
-    }
-    const initialSceneName = scenes.find(scene => scene._id === userContext?.scene)?.name || '';
-    setFormValues(prevValues => ({ ...prevValues, sceneName: initialSceneName }));
-  }, [scenes, userContext]);
+  }, []);
+
+  const handleSceneChange = (event) => {
+    const selectedValue = event.target.value;
+    setScene(selectedValue);
+  };
 
   const handleRegistration = async (values, { resetForm }) => {
+    setIsLoading(true);
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value instanceof Blob ? value : String(value));
+      // Check if the key is 'picture'. If so, only append it if it's not null and is a Blob.
+      if (key === "picture") {
+        if (value instanceof Blob) {
+          formData.append(key, value);
+        }
+        // Skip appending the 'picture' field if it's null or not a Blob
+      } else {
+        // For all other fields, convert the value to a string and append
+        formData.append(key, String(value));
+      }
     });
 
     try {
@@ -105,15 +162,50 @@ const Form = () => {
         method: "POST",
         body: formData,
       });
-
-      if (!response.ok) throw new Error("Failed to register.");
+    
+      if (!response.ok) {
+        throw new Error("Failed to register.");
+      }
       
-      resetForm();
+      // Assuming the response contains JSON data you might need
+      const data = await response.json();
+      dispatch(
+        setLogin({
+          user: userContext?.currentUser.userId,
+        })
+      );
+      setIsLoading(false);
       navigate('/home');
     } catch (error) {
       console.error("Error during registration:", error);
-    }
+      // Handle the error, e.g., set an error state and show it in the UI
+    } finally {
+      setIsLoading(false); // Ensure loading state is reset after submission
+    }    
   };
+
+  const validateSceneAndGenre = (values) => {
+    let errors = {};
+    if (!values.scene) {
+      setSceneError(true);
+      errors.scene = 'Scene is required';
+    } else {
+      setSceneError(false);
+    }
+
+    if (values.accountType === "Artist" && !values.genre) {
+      setGenreError(true);
+      errors.genre = 'Genre is required';
+    } else {
+      setGenreError(false);
+    }
+
+    return errors;
+  };
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Formik
@@ -121,6 +213,7 @@ const Form = () => {
       validationSchema={registerSchema}
       onSubmit={handleRegistration}
       enableReinitialize
+      validate={validateSceneAndGenre}
     >
       {({
         values,
@@ -131,7 +224,7 @@ const Form = () => {
         handleSubmit,
         setFieldValue,
         isValid,
-        dirty,
+        dirty
       }) => (
         <form onSubmit={handleSubmit}>
           <Box display="grid" gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="20px">
@@ -142,11 +235,41 @@ const Form = () => {
               disabled
               sx={{ gridColumn: "span 4" }}
             />
-            <ScenesDropdown
+            <FormControl fullWidth sx={{ gridColumn: "span 4" }} error={Boolean(sceneError)} helperText={sceneError && "Scene is required"}>
+              <InputLabel>Scene</InputLabel>
+              <Select
+                name="scene"
+                value={values.scene}
+                displayEmpty
+                onChange={(event) => {
+                  // Update the form value for scene based on the selected MenuItem's value
+                  const selectedSceneId = event.target.value;
+                  const selectedScene = groupedScenes.flatMap(group => group.scenes).find(scene => scene._id === selectedSceneId);
+
+                  // Assuming scene ID is stored in values.scene and scene name in values.sceneName
+                  setFieldValue("scene", selectedSceneId);
+                  setFieldValue("sceneName", selectedScene ? selectedScene.name : '');
+                }}
+                renderValue={selected => {
+                  // Display the name of the selected scene in the Select field
+                  const selectedScene = groupedScenes.flatMap(group => group.scenes).find(scene => scene._id === selected);
+                  return selectedScene ? selectedScene.name : '';
+                }}
                 label="Scene"
-                value={scene}
-                onChange={(e) => setScene(e.target.value)}
-            />
+              >
+                {groupedScenes.map(group => [
+                  <ListSubheader key={group.state} disabled>
+                    {group.state}
+                  </ListSubheader>,
+                  ...group.scenes.map(scene => (
+                    <MenuItem key={scene._id} value={scene._id}>
+                      {scene.name}
+                    </MenuItem>
+                  ))
+                ])}
+              </Select>
+              {sceneError && <p style={{color: "red", fontSize: "0.75rem", marginTop: "3px"}}>{sceneError}</p>}
+            </FormControl>
             <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
               <InputLabel>Account Type</InputLabel>
               <Select
@@ -154,6 +277,8 @@ const Form = () => {
                 value={values.accountType}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                error={Boolean(touched.accountType) && Boolean(errors.accountType)}
+                helpertext={touched.accountType && errors.accountType}
               >
                 <MenuItem value="User">User</MenuItem>
                 <MenuItem value="Artist">Artist</MenuItem>
@@ -200,8 +325,14 @@ const Form = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={Boolean(touched.firstName) && Boolean(errors.firstName)}
-                  helpertext={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2" }}
+                  helperText={touched.firstName && errors.firstName} // Correct prop is `helperText`, not `helpertext`
+                  sx={{ 
+                    gridColumn: 'span 4', 
+                    // Apply 'span 2' starting from 'sm' breakpoint and up
+                    [theme.breakpoints.up('sm')]: {
+                      gridColumn: 'span 2',
+                    }
+                  }}
                 />
                 <TextField
                   label="Last Name"
@@ -210,8 +341,14 @@ const Form = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   error={Boolean(touched.lastName) && Boolean(errors.lastName)}
-                  helpertext={touched.lastName && errors.lastName}
-                  sx={{ gridColumn: "span 2" }}
+                  helperText={touched.lastName && errors.lastName} // Correct prop is `helperText`, not `helpertext`
+                  sx={{ 
+                    gridColumn: 'span 4',
+                    // Apply 'span 2' starting from 'sm' breakpoint and up
+                    [theme.breakpoints.up('md')]: {
+                      gridColumn: 'span 2',
+                    }
+                  }}
                 />
                 <TextField
                   label="Display Name"
@@ -221,7 +358,7 @@ const Form = () => {
                   onBlur={handleBlur}
                   error={Boolean(touched.displayName) && Boolean(errors.displayName)}
                   helpertext={touched.displayName && errors.displayName}
-                  sx={{ gridColumn: "span 2" }}
+                  sx={{ gridColumn: "span 4" }}
                 />
               </>
             )}
@@ -270,7 +407,7 @@ const Form = () => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={!(isValid && dirty)}
+              // disabled={!(isValid && dirty)}
               sx={{ gridColumn: "span 4", mt: 2 }}
             >
               Register

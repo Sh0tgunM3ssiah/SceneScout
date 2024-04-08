@@ -21,6 +21,7 @@ import { format } from 'date-fns';
 import LocationAutocomplete from "../../components/LocationAutocomplete";
 import ScenesDropdown from "../../components/scenesDropdown";
 import ImageUpdateModal from '../../components/imageUpdateModal';
+import GenresDropdown from "../../components/GenresDropdown";
 
 
 const ProfileEditWidget = ({ user, userData }) => {
@@ -126,7 +127,6 @@ const ProfileEditWidget = ({ user, userData }) => {
       }
   
       const data = await response.json();
-      console.log("Profile updated successfully", data);
       setIsLoading(false);
       navigate(`/profile/${userData.userId}`);
     } catch (error) {
@@ -136,8 +136,11 @@ const ProfileEditWidget = ({ user, userData }) => {
   };
 
   const handleImageChange = (file) => {
-    console.log(file);
     setSelectedFile(file);
+  };
+
+  const handleGenreChange = (event) => {
+    setGenre(event.target.value);
   };
 
   useEffect(() => {
@@ -265,16 +268,11 @@ const ProfileEditWidget = ({ user, userData }) => {
             {userData.accountType === "Artist" && (
               <>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth>
-                    <InputLabel>Genre</InputLabel>
-                    <Select value={genre} label="Genre" onChange={(e) => setGenre(e.target.value)}>
-                      {genres.map((genre) => (
-                        <MenuItem key={genre} value={genre}>
-                          {genre}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <GenresDropdown
+                    label="Genre"
+                    value={genre}
+                    onChange={handleGenreChange}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField

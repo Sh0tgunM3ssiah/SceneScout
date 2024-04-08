@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 
 const UserProfileImage = ({ image, size = "100px" }) => {
+  const defaultImageUrl = '../assets/logo192.png';
   return (
     <Box
       sx={{
@@ -23,7 +24,7 @@ const UserProfileImage = ({ image, size = "100px" }) => {
           height: '100%', // Ensuring the image covers the full height of the parent flex container
         }}
         alt="user"
-        src={`${image}?${process.env.REACT_APP_SAS_TOKEN}`}
+        src={image ? `${image}?${process.env.REACT_APP_SAS_TOKEN}` : defaultImageUrl}
       />
     </Box>
   );

@@ -5,7 +5,7 @@ import { useLoadScript } from '@react-google-maps/api';
 
 const libraries = ['places'];
 
-const LocationAutocomplete = ({ value, error, helperText, onChange }) => {
+const LocationAutocomplete = ({ value, error, helperText, onChange, sx }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
@@ -45,6 +45,7 @@ const LocationAutocomplete = ({ value, error, helperText, onChange }) => {
       helperText={helperText}
       fullWidth
       inputRef={autoCompleteRef}
+      sx={sx}
     />
   );
 };

@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
 
 const UserImage = ({ image, size = "60px" }) => {
+  const defaultImageUrl = '../assets/logo192.png';
+
   return (
     <Box width={size} height={size}>
       <img
@@ -8,7 +10,7 @@ const UserImage = ({ image, size = "60px" }) => {
         width={size}
         height={size}
         alt="user"
-        src={`${image}?${process.env.REACT_APP_SAS_TOKEN}`}
+        src={image ? `${image}?${process.env.REACT_APP_SAS_TOKEN}` : defaultImageUrl}
       />
     </Box>
   );

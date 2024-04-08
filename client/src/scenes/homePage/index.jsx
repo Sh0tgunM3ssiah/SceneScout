@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, useMediaQuery } from "@mui/material";
+import { useDispatch } from "react-redux";
 import Navbar from "scenes/navbar";
 import UserWidget from "scenes/widgets/UserWidget";
 import MyPostWidget from "scenes/widgets/MyPostWidget";
@@ -8,6 +9,7 @@ import AdvertWidget from "scenes/widgets/AdvertWidget";
 import FriendListWidget from "scenes/widgets/FriendListWidget";
 import FollowersListWidget from "scenes/widgets/FollowersListWidget";
 import { useSelector } from "react-redux";
+import { setLogin } from "state";
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -15,6 +17,7 @@ const HomePage = () => {
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const token = useSelector(state => state.token);
+  const dispatch = useDispatch();
 
   const addPost = (post) => {
     setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
@@ -56,7 +59,16 @@ const HomePage = () => {
         }
   
         setUserData(entity); // Update state with either user or artist, including scene name if applicable
-  
+        const loggedIn = entity;
+        if (loggedIn) {
+          dispatch(
+            setLogin({
+              user: loggedIn.userId,
+              token: token,
+              id: loggedIn._id
+            })
+          );
+        }
       } catch (err) {
         console.error(err.message);
         // Handle errors, e.g., by setting an error state or displaying a notification
@@ -110,6 +122,7 @@ const HomePage = () => {
           >
             {userData && <MyPostWidget picturePath={userData.picturePath} userData={userData} addPost={addPost} />}
             <Box mt="2rem">
+              <h3>Posts from the {userData.sceneName} Scene:</h3>
               {userData && <PostsWidget userId={userData._id} isProfile={true} userData={userData} posts={posts} />}
             </Box>
           </Box>

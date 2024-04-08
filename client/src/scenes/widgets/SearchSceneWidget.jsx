@@ -11,7 +11,8 @@ import {
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useSelector } from 'react-redux';
 import SceneSearchPostsWidget from './SceneSearchPostsWidget';
-import ScenesDropdown from "../../components/scenesDropdown"
+import ScenesDropdown from "../../components/scenesDropdown";
+import GenresDropdown from "../../components/GenresDropdown";
 
 const SearchSceneWidget = ({ userSceneId, userData }) => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
@@ -27,11 +28,14 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
 
   useEffect(() => {
     const fetchPostsAndEvents = async () => {
-      if (!userData || !userData.scene) return; // Ensure userData and userData.sceneId are available
-      
-      const postsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/posts?sceneId=${encodeURIComponent(userData.scene)}`;
-      const eventsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/events?sceneId=${encodeURIComponent(userData.scene)}`;
-
+      // Early exit if userData is not set yet.
+      if (!userData || !userData.scene) return;
+  
+      // If backend supports filtering, adjust these endpoints accordingly.
+      // For example purposes, filtering is done on the frontend, post-fetch.
+      const postsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/posts`;
+      const eventsEndpoint = `${process.env.REACT_APP_BACKEND_URL}/events`;
+  
       try {
         // Fetch both posts and events concurrently
         const [postsResponse, eventsResponse] = await Promise.all([
@@ -44,29 +48,31 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
-
+  
         if (!postsResponse.ok || !eventsResponse.ok) {
           throw new Error('Failed to fetch posts or events');
         }
-
+  
         const postsData = await postsResponse.json();
         const eventsData = await eventsResponse.json();
-
-        // Assuming both posts and events have a createdAt field
+  
+        // Combine and sort posts and events
         const combinedData = [
           ...postsData.map(post => ({ ...post, type: 'post' })),
           ...eventsData.map(event => ({ ...event, type: 'event' }))
         ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
+  
         setPosts(combinedData);
+        // Directly apply filtering after setting the posts
         filterPosts(combinedData, sceneFilter, genreFilter, postTypeFilter);
       } catch (err) {
         console.error(err.message);
         setPosts([]); // Handle errors or set an empty array
       }
     };
-
+  
     fetchPostsAndEvents();
+    // This effect depends on `sceneFilter` as well, to re-filter whenever it changes.
   }, [userData, token, sceneFilter, genreFilter, postTypeFilter]);
 
   // Filter function updated to use scene ID
@@ -145,24 +151,11 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
             
             {/* Conditionally render the Genre filter based on the postTypeFilter */}
             {(postTypeFilter === 'Artist' || postTypeFilter === 'Event') && (
-              <FormControl variant="filled" sx={{ width: '100%' }}>
-                <InputLabel id="genre-select-label">Genre</InputLabel>
-                <Select
-                  labelId="genre-select-label"
-                  id="genre-select"
-                  value={genreFilter}
-                  onChange={handleGenreFilterChange}
-                >
-                  <MenuItem value="">
-                    <em>All</em>
-                  </MenuItem>
-                  <MenuItem value="rock">Rock</MenuItem>
-                  <MenuItem value="pop">Pop</MenuItem>
-                  <MenuItem value="jazz">Jazz</MenuItem>
-                  <MenuItem value="metal">Metal</MenuItem>
-                  {/* Add more genres as needed */}
-                </Select>
-              </FormControl>
+              <GenresDropdown
+                label="Genre"
+                value={genreFilter}
+                onChange={handleGenreFilterChange}
+              />
             )}
           </Box>
           

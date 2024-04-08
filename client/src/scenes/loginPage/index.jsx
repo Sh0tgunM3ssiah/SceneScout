@@ -16,9 +16,6 @@ const LoginPage = () => {
   const userContext = useUser();
   const userId = userContext?.currentUser?.userId || null;
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
-
-  console.log(userContext);
-
   // Optional: State for loading and error handling
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -64,7 +61,7 @@ const LoginPage = () => {
     };
   
     fetchUserAndArtist();
-  }, [userId, token, navigate, setLoading, setError]); // Ensure all used state setters and navigate are in the dependency array  
+  }, [userId]); // Ensure all used state setters and navigate are in the dependency array  
 
   if (loading) {
     return <CircularProgress />;
