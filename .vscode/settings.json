@@ -4,6 +4,6 @@
     "node_modules{,/**}",
     ".vscode{,/**}"
   ],
-  "appService.defaultWebAppToDeploy": "/subscriptions/ccee93e3-09f1-4f90-9364-dd5ceda4f71a/resourceGroups/SceneScoutMedia/providers/Microsoft.Web/sites/Scene-Scout-Backend",
-  "appService.deploySubpath": "server"
+  // "appService.defaultWebAppToDeploy": "/subscriptions/ccee93e3-09f1-4f90-9364-dd5ceda4f71a/resourceGroups/SceneScoutMedia/providers/Microsoft.Web/sites/Scene-Scout-Backend",
+  // "appService.deploySubpath": "server"
 }
