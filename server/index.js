@@ -274,7 +274,7 @@ app.use("/events", eventsRoutes);
 app.use("/services", serviceRoutes);
 
 /* MONGOOSE SETUP */
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
