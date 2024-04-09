@@ -29,8 +29,6 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log(state);
-      console.log(user);
       if (!user) {
         navigate("/login");
       }
