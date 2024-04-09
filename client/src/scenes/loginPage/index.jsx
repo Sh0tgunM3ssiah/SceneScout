@@ -25,7 +25,7 @@ const LoginPage = () => {
     setLoading(true);
     const fetchUserAndArtist = async () => {
       if (!userId) return; // Do not attempt to fetch if userId is not available
-      try {
+      // try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
 
         const userResponse = await fetch(userUrl, {
@@ -51,13 +51,13 @@ const LoginPage = () => {
             })
           );
         }
-        // If we have either a user or an artist, navigate to the home page
+        console.log(loggedIn);
         navigate('/home');
-      } catch (err) {
-        console.error(err.message);
-        setLoading(false); // Ensure loading is false in case of an error
-        setError(err.message); // Handle errors, e.g., by setting an error state
-      }
+      // } catch (err) {
+      //   console.error(err.message);
+      //   setLoading(false); // Ensure loading is false in case of an error
+      //   setError(err.message); // Handle errors, e.g., by setting an error state
+      // }
     };
   
     fetchUserAndArtist();
