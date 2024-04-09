@@ -14,7 +14,7 @@ const EventPage = () => {
   const user = useSelector((state) => state.user);
   const [userData, setUserData] = useState(null);
   const token = useSelector((state) => state.token);
-  const userId = user?.user;
+  const userId = user?.userId;
 
   useEffect(() => {
     const authToken = token;

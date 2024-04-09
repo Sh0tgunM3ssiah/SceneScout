@@ -10,7 +10,7 @@ import { useUser } from '../../src/userContext'; // Ensure this path matches you
 const Friend = ({ friendId, friendUserId, name, subtitle, userPicturePath, userData, friendType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const friends = useSelector((state) => state.user.friends);
   const userId = user?.userId;

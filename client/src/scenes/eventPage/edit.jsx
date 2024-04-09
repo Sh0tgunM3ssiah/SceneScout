@@ -14,7 +14,7 @@ const CreateEventPage = () => {
     const [userData, setUserData] = useState(null);
     const [posts, setPosts] = useState([]);
     const token = useSelector((state) => state.token);
-    const userId = user?.user;
+    const userId = user?.userId;
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {

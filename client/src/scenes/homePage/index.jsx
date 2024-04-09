@@ -10,14 +10,18 @@ import FriendListWidget from "scenes/widgets/FriendListWidget";
 import FollowersListWidget from "scenes/widgets/FollowersListWidget";
 import { useSelector } from "react-redux";
 import { setLogin } from "state";
+import {state} from "state";
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
   const isNonMobileScreens = useMediaQuery("(min-width:1000px)");
+  const state = useSelector(state => state);
   const user = useSelector(state => state.user);
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const token = useSelector(state => state.token);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const addPost = (post) => {
     setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
@@ -25,9 +29,13 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (!user) return; // Do not attempt to fetch if username is not available
+      console.log(state);
+      console.log(user);
+      if (!user) {
+        navigate("/login");
+      }
       try {
-        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(user.user)}`;
+        const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(user.userId)}`;
 
         const userResponse = await fetch(userUrl, {
           method: "GET",
@@ -60,15 +68,6 @@ const HomePage = () => {
   
         setUserData(entity); // Update state with either user or artist, including scene name if applicable
         const loggedIn = entity;
-        if (loggedIn) {
-          dispatch(
-            setLogin({
-              user: loggedIn.userId,
-              token: token,
-              id: loggedIn._id
-            })
-          );
-        }
       } catch (err) {
         console.error(err.message);
         // Handle errors, e.g., by setting an error state or displaying a notification
@@ -76,7 +75,7 @@ const HomePage = () => {
     };
   
     fetchUser();
-  }, [token]);
+  }, [token, user]);
 
   useEffect(() => {
     const fetchPosts = async () => {

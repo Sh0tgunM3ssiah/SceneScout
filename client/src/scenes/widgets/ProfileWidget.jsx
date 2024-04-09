@@ -18,7 +18,7 @@ const ProfileWidget = ({user, userData, friends, id}) => {
   let isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === userData._id);
 
   const handleFollowClick = async () => {
-    if (user.user === userData.userId) {
+    if (user === userData.userId) {
         return;
     }
 
@@ -78,7 +78,7 @@ const ProfileWidget = ({user, userData, friends, id}) => {
         <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
           <Typography color="text.secondary">{userData?.bio}</Typography>
         </Grid>
-        {user.user === userData?.userId ? (
+        {user.userId === userData?.userId ? (
           <Grid item sx={{ width: { xs: '50%', md: '30%' }, px: "16px" }}>
             <Button
               variant="contained"

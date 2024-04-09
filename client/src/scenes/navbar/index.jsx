@@ -38,7 +38,7 @@ const Navbar = () => {
   const [userData, setUserData] = useState(null);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
-  const userId = user?.user;
+  const userId = user?.userId;
   const token = useSelector((state) => state.token);
   const userSceneId = user?.scene;
 

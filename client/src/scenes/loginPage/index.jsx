@@ -16,7 +16,6 @@ const LoginPage = () => {
   const userContext = useUser();
   const userId = userContext?.currentUser?.userId || null;
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
-  // Optional: State for loading and error handling
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -24,8 +23,8 @@ const LoginPage = () => {
     const authToken = token;
     setLoading(true);
     const fetchUserAndArtist = async () => {
-      // if (!userId) return; // Do not attempt to fetch if userId is not available
-      // try {
+      if (!userId) return; // Do not attempt to fetch if userId is not available
+      try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
 
         const userResponse = await fetch(userUrl, {
@@ -45,19 +44,18 @@ const LoginPage = () => {
         if (loggedIn) {
           dispatch(
             setLogin({
-              user: loggedIn.userId,
+              user: loggedIn,
               token: token,
               id: loggedIn._id
             })
           );
         }
-        console.log(loggedIn);
         navigate('/home');
-      // } catch (err) {
-      //   console.error(err.message);
-      //   setLoading(false); // Ensure loading is false in case of an error
-      //   setError(err.message); // Handle errors, e.g., by setting an error state
-      // }
+      } catch (err) {
+        console.error(err.message);
+        setLoading(false); // Ensure loading is false in case of an error
+        setError(err.message); // Handle errors, e.g., by setting an error state
+      }
     };
   
     fetchUserAndArtist();
