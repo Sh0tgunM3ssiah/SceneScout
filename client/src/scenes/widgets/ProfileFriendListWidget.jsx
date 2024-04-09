@@ -3,6 +3,7 @@ import { Box, Typography, useTheme, CircularProgress } from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useDispatch, useSelector } from "react-redux";
+import { setFriends } from "state";
 
 const ProfileFriendListWidget = ({userData}) => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const ProfileFriendListWidget = ({userData}) => {
         }
       );
       const data = await response.json();
+      dispatch(setFriends({ friends: data }));
     };
 
     getFriends();

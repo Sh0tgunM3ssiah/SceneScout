@@ -3,6 +3,7 @@ import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useDispatch, useSelector } from "react-redux";
+import { setFollowers } from "state";
 
 const ProfileFollowersListWidget = ({userData}) => {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const ProfileFollowersListWidget = ({userData}) => {
   const token = useSelector((state) => state.token);
   // Safely access friends with optional chaining or default to an empty array
   const followers = useSelector((state) => state.user?.followers || []);
+  console.log(followers);
 
   useEffect(() => {
     const getFollowers = async () => {
@@ -24,6 +26,7 @@ const ProfileFollowersListWidget = ({userData}) => {
         }
       );
       const data = await response.json();
+      dispatch(setFollowers({ followers: data }));
     };
 
     getFollowers();
