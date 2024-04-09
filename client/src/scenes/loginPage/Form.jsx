@@ -176,7 +176,7 @@ const Form = () => {
         })
       );
       setIsLoading(false);
-      navigate('/home');
+      navigate('/login');
     } catch (error) {
       console.error("Error during registration:", error);
       // Handle the error, e.g., set an error state and show it in the UI
