@@ -157,7 +157,7 @@ const Form = () => {
       }
     });
 
-    try {
+    // try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, {
         method: "POST",
         body: formData,
@@ -168,20 +168,22 @@ const Form = () => {
       }
       
       // Assuming the response contains JSON data you might need
+      console.log(userContext);
+      console.log(data);
       const data = await response.json();
       dispatch(
         setLogin({
-          user: userContext?.currentUser.userId,
+          user: data.userId,
         })
       );
       setIsLoading(false);
       navigate('/home');
-    } catch (error) {
-      console.error("Error during registration:", error);
-      // Handle the error, e.g., set an error state and show it in the UI
-    } finally {
-      setIsLoading(false); // Ensure loading state is reset after submission
-    }    
+    // } catch (error) {
+    //   console.error("Error during registration:", error);
+    //   // Handle the error, e.g., set an error state and show it in the UI
+    // } finally {
+    //   setIsLoading(false); // Ensure loading state is reset after submission
+    // }    
   };
 
   const validateSceneAndGenre = (values) => {
