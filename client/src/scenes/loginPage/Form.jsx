@@ -172,6 +172,7 @@ const Form = () => {
       dispatch(
         setLogin({
           user: data.userId,
+          id: data._id
         })
       );
       setIsLoading(false);

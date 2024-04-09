@@ -24,7 +24,7 @@ const LoginPage = () => {
     const authToken = token;
     setLoading(true);
     const fetchUserAndArtist = async () => {
-      if (!userId) return; // Do not attempt to fetch if userId is not available
+      // if (!userId) return; // Do not attempt to fetch if userId is not available
       // try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
 
@@ -61,7 +61,7 @@ const LoginPage = () => {
     };
   
     fetchUserAndArtist();
-  }, [userId]); // Ensure all used state setters and navigate are in the dependency array  
+  }, [userContext]); // Ensure all used state setters and navigate are in the dependency array  
 
   if (loading) {
     return <CircularProgress />;
