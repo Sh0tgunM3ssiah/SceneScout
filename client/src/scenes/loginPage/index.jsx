@@ -45,7 +45,7 @@ const LoginPage = () => {
         if (loggedIn) {
           dispatch(
             setLogin({
-              user: userId,
+              user: loggedIn.userId,
               token: token,
               id: loggedIn._id
             })
