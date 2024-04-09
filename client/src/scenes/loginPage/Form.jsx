@@ -171,16 +171,16 @@ const Form = () => {
       const data = await response.json();
       dispatch(
         setLogin({
-          user: data.userId,
+          user: data,
           id: data._id
         })
       );
       setIsLoading(false);
-      navigate('/login');
     } catch (error) {
       console.error("Error during registration:", error);
       // Handle the error, e.g., set an error state and show it in the UI
     } finally {
+      navigate('/home');
       setIsLoading(false); // Ensure loading state is reset after submission
     }    
   };
