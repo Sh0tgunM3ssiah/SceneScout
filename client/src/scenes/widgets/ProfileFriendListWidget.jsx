@@ -35,7 +35,7 @@ const ProfileFriendListWidget = ({ userId, userData }) => {
         fontWeight="500"
         sx={{ mb: "1.5rem" }}
       >
-        Friends
+        Following
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
         {displayedFriends.map((friend) => (

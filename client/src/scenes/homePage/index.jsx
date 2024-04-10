@@ -107,11 +107,13 @@ const HomePage = () => {
           gap="0.5rem"
           justifyContent="space-between"
         >
-          <Box flexBasis={isNonMobileScreens ? "26%" : undefined}>
+          <Box flexBasis={isNonMobileScreens ? "26%" : undefined} >
             <Box mb="2rem">
               {userData && <UserWidget userId={userData._id} picturePath={userData.picturePath} userData={userData} />}
             </Box>
-            {isNonMobileScreens && userData && <FollowersListWidget userId={userData._id} userData={userData} />}
+            <Box style={{ display: isNonMobileScreens ? 'block' : 'none' }}>
+              {isNonMobileScreens && userData && <FollowersListWidget userId={userData._id} userData={userData} />}
+            </Box>
           </Box>
           <Box
             flexBasis={isNonMobileScreens ? "42%" : undefined}
@@ -123,14 +125,12 @@ const HomePage = () => {
               {userData && <PostsWidget userId={userData._id} isProfile={true} userData={userData} posts={posts} />}
             </Box>
           </Box>
-          {isNonMobileScreens && (
-            <Box flexBasis="26%">
-              <Box mb="2rem">
-                <AdvertWidget />
-              </Box>
-              {userData && <FriendListWidget userId={userData._id} userData={userData} />}
+          <Box flexBasis={isNonMobileScreens ? "26%" : "100%"} style={{ display: isNonMobileScreens ? 'block' : 'none' }}>
+            <Box mb="2rem">
+              <AdvertWidget />
             </Box>
-          )}
+            <FriendListWidget userId={userData._id} userData={userData} />
+          </Box>
         </Box>
       </Box>
     );

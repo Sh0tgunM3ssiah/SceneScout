@@ -173,8 +173,6 @@ const Form = () => {
         setLogin({
           user: data,
           id: data._id,
-          friends: data.friends,
-          followers: data.followers
         })
       );
       setIsLoading(false);

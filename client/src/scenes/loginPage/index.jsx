@@ -47,8 +47,6 @@ const LoginPage = () => {
               user: loggedIn,
               token: token,
               id: loggedIn._id,
-              friends: loggedIn.friends,
-              followers: loggedIn.followers
             })
           );
         }
