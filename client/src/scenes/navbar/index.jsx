@@ -34,7 +34,7 @@ const Navbar = () => {
   const { logout } = useUser(); // Destructure logout function from the context
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.loggedInUser);
   const [userData, setUserData] = useState(null);
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();

@@ -32,7 +32,11 @@ const FriendListWidget = ({ userData }) => {
     };
 
     getFriends();
-  }, [userData, token, dispatch]);
+  }, []);
+
+  useEffect(() => {
+    setDisplayedFriends(friends.slice(0, 5)); // Update displayedFriends whenever friends list changes
+  }, [friends]);
 
   const showAllFriends = () => {
     navigate(`/profile/${userData._id}/friends`); // Adjust this route as needed

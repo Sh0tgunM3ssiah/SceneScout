@@ -29,7 +29,7 @@ const EventWidget = ({
   const [isComments, setIsComments] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.loggedInUser);
   const userId = user?.user;
   const { palette } = useTheme();
   const main = palette.neutral.main;

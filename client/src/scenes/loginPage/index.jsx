@@ -46,7 +46,9 @@ const LoginPage = () => {
             setLogin({
               user: loggedIn,
               token: token,
-              id: loggedIn._id
+              id: loggedIn._id,
+              friends: loggedIn.friends,
+              followers: loggedIn.followers
             })
           );
         }

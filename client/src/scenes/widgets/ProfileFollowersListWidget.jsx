@@ -1,38 +1,40 @@
-import React, { useEffect } from 'react';
-import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { Box, CircularProgress, Typography, useTheme, Button} from "@mui/material";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useDispatch, useSelector } from "react-redux";
-import { setFollowers } from "state";
+import { setProfileFollowers } from "state";
 
-const ProfileFollowersListWidget = ({userData}) => {
+const ProfileFollowersListWidget = ({ userData }) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);// Use the user from context
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
-  // Safely access friends with optional chaining or default to an empty array
-  const followers = useSelector((state) => state.user?.followers || []);
-  console.log(followers);
+  const followers = useSelector((state) => state.profileFollowers);
+  const [displayedFollowers, setDisplayedFollowers] = useState([]);
 
   useEffect(() => {
     const getFollowers = async () => {
-      if (!user || !userData) return; // Ensure user and userId are available
+      if (!userData) return;
   
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}/users/${userData._id}/followers`, // Use user._id from context
+        `${process.env.REACT_APP_BACKEND_URL}/users/${userData._id}/followers`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       const data = await response.json();
-      dispatch(setFollowers({ followers: data }));
+      setDisplayedFollowers(data.slice(0, 5));
     };
 
     getFollowers();
-  }, [userData, token, dispatch]); // Adjusted dependencies to include optional chaining
+  }, [userData, token, dispatch]);
 
-  if (!user || !userData) {
+  const showAllFollowers = () => {
+    // Handle navigation to view all friends
+  };
+
+  if (!userData) {
     return (
       <CircularProgress />
     );
@@ -49,7 +51,7 @@ const ProfileFollowersListWidget = ({userData}) => {
         Followers
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {followers.map((follower) => (
+        {displayedFollowers.map((follower) => (
           <Friend
             key={follower._id}
             friendId={follower._id}
@@ -60,6 +62,11 @@ const ProfileFollowersListWidget = ({userData}) => {
             userData={follower}
           />
         ))}
+        {displayedFollowers.length < userData.followers.length && (
+        <Button onClick={showAllFollowers} sx={{ mt: 2, alignSelf: 'center' }}>
+          Show All
+        </Button>
+      )}
       </Box>
     </WidgetWrapper>
   );

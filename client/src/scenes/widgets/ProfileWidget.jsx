@@ -8,21 +8,24 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import UserProfileImage from "components/UserProfileImage";
 import { useNavigate } from "react-router-dom";
-import { setFriends } from "state";
+import { setFriends, setProfileUser } from "state";
 import { useDispatch, useSelector } from "react-redux";
 
-const ProfileWidget = ({user, userData, friends, id}) => {
+const ProfileWidget = ({userData}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  const friends = user.friends;
   const token = useSelector((state) => state.token);
   let isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === userData._id);
+
 
   const handleFollowClick = async () => {
     if (user === userData.userId) {
         return;
     }
 
-    let endpoint = `${process.env.REACT_APP_BACKEND_URL}/users/${user.id}/${userData?._id}`;
+    let endpoint = `${process.env.REACT_APP_BACKEND_URL}/users/${user._id}/${userData?._id}`;
     try {
         const response = await fetch(endpoint, {
             method: "PATCH",

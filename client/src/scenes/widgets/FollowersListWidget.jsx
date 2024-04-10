@@ -32,7 +32,11 @@ const FollowersListWidget = ({ userData }) => {
     };
 
     getFollowers();
-  }, [userData, token, dispatch]);
+  }, []);
+
+  useEffect(() => {
+    setDisplayedFollowers(followers.slice(0, 5)); // Update displayedFollowers whenever followers list changes
+  }, [followers]);
 
   const showAllFollowers = () => {
     navigate(`/profile/${userData._id}/followers`); // Adjust this route as needed
