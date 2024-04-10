@@ -18,11 +18,9 @@ import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../src/userContext';
 import LocationAutocomplete from "../../components/LocationAutocomplete"
-import ScenesDropdown from "../../components/scenesDropdown"
-import GenresDropdown from "../../components/GenresDropdown"
 import { setLogin } from "state";
 
 const registerSchema = yup.object({
@@ -90,6 +88,7 @@ const Form = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [groupedScenes, setGroupedScenes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Once userContext is available and not null, update formValues
@@ -164,7 +163,8 @@ const Form = () => {
       });
     
       if (!response.ok) {
-        throw new Error("Failed to register.");
+        console.log(response);
+        throw new Error(response.error);
       }
       
       // Assuming the response contains JSON data you might need
@@ -172,15 +172,16 @@ const Form = () => {
       dispatch(
         setLogin({
           user: data,
-          id: data._id
+          id: data._id,
+          friends: data.friends,
+          followers: data.followers
         })
       );
       setIsLoading(false);
-    } catch (error) {
-      console.error("Error during registration:", error);
-      // Handle the error, e.g., set an error state and show it in the UI
-    } finally {
       navigate('/home');
+    } catch (error) {
+      setError(error + " Failed to register. Please try again.");
+    } finally {
       setIsLoading(false); // Ensure loading state is reset after submission
     }    
   };
@@ -404,6 +405,12 @@ const Form = () => {
               value={values.userId}
               onChange={handleChange}
             />
+            {error && (
+              // Conditionally render error message if error state is not null
+              <Typography color="error" variant="body1" sx={{ gridColumn: "span 4" }}>
+                {error}
+              </Typography>
+            )}
             <Button
               type="submit"
               variant="contained"
