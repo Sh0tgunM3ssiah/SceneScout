@@ -18,6 +18,7 @@ const PostWidget = ({
   userId,
   postId,
   postUserId,
+  postRedirectId,
   name,
   description,
   sceneName,
@@ -103,7 +104,7 @@ const PostWidget = ({
         userPicturePath={userPicturePath}
         friendType={userData.accountType}
         userData={userData}
-        friendUserId={userData.userId}
+        friendUserId={postRedirectId}
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {description}

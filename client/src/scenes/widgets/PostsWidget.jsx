@@ -33,6 +33,7 @@ const PostsWidget = ({ posts, userData, isProfile = false }) => {
           key={post._id}
           postId={post._id}
           postUserId={post.userId}
+          postRedirectId={post.postUserId}
           name={post.username}
           scene={post.scene}
           sceneName={post.sceneName}
