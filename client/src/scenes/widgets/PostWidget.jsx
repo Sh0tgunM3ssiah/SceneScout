@@ -1,17 +1,26 @@
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setPost } from "state"; // Adjust this import according to your actual state management setup
+import { format, formatDistanceToNow } from "date-fns";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Typography,
+  useTheme,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import {
   ChatBubbleOutlineOutlined,
   FavoriteBorderOutlined,
   FavoriteOutlined,
   ShareOutlined,
+  MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setPost } from "state";
-import { format, formatDistanceToNow } from 'date-fns';
 
 const PostWidget = ({
   userData,
@@ -33,25 +42,18 @@ const PostWidget = ({
   const main = palette.neutral.main;
   const primary = palette.primary.main;
   const token = useSelector((state) => state.token);
+  const loggedInId = userData._id;
   const loggedInUserId = userData.userId;
-  
-  // Determine if the post is already liked by the user
   const initialIsLiked = Boolean(likes[loggedInUserId]);
-  // Calculate initial like count
   const initialLikeCount = Object.keys(likes).length;
-
-  // Use useState to manage like state and count
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isComments, setIsComments] = useState(false);
 
   const patchLike = async () => {
-    // Optimistically update the UI
     if (isLiked) {
-      // If it was already liked, decrement the like count and update isLiked
       setLikeCount(likeCount - 1);
     } else {
-      // If it was not liked, increment the like count and update isLiked
       setLikeCount(likeCount + 1);
     }
     setIsLiked(!isLiked);
@@ -67,14 +69,12 @@ const PostWidget = ({
       });
 
       if (!response.ok) {
-        // If the request failed, revert the optimistic update
         setIsLiked(isLiked);
         setLikeCount(isLiked ? likeCount + 1 : likeCount - 1);
-        throw new Error('Failed to update like');
+        throw new Error("Failed to update like");
       }
 
       const updatedPost = await response.json();
-      // Here, you might not need to dispatch if you're already updating the UI optimistically
       dispatch(setPost({ post: updatedPost }));
     } catch (error) {
       console.error("Error updating like:", error);
@@ -85,12 +85,10 @@ const PostWidget = ({
     const date = new Date(dateString);
     const now = new Date();
     const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-  
-    // If the date is more than a week ago, format it as mm/dd/yyyy
+
     if (date < oneWeekAgo) {
-      return format(date, 'MM/dd/yyyy');
+      return format(date, "MM/dd/yyyy");
     } else {
-      // Otherwise, use formatDistanceToNow to show it in a "time ago" format
       return `${formatDistanceToNow(date, { addSuffix: true })}`;
     }
   };
@@ -105,6 +103,8 @@ const PostWidget = ({
         friendType={userData.accountType}
         userData={userData}
         friendUserId={postRedirectId}
+        context="post" // Add this line
+        postId={postId} // Pass the postId for edit/delete
       />
       <Typography color={main} sx={{ mt: "1rem" }}>
         {description}
@@ -114,7 +114,7 @@ const PostWidget = ({
           width="100%"
           height="auto"
           alt="post"
-          style={{ borderRadius: "0.75rem", marginTop: "0.75rem", maxHeight:"400px", maxWidth:"400px" }}
+          style={{ borderRadius: "0.75rem", marginTop: "0.75rem", maxHeight: "400px", maxWidth: "400px" }}
           src={`${picturePath}?${process.env.REACT_APP_SAS_TOKEN}`}
         />
       )}
@@ -131,36 +131,14 @@ const PostWidget = ({
             <Typography>{likeCount}</Typography>
           </FlexBetween>
 
-          <FlexBetween gap="0.3rem" sx={{ ml:"10px" }}>
+          <FlexBetween gap="0.3rem" sx={{ ml: "10px" }}>
             <Typography>{formatCreatedAt(createdAt)}</Typography>
           </FlexBetween>
         </FlexBetween>
-
-          {/* <FlexBetween gap="0.3rem">
-            <IconButton onClick={() => setIsComments(!isComments)}>
-              <ChatBubbleOutlineOutlined />
-            </IconButton>
-            <Typography>{comments.length}</Typography>
-          </FlexBetween>
-        </FlexBetween> */}
-
         <IconButton>
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
-      {/* {isComments && (
-        <Box mt="0.5rem">
-          {comments.map((comment, i) => (
-            <Box key={`${name}-${i}`}>
-              <Divider />
-              <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                {comment}
-              </Typography>
-            </Box>
-          ))}
-          <Divider />
-        </Box>
-      )} */}
     </WidgetWrapper>
   );
 };

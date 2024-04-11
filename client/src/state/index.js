@@ -72,6 +72,10 @@ export const authSlice = createSlice({
       // Prepend the new post so it appears at the top of the list
       state.posts = [action.payload, ...state.posts];
     },
+    removePost: (state, action) => {
+      state.posts = state.posts.filter(post => post._id !== action.payload._id);
+      console.log('Updated posts:', state.posts);
+    },
     setEvents: (state, action) => {
       state.events = action.payload.events;
     },
@@ -85,6 +89,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setFollowers, setPosts, setPost, addPost, setEvents, setEvent, setProfileUser, setProfileFriends, setProfileFollowers } =
+export const { setMode, setLogin, setLogout, setFriends, setFollowers, setPosts, setPost, addPost, setEvents, setEvent, setProfileUser, setProfileFriends, setProfileFollowers, removePost } =
   authSlice.actions;
 export default authSlice.reducer;
