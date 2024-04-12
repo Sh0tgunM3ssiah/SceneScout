@@ -46,25 +46,26 @@ const ScenesDropdown = ({ label, value, onChange, error = false, helperText = ""
       <InputLabel>{label}</InputLabel>
       <Select
         value={value}
-        onChange={onChange}
+        onChange={(event) => {
+          const selectedId = event.target.value;
+          // Look up the selected scene to get its name
+          const selectedScene = groupedScenes
+            .flatMap(group => group.scenes)
+            .find(scene => scene._id === selectedId);
+
+          // Call the onChange prop with both ID and name
+          if (selectedScene) {
+            onChange(selectedId, selectedScene.name);
+          } else {
+            onChange(selectedId, ''); // Fallback if no scene is found
+          }
+        }}
         label={label}
         displayEmpty
-        renderValue={selected => {
-          for (const group of groupedScenes) {
-            for (const scene of group.scenes) {
-              if (scene._id === selected) {
-                return scene.name; // Return the found scene's name
-              }
-            }
-          }
-          return ''; // Return an empty string if no scene is selected or found
-        }}
       >
         {groupedScenes.flatMap(({ state, scenes }) => [
-          <ListSubheader key={state} disabled>
-            {state}
-          </ListSubheader>,
-          ...scenes.map((scene) => (
+          <ListSubheader key={state} disabled>{state}</ListSubheader>,
+          ...scenes.map(scene => (
             <MenuItem key={scene._id} value={scene._id}>
               {scene.name}
             </MenuItem>

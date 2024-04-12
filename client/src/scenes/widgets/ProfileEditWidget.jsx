@@ -143,6 +143,11 @@ const ProfileEditWidget = ({ user, userData }) => {
     setGenre(event.target.value);
   };
 
+  const handleSceneChange = (sceneId, sceneName) => {
+    setScene(sceneId);
+    setSceneName(sceneName);
+  };
+
   useEffect(() => {
     if (selectedFile) {
       handleUpdateUserProfile(true);
@@ -240,7 +245,7 @@ const ProfileEditWidget = ({ user, userData }) => {
               <ScenesDropdown
                 label="Scene"
                 value={scene}
-                onChange={(e) => setScene(e.target.value)}
+                onChange={handleSceneChange}
               />
             </Grid>
             {userData.accountType !== "Artist" && (

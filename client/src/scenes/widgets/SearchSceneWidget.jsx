@@ -107,8 +107,8 @@ const SearchSceneWidget = ({ userSceneId, userData }) => {
   }, [userData]);
 
   // Update filters
-  const handleSceneFilterChange = (event) => {
-    const selectedSceneId = event.target.value;
+  const handleSceneFilterChange = (sceneId, sceneName) => {
+    const selectedSceneId = sceneId;
     setScene(selectedSceneId); // Update the scene state for display
     setSceneFilter(selectedSceneId); // Update the scene filter for filtering posts
     // Optionally, trigger a re-fetch or re-filter of posts based on the new scene

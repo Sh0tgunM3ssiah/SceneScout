@@ -22,6 +22,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
+import ScenesDropdown from 'components/scenesDropdown'; // Import the ScenesDropdown component
 import { useDispatch, useSelector } from 'react-redux';
 import { addPost } from 'state';
 import { useNavigate } from 'react-router-dom';
@@ -31,25 +32,23 @@ const MyPostWidget = ({ userData, addPost }) => {
   const [isImage, setIsImage] = useState(false);
   const [image, setImage] = useState(null);
   const [post, setPost] = useState('');
+  const [sceneId, setSceneId] = useState(userData.scene || ''); // Prefill with current scene
+  const [sceneName, setSceneName] = useState(userData.sceneName || '');
+  const [groupedScenes, setGroupedScenes] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const theme = useTheme();
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   if (!userData) {
     return <CircularProgress />;
   }
 
-  // Destructure the user data for easy access
-  const {
-    _id: userId,
-    picturePath,
-  } = userData;
-
   const handlePost = async () => {
-    if (!userData || !userData._id) {
-      console.error('User ID is not available.');
+    if (!userData || !userData._id || !sceneId) {
+      console.error('Required information is missing.');
       return;
     }
 
@@ -57,15 +56,17 @@ const MyPostWidget = ({ userData, addPost }) => {
     const usernameValue = userData.accountType === "Artist" ? userData.name : userData.displayName;
     formData.append('username', usernameValue);
     formData.append('userId', userData._id);
-    formData.append('description', post);
-    formData.append('sceneId', userData.scene);
-    formData.append('sceneName', userData.sceneName)
-    formData.append('postType', userData.accountType)
-    formData.append('userPicturePath', userData.picturePath)
+    formData.append('description', post); // Append scene name
+    formData.append('sceneId', sceneId);
+    formData.append('sceneName', sceneName);
+    formData.append('postType', userData.accountType);
+    formData.append('userPicturePath', userData.picturePath);
     if (image) {
       formData.append('picture', image);
       formData.append('picturePath', image.name);
     }
+
+    console.log(formData);
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts`, {
@@ -75,20 +76,28 @@ const MyPostWidget = ({ userData, addPost }) => {
       });
       if (!response.ok) throw new Error('Network response was not ok.');
       const posts = await response.json();
-      addPost(posts);
+      if (sceneId === userData.scene) { // Only dispatch if matches current scene
+        addPost(posts);
+      }
       setImage(null);
       setIsImage(false);
       setPost('');
+      setSceneName(userData.sceneName); // Reset the scene name
     } catch (error) {
       console.error('Error creating post:', error);
     }
+  };
+
+  const handleSceneChange = (sceneId, sceneName) => {
+    setSceneId(sceneId);
+    setSceneName(sceneName);
   };
 
   return (
     <WidgetWrapper>
       <Box display="flex" flexDirection="column" gap="1rem">
         <Box display="flex" gap="1rem">
-          <UserImage image={picturePath} />
+          <UserImage image={userData.picturePath} />
           <InputBase
             placeholder="What's on your mind..."
             fullWidth
@@ -110,7 +119,7 @@ const MyPostWidget = ({ userData, addPost }) => {
             p="1rem"
           >
             <Dropzone
-              key={image ? 'selected' : 'empty'} // Add a dynamic key based on the image state
+              key={image ? 'selected' : 'empty'}
               onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
               multiple={false}
             >
@@ -135,12 +144,21 @@ const MyPostWidget = ({ userData, addPost }) => {
           </Box>
         )}
         <Divider />
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <IconButton onClick={() => setIsImage(!isImage)}>
+        <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} justifyContent="space-between" alignItems="center" width="100%">
+          <IconButton onClick={() => setIsImage(!isImage)} sx={{ marginBottom: isMobile ? '1rem' : '0' }}>
             <ImageOutlined />
           </IconButton>
-
-          {/* Optionally showing more icons based on mobile or non-mobile screens */}
+          <Box sx={{ flex: isMobile ? 1 : 'none', width: isMobile ? '100%' : 'auto' }}>
+            <ScenesDropdown
+              label="Select Scene"
+              value={sceneId}
+              onChange={handleSceneChange}
+              sx={{
+                minWidth: 200,
+                width: isMobile ? '100%' : 'auto' // Ensures full width on mobile
+              }}
+            />
+          </Box>
           {/* {isNonMobileScreens && (
             <>
               <IconButton>
@@ -157,21 +175,15 @@ const MyPostWidget = ({ userData, addPost }) => {
               </IconButton>
             </>
           )} */}
-
           <Button
             variant="contained"
             disabled={!post && !image}
             onClick={handlePost}
             startIcon={<EditOutlined />}
+            sx={{ width: isMobile ? '100%' : 'auto', marginTop: isMobile ? '1rem' : '' }}
           >
             Post
           </Button>
-
-          {image && (
-            <IconButton onClick={() => setImage(null)} color="error">
-              <DeleteOutlined />
-            </IconButton>
-          )}
         </Box>
       </Box>
     </WidgetWrapper>
