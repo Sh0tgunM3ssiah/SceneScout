@@ -26,12 +26,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMode, setLogout } from "state"; // Update this path according to your project structure
 import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
-import { signOut } from 'aws-amplify/auth';
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
+import { signOut } from '@aws-amplify/auth';
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
-  const { logout } = useUser(); // Destructure logout function from the context
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.loggedInUser);
@@ -90,10 +89,16 @@ const Navbar = () => {
   }, [userId, token]);
 
   const handleLogout = async () => {
+  
     try {
-      await logout();
-      dispatch(setLogout()); // Adjust according to your state management
-      navigate('/login'); // Redirect to login or another appropriate page
+      // Sign out from AWS Amplify
+      await signOut();
+  
+      // Dispatch logout action to update your application state
+      dispatch(setLogout());
+  
+      // Redirect to the login page or another page as needed
+      navigate('/login');
     } catch (error) {
       console.error('Error signing out: ', error);
     }

@@ -16,14 +16,17 @@ const LoginPage = () => {
   const userContext = useUser();
   const userId = userContext?.currentUser?.userId || null;
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const authToken = token;
     setLoading(true);
     const fetchUserAndArtist = async () => {
-      if (!userId) return; // Do not attempt to fetch if userId is not available
+      if (!userId) {
+        setLoading(false);
+        return; // Do not attempt to fetch if userId is not available
+      }
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(userId)}`;
 
@@ -76,6 +79,9 @@ const LoginPage = () => {
       <Box width={isNonMobileScreens ? '50%' : '93%'} p="2rem" m="2rem auto" borderRadius="1.5rem" backgroundColor={theme.palette.background.alt}>
         <Typography fontWeight="500" variant="h3" sx={{ mb: '2.5rem' }}>
           Welcome to SceneScout, the Social Media for Local Artists and Their Fans!
+        </Typography>
+        <Typography fontWeight="400" variant="h4" sx={{ mb: '2.5rem' }}>
+          Enter the Following Information to Get Started!
         </Typography>
         <Form />
       </Box>

@@ -30,7 +30,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       if (!user) {
-        navigate("/login");
+        navigate("/register");
       }
       try {
         const userUrl = `${process.env.REACT_APP_BACKEND_URL}/users/${encodeURIComponent(user.userId)}`;
