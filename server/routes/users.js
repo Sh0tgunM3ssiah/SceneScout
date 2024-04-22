@@ -6,6 +6,7 @@ import {
   getUserFriends,
   addRemoveFriend,
   getUserFollowers,
+  getUsersByScene,
   editUser
 } from "../controllers/users.js";
 
@@ -17,6 +18,7 @@ router.get("/email/:email", getUserByEmail);
 router.get("/username/:username", getUserByUsername);
 router.get("/:id/friends", getUserFriends);
 router.get("/:id/followers", getUserFollowers);
+router.get("/getusersbyscene/:sceneId", getUsersByScene)
 
 /* UPDATE */
 router.patch("/:id/:friendId", addRemoveFriend);

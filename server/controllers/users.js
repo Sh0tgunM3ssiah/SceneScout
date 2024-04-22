@@ -178,6 +178,42 @@ export const getUserFollowers = async (req, res) => {
   }
 };
 
+export const getUsersByScene = async (req, res) => {
+  const { sceneId } = req.params; // Get sceneId from request parameters
+
+  console.log(sceneId);
+
+  if (!sceneId) {
+    return res.status(400).json({ message: "Scene ID parameter is required." });
+  }
+
+  try {
+    // Use Promise.all to perform both queries in parallel
+    const [users, artists] = await Promise.all([
+      User.find({ scene: sceneId }),  // Find all users with the given sceneId
+      Artist.find({ scene: sceneId }) // Find all artists with the same sceneId
+    ]);
+
+    // Combine the results from both queries
+    const combinedResults = [...users, ...artists].map(entity => ({
+      _id: entity._id,
+      userId: entity.userId,
+      username: entity.username || entity.name, // Handle username for Users and name for Artists
+      scene: entity.scene,
+      sceneName: entity.sceneName,
+      location: entity.location,
+      picturePath: entity.picturePath,
+      type: entity instanceof User ? 'User' : 'Artist', // Distinguish between User and Artist
+      genre: entity instanceof Artist ? entity.genre : undefined
+    }));
+
+    res.status(200).json(combinedResults);
+  } catch (err) {
+    console.error("Error in getUsersByScene:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
 /* UPDATE */
 export const addRemoveFriend = async (req, res) => {
   try {
