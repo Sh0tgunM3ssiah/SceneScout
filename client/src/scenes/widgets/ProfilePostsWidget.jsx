@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import { Typography, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Typography, Button, useMediaQuery, CircularProgress } from '@mui/material';
 import PostWidget from './PostWidget';
-import CircularProgress from '@mui/material/CircularProgress';
-
-const INITIAL_POSTS_COUNT = 5; // Initial number of posts to display
-const MORE_POSTS_COUNT = 10; // Number of posts to add each time
+import { useTheme } from '@mui/material/styles';
 
 const ProfilePostsWidget = ({ posts, userData, isProfile = false }) => {
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('md'));
+
+  const INITIAL_POSTS_COUNT = isLargeScreen ? 10 : 5; // Adjust based on screen size
+  const MORE_POSTS_COUNT = isLargeScreen ? 10 : 5;
+
   const [visiblePostsCount, setVisiblePostsCount] = useState(INITIAL_POSTS_COUNT);
+
+  useEffect(() => {
+    // Update the initial posts count when the screen size changes
+    setVisiblePostsCount(INITIAL_POSTS_COUNT);
+  }, [isLargeScreen]);
 
   if (!userData) {
     return <CircularProgress />;
@@ -17,12 +25,10 @@ const ProfilePostsWidget = ({ posts, userData, isProfile = false }) => {
     return <Typography variant="body1">No posts available.</Typography>;
   }
 
-  // Function to load more posts
   const showMorePosts = () => {
     setVisiblePostsCount(prevCount => prevCount + MORE_POSTS_COUNT);
   };
 
-  // Get only the posts that should be currently visible
   const visiblePosts = posts.slice(0, visiblePostsCount);
 
   return (

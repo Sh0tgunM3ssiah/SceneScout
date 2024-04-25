@@ -44,7 +44,7 @@ const ProfileEditWidget = ({ user, userData }) => {
   const [members, setMembers] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const defaultImagePath = "../../../public/logo192.png";
+  const defaultImagePath = "../../../public/mastiffLogo.png";
   const [imagePreview, setImagePreview] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

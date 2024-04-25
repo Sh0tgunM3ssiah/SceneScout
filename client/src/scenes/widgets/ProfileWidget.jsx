@@ -8,10 +8,10 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import UserProfileImage from "components/UserProfileImage";
 import { useNavigate } from "react-router-dom";
-import { setFriends, setProfileUser } from "state";
 import { useDispatch, useSelector } from "react-redux";
+import { setFriends } from "state";
 
-const ProfileWidget = ({userData}) => {
+const ProfileWidget = ({ userData }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
@@ -19,9 +19,8 @@ const ProfileWidget = ({userData}) => {
   const token = useSelector((state) => state.token);
   let isFriend = Array.isArray(friends) && friends.some((friend) => friend._id === userData._id);
 
-
   const handleFollowClick = async () => {
-    if (user === userData.userId) {
+    if (user.userId === userData.userId) {
         return;
     }
 
@@ -41,10 +40,8 @@ const ProfileWidget = ({userData}) => {
 
         const data = await response.json();
         dispatch(setFriends({ friends: data }));
-
     } catch (error) {
         console.error("Error updating friend status:", error);
-        // Handle error, e.g., by showing a notification
     }
   };
 
@@ -52,60 +49,75 @@ const ProfileWidget = ({userData}) => {
     navigate(`/profile/edit/${userData.userId}`);
   };
 
-  if(!userData) {
-    return (
-      <CircularProgress />
-    );
+  if (!userData) {
+    return <CircularProgress />;
   }
 
   return (
-    <Card variant="outlined">
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
-          <UserProfileImage image={userData?.picturePath} />
-          <Typography sx={{ mt: "1rem", mb:"1rem" }} variant="h4">{userData?.accountType === 'Artist' ? userData?.name : userData?.displayName}</Typography>
-          <Typography variant="h6" color="text.secondary">
-            {userData?.location 
-              ? `${userData.location.split(', ')[0]}, ${userData.location.split(', ')[1]?.split(' ')[0] ?? ''}` 
-              : ''}
-          </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ mb:"1rem" }}>{userData?.sceneName}</Typography>
-          <Typography variant="h6" color="text.secondary">{userData?.friends.length} friends</Typography>
-          <Typography variant="h6" color="text.secondary">{userData?.followers.length} followers</Typography>
-        </Grid>
-        <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
-          <Typography color="text.secondary">{userData?.bio}</Typography>
-        </Grid>
-        {user.userId === userData?.userId ? (
-          <Grid item sx={{ width: { xs: '50%', md: '30%' }, px: "16px" }}>
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ width: "100%", p: 1, my: 2 }}
-              onClick={handleNavigateToEditProfile}
-            >
-              Edit Your Profile
-            </Button>
+    <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <Card variant="outlined" sx={{
+        width: {
+          xs: '100%',     // full width on extra small screens
+          sm: '90%',      // 90% width on small screens
+          md: '80%',      // 80% width on medium screens
+          lg: '60%',      // 60% width on large screens
+          xl: '50%'       // 50% width on extra large screens
+        },
+        maxWidth: '800px',
+        minWidth: '350px'
+      }}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+            <UserProfileImage image={userData?.picturePath} />
+            <Typography sx={{ mt: "1rem", mb:"1rem" }} variant="h4">
+              {userData?.accountType === 'Artist' ? userData?.name : userData?.displayName}
+            </Typography>
+            {userData?.accountType === 'Artist' ? (
+              <Typography variant="h6" color="text.secondary" sx={{ mb:"1rem" }}>{userData?.genre}</Typography>
+            ) : null}
+            <Typography variant="h6" color="text.secondary">
+              {userData?.location 
+                ? `${userData.location.split(', ')[0]}, ${userData.location.split(', ')[1]?.split(' ')[0] ?? ''}` 
+                : ''}
+            </Typography>
+            <Typography variant="h6" color="text.secondary" sx={{ mb:"1rem" }}>{userData?.sceneName} Scene</Typography>
+            <Typography variant="h6" color="text.secondary">{userData?.friends.length} friends</Typography>
+            <Typography variant="h6" color="text.secondary">{userData?.followers.length} followers</Typography>
           </Grid>
-        ) : (
-          <Grid item sx={{ width: { xs: '50%', md: '30%' }, px: "16px" }}>
-            <Button
-              variant="contained"
-              color={isFriend ? "primary" : "secondary"}
-              sx={{ width: "100%", p: 1, my: 2 }}
-              onClick={handleFollowClick}
-            >
-              {isFriend ? "UnFollow" : "Follow"}
-            </Button>
+          <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+            <Typography color="text.secondary">{userData?.bio}</Typography>
           </Grid>
-        )}
-      </Grid>
-    </Card>
+          {user.userId === userData?.userId ? (
+            <Grid item sx={{ width: { xs: '50%', md: '30%' }, px: "16px" }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ width: "100%", p: 1, my: 2 }}
+                onClick={handleNavigateToEditProfile}
+              >
+                Edit Your Profile
+              </Button>
+            </Grid>
+          ) : (
+            <Grid item sx={{ width: { xs: '50%', md: '30%' }, px: "16px" }}>
+              <Button
+                variant="contained"
+                color={isFriend ? "primary" : "secondary"}
+                sx={{ width: "100%", p: 1, my: 2 }}
+                onClick={handleFollowClick}
+              >
+                {isFriend ? "UnFollow" : "Follow"}
+              </Button>
+            </Grid>
+          )}
+        </Grid>
+      </Card>
+    </div>
   );
 };
 

@@ -108,7 +108,7 @@ const ProfilePage = () => {
           <ProfileWidget user={user} userData={userData} friends={friends} />
         </Box>
 
-        <Box width="90%">
+        <Box width="50%">
           <Tabs value={tabValue} onChange={handleTabChange} centered>
             <Tab label="Posts" />
             <Tab label="Following" />

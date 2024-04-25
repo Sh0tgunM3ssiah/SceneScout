@@ -28,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import FlexBetween from "components/FlexBetween";
 import { useUser } from '../../../src/userContext.js'; // Ensure this path matches your project structure
 import { signOut } from '@aws-amplify/auth';
+import { Image, View } from '@aws-amplify/ui-react';
 
 const Navbar = () => {
   const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
@@ -123,7 +124,17 @@ const Navbar = () => {
   return (
     <FlexBetween padding="1rem 6%" backgroundColor={theme.palette.background.alt}>
       <FlexBetween gap="1.75rem">
-        <Typography
+        <img
+          src="/scenescoutLogoScriptMastiff.png"
+          alt="SceneScout Logo"
+          onClick={() => navigate("/home")}
+          style={{
+            cursor: "pointer",
+            minWidth: "200px",
+            maxWidth: "250px"
+          }}
+        />
+        {/* <Typography
           fontWeight="bold"
           fontSize="clamp(1rem, 2vw, 2.25rem)"
           color="primary"
@@ -134,8 +145,8 @@ const Navbar = () => {
             },
           }}
         >
-          SceneScout
-        </Typography>
+          SceneScout.io
+        </Typography> */}
       </FlexBetween>
 
       {isNonMobileScreens ? (

@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 const UserProfileImage = ({ image, size = "100px" }) => {
-  const defaultImageUrl = '../assets/logo192.png';
+  const defaultImageUrl = '../assets/mastiffLogo.png';
   return (
     <Box
       sx={{

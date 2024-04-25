@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from 'scenes/homePage';
 import LoginPage from 'scenes/loginPage';
+import Login from './components/LoginPage';
 import ProfilePage from 'scenes/profilePage';
 import ProfileEditPage from 'scenes/profilePage/edit';
 import SearchPage from 'scenes/searchPage';
@@ -15,7 +16,7 @@ import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme';
 import { Amplify } from 'aws-amplify';
 import awsconfig from './aws-exports';
-import { Authenticator, View, Image, useTheme, Text, Heading, Button, useAuthenticator, ThemeProvider as AmplifyThemeProvider } from '@aws-amplify/ui-react';
+import { Authenticator, View, Image, useTheme, Text, Heading, Button, useAuthenticator, ThemeProvider as AmplifyThemeProvider, Grid, Flex } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { UserProvider, useUser } from "../src/userContext"; // Ensure the path matches your project structure
 import UserWidget from './scenes/widgets/UserWidget';
@@ -71,18 +72,19 @@ function App() {
       const { tokens } = useTheme();
   
       return (
-        <View textAlign="center" padding={tokens.space.large}>
-          {/* <Image
+        <View textAlign="center" paddingTop={tokens.space.xxxl} paddingBottom={tokens.space.large}>
+          <Image
             alt="Amplify logo"
-            src="https://docs.amplify.aws/assets/logo-dark.svg"
-          /> */}
-          <Typography
+            src="/scenescoutLogoScriptMastiff.png"
+          />
+          {/* <Typography
             fontWeight="bold"
-            fontSize="clamp(1rem, 2vw, 2.25rem)"
+            fontSize="clamp(3rem, 2vw, 10.25rem)"
             color="primary"
+            fontStyle={'oblique'}
           >
             SceneScout.io
-        </Typography>
+        </Typography> */}
         </View>
       );
     },
@@ -92,7 +94,7 @@ function App() {
   
       return (
         <View textAlign="center" padding={tokens.space.large}>
-          <Text color={tokens.colors.neutral[80]}>
+          <Text color={tokens.colors.white}>
             &copy; All Rights Reserved
           </Text>
           {/* <Text color={tokens.colors.neutral[80]}>

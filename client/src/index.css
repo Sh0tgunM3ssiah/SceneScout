@@ -9,6 +9,9 @@ body,
   font-family: "Rubik", sans-serif;
 }
 
-/* body {
-  background-color: black;
-} */
+body {
+  /* background-image: url('../public/assets/SceneScoutBackground.png'); Replace 'image-url-here.jpg' with the actual URL of your image */
+  background-color: black; /* This color will be visible while the image is loading or if the image fails to load */
+  background-size: cover; /* This ensures the background image covers the entire body without repeating */
+  background-position: center; /* This centers the background image */
+}

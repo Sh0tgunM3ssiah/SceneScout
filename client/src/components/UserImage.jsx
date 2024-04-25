@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 
 const UserImage = ({ image, size = "60px" }) => {
-  const defaultImageUrl = '../assets/logo192.png';
+  const defaultImageUrl = '../assets/mastiffLogo.png';
 
   return (
     <Box width={size} height={size}>
