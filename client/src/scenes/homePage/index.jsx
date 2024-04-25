@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, CircularProgress, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, useMediaQuery, Typography, useTheme } from "@mui/material";
+import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
 import Navbar from "scenes/navbar";
 import UserWidget from "scenes/widgets/UserWidget";
@@ -22,6 +23,10 @@ const HomePage = () => {
   const token = useSelector(state => state.token);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { palette } = useTheme();
+  const dark = palette.neutral.dark;
+  const main = palette.neutral.main;
+  const medium = palette.neutral.medium;
 
   const addPost = (post) => {
     setPosts([post, ...posts]); // Add the new post to the beginning of the posts array
@@ -128,6 +133,13 @@ const HomePage = () => {
           <Box flexBasis={isNonMobileScreens ? "26%" : "100%"} style={{ display: isNonMobileScreens ? 'block' : 'none' }}>
             <Box mb="2rem">
               <AdvertWidget />
+              <FlexBetween sx={{ justifyContent: 'center' }}>
+                <a href="mailto:s_mcmullen33@hotmail.com" style={{ color: 'inherit' }}>
+                  <Typography color={medium} m="0.5rem 0">
+                    Want to Advertise With Us? Click Here!
+                  </Typography>
+                </a>
+              </FlexBetween>
             </Box>
             <FriendListWidget userId={userData._id} userData={userData} />
           </Box>
