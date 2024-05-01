@@ -1,9 +1,11 @@
 # SceneScout.io
 
+## A dynamic platform that empowers artists and music enthusiasts to engage with and explore their local music community.
+
 
 <!-- ![Demo App](https://i.ibb.co/f8y9vGS/Group-82.png) -->
 
-Tech Stack:
+### Tech Stack:
 
 -   **React.js:** A popular JavaScript library for building user interfaces.
 -   **Tailwind CSS:** A utility driven CSS framework.
@@ -19,7 +21,7 @@ Tech Stack:
 -   **Azure DevOps:** A suite of tools, in this case used for it's automated build, testing, and release management capabilities.
 -   **Cloudinary:** A cloud-based service that provides solutions for managing web and mobile media assets, including storage, manipulation, optimization, and delivery across various channels.
 
-Some Features:
+### Some Features:
 
 -   👥 Suggested Users to Follow
 -   ✍️ Creating Posts
