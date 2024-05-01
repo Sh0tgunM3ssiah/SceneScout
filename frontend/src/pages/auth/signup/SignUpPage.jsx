@@ -44,7 +44,7 @@ const SignUpPage = () => {
 			setLoadingScenes(true);
 			setErrorScenes(null);
 			try {
-				const response = await fetch('/api/scenes/');
+				const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/scenes/`);
 				const data = await response.json();
 				if (!response.ok) throw new Error(data.message || "Failed to fetch scenes");
 				setOrganizedScenes(organizeScenesByState(data));
@@ -61,7 +61,7 @@ const SignUpPage = () => {
 	const { mutate, isError, isPending, error } = useMutation({
 		mutationFn: async ({ email, username, fullName, password, sceneId, sceneName }) => {
 			try {
-				const res = await fetch(`/api/auth/signup`, {
+				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

@@ -36,7 +36,7 @@ const EditProfileModal = ({ authUser }) => {
 			setLoadingScenes(true);
 			setErrorScenes(null);
 			try {
-				const response = await fetch('/api/scenes/');
+				const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/scenes/`);
 				const data = await response.json();
 				if (!response.ok) throw new Error(data.message || "Failed to fetch scenes");
 				setOrganizedScenes(organizeScenesByState(data));
