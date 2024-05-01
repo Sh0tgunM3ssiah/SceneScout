@@ -5,19 +5,19 @@
 
 Tech Stack:
 
--       React.js: A popular JavaScript library for building user interfaces.
--       Tailwind CSS: A utility driven CSS framework.
--       Vite: A modern frontend build tool that leverages native ES modules and provides a faster and leaner development experience for TypeScript/React.
--       Node.js: A runtime environment that allows you to execute JavaScript code on the server side.
--       Express: A fast and minimalist web application framework for Node.js, used to build robust APIs and web applications.
--       MongoDB: A NoSQL database used to store user data, posts, and other relevant information.
--       jsonwebtoken: Used for creating and validating JSON Web Tokens (JWT) to handle user authentication and authorization.
--       bcrypt: A library used for hashing passwords before storing them in the database to enhance security.
--       cors: Middleware to enable CORS (Cross-Origin Resource Sharing) and manage API access from different domains.
--       dotenv: A zero-dependency module used to load environment variables from a .env file.
--       Nodemon: A utility that monitors changes in your source code and automatically restarts the server.
--       Azure DevOps: A suite of tools, in this case used for it's automated build, testing, and release management capabilities.
--       Cloudinary: A cloud-based service that provides solutions for managing web and mobile media assets, including storage, manipulation, optimization, and delivery across various channels.
+-   React.js: A popular JavaScript library for building user interfaces.
+-   Tailwind CSS: A utility driven CSS framework.
+-   Vite: A modern frontend build tool that leverages native ES modules and provides a faster and leaner development experience for TypeScript/React.
+-   Node.js: A runtime environment that allows you to execute JavaScript code on the server side.
+-   Express: A fast and minimalist web application framework for Node.js, used to build robust APIs and web applications.
+-   MongoDB: A NoSQL database used to store user data, posts, and other relevant information.
+-   jsonwebtoken: Used for creating and validating JSON Web Tokens (JWT) to handle user authentication and authorization.
+-   bcrypt: A library used for hashing passwords before storing them in the database to enhance security.
+-   cors: Middleware to enable CORS (Cross-Origin Resource Sharing) and manage API access from different domains.
+-   dotenv: A zero-dependency module used to load environment variables from a .env file.
+-   Nodemon: A utility that monitors changes in your source code and automatically restarts the server.
+-   Azure DevOps: A suite of tools, in this case used for it's automated build, testing, and release management capabilities.
+-   Cloudinary: A cloud-based service that provides solutions for managing web and mobile media assets, including storage, manipulation, optimization, and delivery across various channels.
 
 Some Features:
 
@@ -46,6 +46,9 @@ npm run build
 npm start
 ```
 
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Copyright
 
