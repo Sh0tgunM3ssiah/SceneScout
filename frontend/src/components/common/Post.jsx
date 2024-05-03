@@ -12,6 +12,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { formatPostDate } from "../../utils/date";
 
 const Post = ({ post }) => {
+	const token = localStorage.getItem('jwt');
 	const [comment, setComment] = useState("");
 	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 	const queryClient = useQueryClient();
@@ -27,6 +28,10 @@ const Post = ({ post }) => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/${post._id}`, {
 					method: "DELETE",
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
 				});
 				const data = await res.json();
 

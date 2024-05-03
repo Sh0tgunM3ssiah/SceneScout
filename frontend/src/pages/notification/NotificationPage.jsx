@@ -9,12 +9,19 @@ import { FaUser } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa6";
 
 const NotificationPage = () => {
+	const token = localStorage.getItem('jwt');
 	const queryClient = useQueryClient();
 	const { data: notifications, isLoading } = useQuery({
 		queryKey: ["notifications"],
 		queryFn: async () => {
 			try {
-				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`);
+				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
+				});
 				const data = await res.json();
 				if (!res.ok) throw new Error(data.error || "Something went wrong");
 				return data;
@@ -29,6 +36,10 @@ const NotificationPage = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, {
 					method: "DELETE",
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
 				});
 				const data = await res.json();
 
