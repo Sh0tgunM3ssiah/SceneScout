@@ -33,7 +33,7 @@ const LoginPage = () => {
 
 				const data = await res.json();
 				localStorage.setItem('jwt', data.token);
-
+				console.log("localstorage: " + localStorage.jwt);
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
 				}

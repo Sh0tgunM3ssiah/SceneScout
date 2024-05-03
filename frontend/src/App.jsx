@@ -15,6 +15,7 @@ import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
 	const token = localStorage.getItem('jwt');
+	console.log("authme: " + token);
 	const { data: authUser, isLoading } = useQuery({
 		// we use queryKey to give a unique name to our query and refer to it later
 		queryKey: ["authUser"],
