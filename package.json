@@ -2,11 +2,11 @@
 	"name": "scene-scout",
 	"version": "1.0.0",
 	"description": "",
-	"main": "backend/index.js",
+	"main": "backend/server.js",
 	"type": "module",
 	"scripts": {
-		"dev": "set NODE_ENV=development && nodemon backend/index.js",
-		"start": "set NODE_ENV=production && node backend/index.js",
+		"dev": "set NODE_ENV=development && nodemon backend/server.js",
+		"start": "set NODE_ENV=production && node backend/server.js",
 		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
 	},
 	"keywords": [],

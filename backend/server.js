@@ -1,9 +1,10 @@
-import path from "path";
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import path from "path";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
-import cors from 'cors'
+import cors from 'cors';
 
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
@@ -12,8 +13,6 @@ import sceneRoutes from "./routes/scene.route.js";
 import notificationRoutes from "./routes/notification.route.js";
 
 import connectMongoDB from "./db/connectMongoDB.js";
-
-dotenv.config();
 
 cloudinary.config({
 	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
