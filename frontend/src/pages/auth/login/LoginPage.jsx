@@ -32,6 +32,7 @@ const LoginPage = () => {
 				});
 
 				const data = await res.json();
+				console.log("data: " + data);
 				localStorage.setItem('jwt', data.token);
 				console.log("localstorage: " + localStorage.jwt);
 				if (!res.ok) {
