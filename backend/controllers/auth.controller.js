@@ -43,15 +43,7 @@ export const signup = async (req, res) => {
 		});
 
 		if (newUser) {
-			const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET, {
-				expiresIn: "15d",
-			});
-			res.cookie("jwt", token, {
-				maxAge: 15 * 24 * 60 * 60 * 1000, //MS
-				httpOnly: true, // prevent XSS attacks cross-site scripting attacks
-				sameSite: "strict", // CSRF attacks cross-site request forgery attacks
-				secure: process.env.NODE_ENV !== "development",
-			});
+			const token = generateTokenAndSetCookie(newUser._id, res);
 			await newUser.save();
 
 			res.status(201).json({
@@ -86,15 +78,7 @@ export const login = async (req, res) => {
 			return res.status(400).json({ error: "Invalid username or password" });
 		}
 
-		const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-			expiresIn: "15d",
-		});
-		res.cookie("jwt", token, {
-			maxAge: 15 * 24 * 60 * 60 * 1000, //MS
-			httpOnly: true, // prevent XSS attacks cross-site scripting attacks
-			sameSite: "strict", // CSRF attacks cross-site request forgery attacks
-			secure: process.env.NODE_ENV !== "development",
-		});
+		const token = generateTokenAndSetCookie(user._id, res);
 
 		res.status(200).json({
 			_id: user._id,
