@@ -42,7 +42,15 @@ export const signup = async (req, res) => {
 		});
 
 		if (newUser) {
-			generateTokenAndSetCookie(newUser._id, res);
+			const token = jwt.sign( newUser._id, process.env.JWT_SECRET, {
+				expiresIn: "15d",
+			});
+			res.cookie("jwt", token, {
+				maxAge: 15 * 24 * 60 * 60 * 1000, //MS
+				httpOnly: true, // prevent XSS attacks cross-site scripting attacks
+				sameSite: "strict", // CSRF attacks cross-site request forgery attacks
+				secure: process.env.NODE_ENV !== "development",
+			});
 			await newUser.save();
 
 			res.status(201).json({
@@ -56,6 +64,7 @@ export const signup = async (req, res) => {
 				following: newUser.following,
 				profileImg: newUser.profileImg,
 				coverImg: newUser.coverImg,
+				token: token,
 			});
 		} else {
 			res.status(400).json({ error: "Invalid user data" });
@@ -76,7 +85,15 @@ export const login = async (req, res) => {
 			return res.status(400).json({ error: "Invalid username or password" });
 		}
 
-		generateTokenAndSetCookie(user._id, res);
+		const token = jwt.sign( user._id, process.env.JWT_SECRET, {
+			expiresIn: "15d",
+		});
+		res.cookie("jwt", token, {
+			maxAge: 15 * 24 * 60 * 60 * 1000, //MS
+			httpOnly: true, // prevent XSS attacks cross-site scripting attacks
+			sameSite: "strict", // CSRF attacks cross-site request forgery attacks
+			secure: process.env.NODE_ENV !== "development",
+		});
 
 		res.status(200).json({
 			_id: user._id,
@@ -89,6 +106,7 @@ export const login = async (req, res) => {
 			following: user.following,
 			profileImg: user.profileImg,
 			coverImg: user.coverImg,
+			token: token,
 		});
 	} catch (error) {
 		console.log("Error in login controller", error.message);
