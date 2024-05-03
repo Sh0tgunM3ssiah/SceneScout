@@ -14,12 +14,19 @@ import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
+	const token = localStorage.getItem('jwt');
 	const { data: authUser, isLoading } = useQuery({
 		// we use queryKey to give a unique name to our query and refer to it later
 		queryKey: ["authUser"],
 		queryFn: async () => {
 			try {
-				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`);
+				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
+				});
 				const data = await res.json();
 				if (data.error) return null;
 				if (!res.ok) {

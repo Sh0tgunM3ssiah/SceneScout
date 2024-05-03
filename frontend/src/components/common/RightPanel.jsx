@@ -7,11 +7,18 @@ import RightPanelSkeleton from "../skeletons/RightPanelSkeleton";
 import LoadingSpinner from "./LoadingSpinner";
 
 const RightPanel = () => {
+	const token = localStorage.getItem('jwt');
 	const { data: suggestedUsers, isLoading } = useQuery({
 		queryKey: ["suggestedUsers"],
 		queryFn: async () => {
 			try {
-				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/suggested`);
+				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/suggested`, {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
+				});
 				const data = await res.json();
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong!");

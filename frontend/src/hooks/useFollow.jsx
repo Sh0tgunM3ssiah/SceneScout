@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const useFollow = () => {
+	const token = localStorage.getItem('jwt');
 	const queryClient = useQueryClient();
 
 	const { mutate: follow, isPending } = useMutation({
@@ -9,6 +10,10 @@ const useFollow = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/follow/${userId}`, {
 					method: "POST",
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
 				});
 
 				const data = await res.json();

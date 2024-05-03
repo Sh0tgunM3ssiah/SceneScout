@@ -32,6 +32,7 @@ const LoginPage = () => {
 				});
 
 				const data = await res.json();
+				localStorage.setItem('jwt', data.token);
 
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");

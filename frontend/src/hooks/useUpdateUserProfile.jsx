@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const useUpdateUserProfile = () => {
+	const token = localStorage.getItem('jwt');
 	const queryClient = useQueryClient();
 
 	const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useMutation({
@@ -10,7 +11,8 @@ const useUpdateUserProfile = () => {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/update`, {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json",
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify(formData),
 				});

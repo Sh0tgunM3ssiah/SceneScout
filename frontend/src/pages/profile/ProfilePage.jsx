@@ -18,6 +18,7 @@ import useFollow from "../../hooks/useFollow";
 import useUpdateUserProfile from "../../hooks/useUpdateUserProfile";
 
 const ProfilePage = () => {
+	const token = localStorage.getItem('jwt');
 	const [coverImg, setCoverImg] = useState(null);
 	const [profileImg, setProfileImg] = useState(null);
 	const [feedType, setFeedType] = useState("posts");
@@ -39,7 +40,13 @@ const ProfilePage = () => {
 		queryKey: ["userProfile"],
 		queryFn: async () => {
 			try {
-				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${username}`);
+				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${username}`,{
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
+				});
 				const data = await res.json();
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
