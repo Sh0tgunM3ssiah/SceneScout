@@ -42,7 +42,14 @@ app.use("/api/posts", postRoutes);
 app.use("/api/scenes", sceneRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// Anything that doesn't match the above, send back the index.html file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/../frontend/dist/index.html'));
+});
 
 app.listen(PORT, () => {
 	console.log(`Server is running on port ${PORT}`);
