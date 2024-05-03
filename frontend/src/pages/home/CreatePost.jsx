@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 
 const CreatePost = () => {
+	const token = localStorage.getItem('jwt');
 	const [text, setText] = useState("");
 	const [img, setImg] = useState(null);
 	const imgRef = useRef(null);
@@ -24,7 +25,8 @@ const CreatePost = () => {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/create`, {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json",
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({ text, img }),
 				});

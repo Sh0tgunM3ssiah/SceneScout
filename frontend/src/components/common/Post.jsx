@@ -49,6 +49,10 @@ const Post = ({ post }) => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/like/${post._id}`, {
 					method: "POST",
+					headers: {
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
+					}
 				});
 				const data = await res.json();
 				if (!res.ok) {
@@ -84,7 +88,8 @@ const Post = ({ post }) => {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/comment/${post._id}`, {
 					method: "POST",
 					headers: {
-						"Content-Type": "application/json",
+						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({ text: comment }),
 				});
