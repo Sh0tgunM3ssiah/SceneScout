@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const Posts = ({ feedType, username, userId }) => {
+	const token = localStorage.getItem('jwt');
 	const getPostEndpoint = () => {
 		switch (feedType) {
 			case "forYou":
