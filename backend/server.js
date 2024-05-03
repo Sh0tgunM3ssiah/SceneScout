@@ -21,7 +21,12 @@ cloudinary.config({
 });
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+    origin: 'https://www.scenescout.io', // This should be the domain of your frontend application
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 const PORT = process.env.PORT || 8080;
 const __dirname = path.resolve();
 
