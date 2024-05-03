@@ -44,11 +44,10 @@ app.use("/api/notifications", notificationRoutes);
 
 // app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static(path.join(__dirname, '/frontend/dist')));
+app.use(express.static(path.join(__dirname, 'frontend/dist')));
 
-// Adjust the route handler to serve the index.html from the correct location
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/frontend/dist/index.html'));
+  res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
 });
 
 app.listen(PORT, () => {
