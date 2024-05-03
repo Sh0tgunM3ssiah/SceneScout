@@ -2,9 +2,9 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
 export const protectRoute = async (req, res, next) => {
-	console.log(token);
+	const token = req.token;
+    console.log("token: " + token);
 	try {
-		const token = req.token;
 		if (!token) {
 			return res.status(401).json({ error: "Unauthorized: No Token Provided" });
 		}
