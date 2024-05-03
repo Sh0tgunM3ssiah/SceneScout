@@ -46,9 +46,9 @@ app.use("/api/notifications", notificationRoutes);
 
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-// Anything that doesn't match the above, send back the index.html file
+// Handle GET requests to any path with the index.html file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/../frontend/dist/index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 app.listen(PORT, () => {
