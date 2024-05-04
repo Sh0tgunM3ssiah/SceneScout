@@ -32,9 +32,6 @@ const LoginPage = () => {
 				});
 
 				const data = await res.json(); // Converts the response body to a JavaScript object
-				console.log("Received data:", data); // Logs the full object
-				console.log(JSON.stringify(data, null, 2));
-				// localStorage.setItem('jwt', data.token);
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
 				}
