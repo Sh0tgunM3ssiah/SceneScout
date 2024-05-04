@@ -24,8 +24,8 @@ const CreatePost = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/create`, {
 					method: "POST",
+					credentials: 'include',
 					headers: {
-						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({ text, img }),

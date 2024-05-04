@@ -42,8 +42,8 @@ const ProfilePage = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${username}`,{
 					method: 'GET',
+					credentials: 'include',
 					headers: {
-						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
 						'Content-Type': 'application/json'
 					}
 				});

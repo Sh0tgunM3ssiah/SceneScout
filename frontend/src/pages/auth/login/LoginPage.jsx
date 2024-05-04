@@ -25,8 +25,9 @@ const LoginPage = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
 					method: "POST",
+					credentials: 'include',
 					headers: {
-						"Content-Type": "application/json",
+						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify({ username, password }),
 				});

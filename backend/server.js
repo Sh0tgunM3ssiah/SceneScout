@@ -29,6 +29,7 @@ app.get('/setBackendCookie', (req, res) => {
 	// Set the "jwt" cookie on the backend domain
 	res.cookie('jwt', jwtCookie, {
 	  domain: '.scenescout-backend.render.com',
+	  //domain: 'http://localhost:5000',
 	  httpOnly: true,
 	  sameSite: 'none',
 	  secure: true
@@ -38,10 +39,12 @@ app.get('/setBackendCookie', (req, res) => {
   });
 
 
-  app.use(cors({
-	origin: 'https://www.scenescout.io', // Allow requests from www.scenescout.io
-	credentials: true // Allow credentials (cookies, authorization headers)
-  }));
+app.use(cors({
+  origin: 'https://www.scenescout.io',
+  //origin: 'http://localhost:3000',
+  credentials: true // Allow credentials (cookies, authorization headers)
+}));
+
 const PORT = process.env.PORT || 8080;
 const __dirname = path.resolve();
 

@@ -17,8 +17,8 @@ const NotificationPage = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, {
 					method: 'GET',
+					credentials: 'include',
 					headers: {
-						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
 						'Content-Type': 'application/json'
 					}
 				});
@@ -36,8 +36,8 @@ const NotificationPage = () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/notifications`, {
 					method: "DELETE",
+					credentials: 'include',
 					headers: {
-						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
 						'Content-Type': 'application/json'
 					}
 				});

@@ -32,11 +32,7 @@ const Posts = ({ feedType, username, userId }) => {
 		queryFn: async () => {
 			try {
 				const res = await fetch(POST_ENDPOINT, {
-					method: 'GET',
-					headers: {
-						'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
-						'Content-Type': 'application/json'
-					}
+					credentials: 'include'
 				});
 				const data = await res.json();
 

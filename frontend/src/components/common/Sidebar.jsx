@@ -14,7 +14,7 @@ const Sidebar = () => {
 		mutationFn: async () => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
-					method: "POST",
+					credentials: 'include',
 				});
 				const data = await res.json();
 
