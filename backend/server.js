@@ -38,7 +38,10 @@ app.get('/setBackendCookie', (req, res) => {
   });
 
 
-app.use(cors());
+  app.use(cors({
+	origin: 'https://www.scenescout.io', // Allow requests from www.scenescout.io
+	credentials: true // Allow credentials (cookies, authorization headers)
+  }));
 const PORT = process.env.PORT || 8080;
 const __dirname = path.resolve();
 
