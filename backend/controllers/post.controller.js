@@ -7,6 +7,8 @@ export const createPost = async (req, res) => {
 	try {
 		const { text } = req.body;
 		let { img } = req.body;
+		const { sceneId } = req.body;
+		const { sceneName } = req.body;
 		const userId = req.user._id.toString();
 
 		const user = await User.findById(userId);
@@ -25,6 +27,8 @@ export const createPost = async (req, res) => {
 			user: userId,
 			text,
 			img,
+			sceneId,
+			sceneName
 		});
 
 		await newPost.save();
@@ -130,27 +134,34 @@ export const likeUnlikePost = async (req, res) => {
 };
 
 export const getAllPosts = async (req, res) => {
-	try {
-		const posts = await Post.find()
-			.sort({ createdAt: -1 })
-			.populate({
-				path: "user",
-				select: "-password",
-			})
-			.populate({
-				path: "comments.user",
-				select: "-password",
-			});
+    try {
+        const { sceneId } = req.query; // Assuming sceneId is passed as a query parameter
 
-		if (posts.length === 0) {
-			return res.status(200).json([]);
-		}
+        let query = {};
+        if (sceneId) {
+            query.sceneId = sceneId; // Add sceneId to the query if it's provided
+        }
 
-		res.status(200).json(posts);
-	} catch (error) {
-		console.log("Error in getAllPosts controller: ", error);
-		res.status(500).json({ error: "Internal server error" });
-	}
+        const posts = await Post.find(query)
+            .sort({ createdAt: -1 })
+            .populate({
+                path: "user",
+                select: "-password",
+            })
+            .populate({
+                path: "comments.user",
+                select: "-password",
+            });
+
+        if (posts.length === 0) {
+            return res.status(200).json([]);
+        }
+
+        res.status(200).json(posts);
+    } catch (error) {
+        console.log("Error in getAllPosts controller: ", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 };
 
 export const getLikedPosts = async (req, res) => {

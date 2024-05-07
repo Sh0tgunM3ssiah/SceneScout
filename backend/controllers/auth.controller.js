@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
 	try {
-		const { fullName, username, email, password, sceneId, sceneName } = req.body;
+		const { fullName, username, email, password, sceneId, sceneName, userType } = req.body;
 
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
@@ -29,6 +29,9 @@ export const signup = async (req, res) => {
 		if (!sceneId) {
 			return res.status(400).json({ error: "Select a Scene!" });
 		}
+		if (!userType) {
+			return res.status(400).json({ error: "Select a User Type!" });
+		}
 
 		const salt = await bcrypt.genSalt(10);
 		const hashedPassword = await bcrypt.hash(password, salt);
@@ -39,7 +42,8 @@ export const signup = async (req, res) => {
 			email,
 			password: hashedPassword,
 			sceneId,
-			sceneName
+			sceneName,
+			userType
 		});
 
 		if (newUser) {
@@ -57,6 +61,7 @@ export const signup = async (req, res) => {
 				following: newUser.following,
 				profileImg: newUser.profileImg,
 				coverImg: newUser.coverImg,
+				userType: newUser.userType,
 			});
 		} else {
 			res.status(400).json({ error: "Invalid user data" });
@@ -90,6 +95,7 @@ export const login = async (req, res) => {
 			following: user.following,
 			profileImg: user.profileImg,
 			coverImg: user.coverImg,
+			userType: user.userType
 		});
 	} catch (error) {
 		console.log("Error in login controller", error.message);

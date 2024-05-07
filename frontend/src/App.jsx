@@ -5,6 +5,7 @@ import LoginPage from "./pages/auth/login/LoginPage";
 import SignUpPage from "./pages/auth/signup/SignUpPage";
 import NotificationPage from "./pages/notification/NotificationPage";
 import ProfilePage from "./pages/profile/ProfilePage";
+import SearchPage from "./pages/search/SearchPage";
 
 import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
@@ -14,8 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
-	const token = localStorage.getItem('jwt');
-	console.log("authme: " + token);
 	const { data: authUser, isLoading } = useQuery({
 		// we use queryKey to give a unique name to our query and refer to it later
 		queryKey: ["authUser"],
@@ -33,7 +32,6 @@ function App() {
 				if (!res.ok) {
 					throw new Error(data.error || "Something went wrong");
 				}
-				console.log("authUser is here:", data);
 				return data;
 			} catch (error) {
 				throw new Error(error);
@@ -58,6 +56,8 @@ function App() {
 				<Route path='/' element={authUser ? <HomePage /> : <Navigate to='/login' />} />
 				<Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to='/' />} />
 				<Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to='/' />} />
+				<Route path='/search' element={authUser ? <SearchPage /> : <Navigate to='/login' />} />
+				{/* <Route path='/search' element={ <SearchPage /> } /> */}
 				<Route path='/notifications' element={authUser ? <NotificationPage /> : <Navigate to='/login' />} />
 				<Route path='/profile/:username' element={authUser ? <ProfilePage /> : <Navigate to='/login' />} />
 			</Routes>

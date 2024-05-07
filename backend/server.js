@@ -11,6 +11,7 @@ import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
 import sceneRoutes from "./routes/scene.route.js";
 import notificationRoutes from "./routes/notification.route.js";
+import searchRoutes from "./routes/search.route.js";
 
 import connectMongoDB from "./db/connectMongoDB.js";
 
@@ -28,8 +29,7 @@ app.get('/setBackendCookie', (req, res) => {
   
 	// Set the "jwt" cookie on the backend domain
 	res.cookie('jwt', jwtCookie, {
-	  domain: '.scenescout-backend.render.com',
-	  //domain: 'http://localhost:5000',
+	  domain: process.env.COOKIE_URL,
 	  httpOnly: true,
 	  sameSite: 'none',
 	  secure: true
@@ -40,8 +40,7 @@ app.get('/setBackendCookie', (req, res) => {
 
 
 app.use(cors({
-  origin: 'https://www.scenescout.io',
-  //origin: 'http://localhost:3000',
+  origin: process.env.ORIGIN_URL,
   credentials: true // Allow credentials (cookies, authorization headers)
 }));
 
@@ -57,6 +56,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/scenes", sceneRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/search", searchRoutes);
 
 // app.use(express.static(path.join(__dirname, 'public')));
 

@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.transparent-select {
+    background-color: transparent;
+}
+
+.transparent-select:focus {
+    background-color: transparent; /* Keeps background transparent on focus */
+}
+
+.transparent-select option,
+.transparent-select optgroup {
+    background-color: rgb(0, 0, 0); /* Light semi-transparent background for options for readability */
+}
+
+.transparent-select option:checked,
+.transparent-select option:focus {
+    background-color: rgb(0, 0, 0); /* Darker background for selected or focused option for visibility */
+}
+
+.scene-selector {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.scene-label {
+    width: 100%;  /* Ensures label takes full width on smaller screens */
+}
+
+.scene-select {
+    width: 100%;  /* Ensures select dropdown takes full width */
+}
+
+@media (min-width: 768px) { /* Adjustments for medium screens and up */
+    .scene-selector {
+        flex-direction: row;
+    }
+
+    .scene-label, .scene-select {
+        width: auto; /* Reset width to auto for flexible adjustments */
+    }
+
+    .scene-label {
+        margin-right: 10px; /* Adds spacing between label and select box */
+    }
+}

@@ -16,9 +16,11 @@ const SignUpPage = () => {
 		username: "",
 		fullName: "",
 		password: "",
+		userType: "",  // Added userType state
 		sceneId: "",
 		sceneName: "",
 	});
+	const [showPassword, setShowPassword] = useState(false);
 
 	const organizeScenesByState = (scenes) => {
 		const sortedScenes = scenes.sort((a, b) => a.state.localeCompare(b.state));
@@ -32,7 +34,6 @@ const SignUpPage = () => {
 	};
 	
 	const [organizedScenes, setOrganizedScenes] = useState({});
-
 	const [scenes, setScenes] = useState([]);
     const [loadingScenes, setLoadingScenes] = useState(false);
     const [errorScenes, setErrorScenes] = useState(null);
@@ -59,7 +60,7 @@ const SignUpPage = () => {
 	}, []);
 
 	const { mutate, isError, isPending, error } = useMutation({
-		mutationFn: async ({ email, username, fullName, password, sceneId, sceneName }) => {
+		mutationFn: async ({ email, username, fullName, password, userType, sceneId, sceneName }) => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
 					method: "POST",
@@ -67,12 +68,11 @@ const SignUpPage = () => {
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify({ email, username, fullName, password, sceneId, sceneName }),
+					body: JSON.stringify({ email, username, fullName, password, userType, sceneId, sceneName }),
 				});
 
 				const data = await res.json();
 				if (!res.ok) throw new Error(data.error || "Failed to create account");
-				console.log(data);
 				return data;
 			} catch (error) {
 				console.error(error);
@@ -81,10 +81,6 @@ const SignUpPage = () => {
 		},
 		onSuccess: () => {
 			toast.success("Account created successfully");
-
-			{
-				/* Added this line below, after recording the video. I forgot to add this while recording, sorry, thx. */
-			}
 			queryClient.invalidateQueries({ queryKey: ["authUser"] });
 		},
 	});
@@ -126,7 +122,6 @@ const SignUpPage = () => {
 							maxWidth: "250px"
 						}}
 					/>
-					{/* <h1 className='text-4xl font-extrabold text-white'>Join today.</h1> */}
 					<label className='input input-bordered rounded flex items-center gap-2'>
 						<MdOutlineMail />
 						<input
@@ -165,20 +160,39 @@ const SignUpPage = () => {
 					<label className='input input-bordered rounded flex items-center gap-2'>
 						<MdPassword />
 						<input
-							type='password'
+							type={showPassword ? 'text' : 'password'}
 							className='grow'
 							placeholder='Password'
 							name='password'
 							onChange={handleInputChange}
 							value={formData.password}
 						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}  // Toggle the showPassword state
+							className="btn btn-ghost"
+						>
+							{showPassword ? 'Hide' : 'Show'}
+						</button>
+					</label>
+					<label className='input input-bordered rounded flex items-center gap-2'>
+						<select
+							name="userType"
+							onChange={handleInputChange}
+							value={formData.userType}
+							className="grow transparent-select"
+						>
+							<option value="">Select User Type</option>
+							<option value="fan">Fan</option>
+							<option value="artist">Artist</option>
+						</select>
 					</label>
 					<label className='input input-bordered rounded flex items-center gap-2'>
 						<select
 							name="sceneId"
 							onChange={handleInputChange}
 							value={formData.sceneId}
-							className="grow"
+							className="grow transparent-select"
 						>
 							<option value="">Select a Scene</option>
 							{Object.entries(organizedScenes).map(([state, scenes]) => (

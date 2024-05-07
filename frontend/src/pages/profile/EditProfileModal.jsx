@@ -123,11 +123,12 @@ const EditProfileModal = ({ authUser }) => {
 								name='email'
 								onChange={handleInputChange}
 							/>
-							<textarea
-								placeholder='Bio'
+							<input
+								type='text'
+								placeholder='Link'
 								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.bio}
-								name='bio'
+								value={formData.link}
+								name='link'
 								onChange={handleInputChange}
 							/>
 						</div>
@@ -149,20 +150,19 @@ const EditProfileModal = ({ authUser }) => {
 								onChange={handleInputChange}
 							/>
 						</div>
-						<input
-							type='text'
-							placeholder='Link'
-							className='flex-1 input border border-gray-700 rounded p-2 input-md'
-							value={formData.link}
-							name='link'
-							onChange={handleInputChange}
-						/>
+						<textarea
+								placeholder='Bio'
+								className='flex-1 input border border-gray-700 rounded p-2 input-md'
+								value={formData.bio}
+								name='bio'
+								onChange={handleInputChange}
+							/>
 						<label className='input input-bordered rounded flex items-center gap-2'>
 							<select
 								name="sceneId"
 								onChange={handleInputChange}
 								value={formData.sceneId}
-								className="grow"
+								className="grow transparent-select"
 							>
 								<option value="">Select a Scene</option>
 								{Object.entries(organizedScenes).map(([state, scenes]) => (

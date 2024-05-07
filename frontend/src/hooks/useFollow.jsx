@@ -9,7 +9,11 @@ const useFollow = () => {
 		mutationFn: async (userId) => {
 			try {
 				const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/follow/${userId}`, {
-					credentials: 'include',
+					method: "POST",
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
 				});
 
 				const data = await res.json();

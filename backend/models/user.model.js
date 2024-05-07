@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		userType: {
+			type: String,
+			required: true,
+		},
 		followers: [
 			{
 				type: mongoose.Schema.Types.ObjectId,

@@ -13,6 +13,12 @@ const postSchema = new mongoose.Schema(
 		img: {
 			type: String,
 		},
+		sceneId: {
+			type: String,
+		},
+		sceneName: {
+			type: String,
+		},
 		likes: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
