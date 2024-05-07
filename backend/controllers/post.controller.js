@@ -9,6 +9,8 @@ export const createPost = async (req, res) => {
 		let { img } = req.body;
 		const { sceneId } = req.body;
 		const { sceneName } = req.body;
+		const { userSceneName } = req.body;
+		const { userSceneId } = req.body;
 		const userId = req.user._id.toString();
 
 		const user = await User.findById(userId);
@@ -28,7 +30,9 @@ export const createPost = async (req, res) => {
 			text,
 			img,
 			sceneId,
-			sceneName
+			sceneName,
+			userSceneId,
+			userSceneName
 		});
 
 		await newPost.save();

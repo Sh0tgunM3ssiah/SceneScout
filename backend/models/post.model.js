@@ -19,6 +19,12 @@ const postSchema = new mongoose.Schema(
 		sceneName: {
 			type: String,
 		},
+		userSceneId: {
+			type: String,
+		},
+		userSceneName: {
+			type: String,
+		},
 		likes: [
 			{
 				type: mongoose.Schema.Types.ObjectId,

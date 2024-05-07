@@ -5,7 +5,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmileFill } from "react-icons/bs";
 
-const CreatePost = ({ sceneId, sceneName }) => { // Receive sceneId as a prop
+const CreatePost = ({ sceneId, sceneName, userSceneId, userSceneName }) => { // Receive sceneId as a prop
     const [text, setText] = useState("");
     const [img, setImg] = useState(null);
     const imgRef = useRef(null);
@@ -13,7 +13,7 @@ const CreatePost = ({ sceneId, sceneName }) => { // Receive sceneId as a prop
     const queryClient = useQueryClient();
 
     const { mutate: createPost, isPending, isError, error } = useMutation({
-        mutationFn: async ({ text, img, sceneId, sceneName }) => {
+        mutationFn: async ({ text, img, sceneId, sceneName, userSceneId, userSceneName }) => {
             try {
                 const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/posts/create`, {
                     method: "POST",
@@ -21,7 +21,7 @@ const CreatePost = ({ sceneId, sceneName }) => { // Receive sceneId as a prop
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ text, img, sceneId, sceneName }), // Include sceneId in the request body
+                    body: JSON.stringify({ text, img, sceneId, sceneName, userSceneId, userSceneName }), // Include sceneId in the request body
                 });
                 const data = await response.json();
                 if (!response.ok) {
@@ -42,7 +42,7 @@ const CreatePost = ({ sceneId, sceneName }) => { // Receive sceneId as a prop
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createPost({ text, img, sceneId, sceneName }); // Pass sceneId to the mutation function
+        createPost({ text, img, sceneId, sceneName, userSceneId, userSceneName }); // Pass sceneId to the mutation function
     };
 
     const handleImgChange = (e) => {
