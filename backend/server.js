@@ -1,6 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
+const result = dotenv.config({
+	path: `./.env.${process.env.NODE_ENV}`
+  });
+  
+  if (result.error) {
+	throw result.error;
+  }
 import path from "path";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
