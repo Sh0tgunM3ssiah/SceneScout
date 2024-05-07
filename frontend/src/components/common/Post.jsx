@@ -69,17 +69,17 @@ const Post = ({ post }) => {
 		},
 		onSuccess: (updatedLikes) => {
 			// this is not the best UX, bc it will refetch all posts
-			// queryClient.invalidateQueries({ queryKey: ["posts"] });
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
 
 			// instead, update the cache directly for that post
-			queryClient.setQueryData(["posts"], (oldData) => {
-				return oldData.map((p) => {
-					if (p._id === post._id) {
-						return { ...p, likes: updatedLikes };
-					}
-					return p;
-				});
-			});
+			// queryClient.setQueryData(["posts"], (oldData) => {
+			// 	return oldData.map((p) => {
+			// 		if (p._id === post._id) {
+			// 			return { ...p, likes: updatedLikes };
+			// 		}
+			// 		return p;
+			// 	});
+			// });
 		},
 		onError: (error) => {
 			toast.error(error.message);
@@ -131,6 +131,21 @@ const Post = ({ post }) => {
 		if (isLiking) return;
 		likePost();
 	};
+
+	const handleSharePost = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: `${postOwner?.fullName}'s Post`,
+                    text: post.text,
+                    url: window.location.href  // Or any other URL you want to share.
+                });
+                toast.success("Post shared successfully!");
+            } catch (error) {
+                toast.error("Failed to share the post.");
+            }
+        }
+    };
 
 	return (
 		<>
@@ -242,7 +257,7 @@ const Post = ({ post }) => {
 								</form>
 							</dialog>
 							<div className='flex gap-1 items-center group cursor-pointer'>
-								<BiRepost className='w-6 h-6  text-slate-500 group-hover:text-green-500' />
+								<BiRepost className='w-6 h-6  text-slate-500 group-hover:text-green-500' onClick={handleSharePost} />
 								<span className='text-sm text-slate-500 group-hover:text-green-500'>0</span>
 							</div>
 							<div className='flex gap-1 items-center group cursor-pointer' onClick={handleLikePost}>
