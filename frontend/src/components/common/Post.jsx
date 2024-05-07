@@ -1,7 +1,7 @@
 import { FaRegComment } from "react-icons/fa";
 import { BiRepost } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
-import { FaRegBookmark } from "react-icons/fa6";
+import { FaRegBookmark, FaArrowTurnDown, FaLocationDot } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -161,9 +161,6 @@ const Post = ({ post }) => {
 						)}
 					</div>
 					<div className='flex flex-col gap-3 overflow-hidden'>
-						<span className="text-gray-700 flex gap-1 text-sm">{post.sceneName}</span>
-					</div>
-					<div className='flex flex-col gap-3 overflow-hidden'>
 						<span>{post.text}</span>
 						{post.img && (
 							<img
@@ -172,6 +169,16 @@ const Post = ({ post }) => {
 								alt=''
 							/>
 						)}
+					</div>
+					<div className="flex items-center pt-3">
+						<div className="flex items-center">
+							<FaArrowTurnDown className="text-gray-700 mr-2" />
+							<span className="text-gray-700 text-sm pr-3">{post.sceneName}</span>
+						</div>
+						<div className="flex items-center">
+							<FaLocationDot className="text-gray-700 mr-2" />
+							<span className="text-gray-700 text-sm">{post.userSceneName}</span>
+						</div>
 					</div>
 					<div className='flex justify-between mt-3'>
 						<div className='flex gap-4 items-center w-2/3 justify-between'>

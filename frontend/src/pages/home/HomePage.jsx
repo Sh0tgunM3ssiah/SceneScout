@@ -48,7 +48,8 @@ const HomePage = () => {
             setOrganizedScenes(organizeScenesByState(scenes));
         }
         if (authUser && authUser.sceneId) {
-            setSelectedSceneId(authUser.sceneId); // Set default scene ID based on authUser
+            setSelectedSceneId(authUser.sceneId);
+            setSelectedSceneName(authUser.sceneName);
         }
     }, [scenes, authUser]);
 
