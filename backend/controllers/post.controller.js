@@ -242,3 +242,28 @@ export const getUserPosts = async (req, res) => {
 		res.status(500).json({ error: "Internal server error" });
 	}
 };
+
+export const getPost = async (req, res) => {
+    try {
+        const { id } = req.params; // Extracting the ID from the URL parameter
+
+        const post = await Post.findById(id)
+            .populate({
+                path: 'user',
+                select: '-password' // Exclude password from the results
+            })
+            .populate({
+                path: 'comments.user',
+                select: '-password' // Exclude password for comment users
+            });
+
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        res.status(200).json(post);
+    } catch (error) {
+        console.log("Error in getPost controller: ", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
