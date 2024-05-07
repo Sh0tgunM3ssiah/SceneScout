@@ -119,7 +119,7 @@ const Sidebar = () => {
 				</div>
 			</div>
 			{/* Mobile Navbar */}
-			<div className='md:hidden fixed top-0 left-0 right-0 flex justify-between items-center px-4 py-2 z-50 border-b border-gray-700'>
+			<div className='md:hidden fixed top-0 left-0 right-0 flex justify-between items-center px-4 py-2 z-50 border-b border-gray-700 bg-black'>
                 <div className='flex-1 flex'>
                     <Link to='/' className='flex justify-center' onClick={closeMenu}>
                         <img

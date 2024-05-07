@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import XSvg from "../../../components/svgs/X";
@@ -11,6 +11,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
 const SignUpPage = () => {
+	const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
 	const [formData, setFormData] = useState({
 		email: "",
 		username: "",
@@ -81,6 +84,7 @@ const SignUpPage = () => {
 		},
 		onSuccess: () => {
 			toast.success("Account created successfully");
+			navigate(from);
 			queryClient.invalidateQueries({ queryKey: ["authUser"] });
 		},
 	});
