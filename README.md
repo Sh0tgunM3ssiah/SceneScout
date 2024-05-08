@@ -18,11 +18,13 @@
 -   **cors:** Middleware to enable CORS (Cross-Origin Resource Sharing) and manage API access from different domains.
 -   **dotenv:** A zero-dependency module used to load environment variables from a .env file.
 -   **Nodemon:** A utility that monitors changes in your source code and automatically restarts the server.
+-   **Socket.IO:** A JavaScript library that enables real-time, bidirectional, and event-based communication between web clients and servers.
 -   **Cloudinary:** A cloud-based service that provides solutions for managing web and mobile media assets, including storage, manipulation, optimization, and delivery across various channels.
 
 ### Some Features:
 
 -   👥 Suggested Users to Follow
+-   ✉️ Direct Messaging Between Users using Socket.io
 -   ✍️ Creating Posts
 -   💬 Commenting on Posts
 -   ❤️ Liking Posts
