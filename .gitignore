@@ -24,3 +24,5 @@ node_modules
 *.sw?
 
 .env
+.env.development
+.env.production
