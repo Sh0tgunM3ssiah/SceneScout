@@ -6,7 +6,7 @@ import LoadingSpinner from "../../components/common/LoadingSpinner";
 
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaUser } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa6";
+import { FaHeart, FaArrowLeft } from "react-icons/fa6";
 
 const NotificationPage = () => {
 	const token = localStorage.getItem('jwt');
@@ -61,6 +61,9 @@ const NotificationPage = () => {
 	return (
 			<div className='flex-[4_4_0] border-r border-gray-700 min-h-screen pt-16 md:pt-0'>
 				<div className='flex items-center p-4 border-b border-gray-700'>
+					<Link to='/'>
+						<FaArrowLeft className='w-4 h-4 mr-10' />
+					</Link>
 					<p className='font-bold'>Notifications</p>
 					<div className='dropdown '>
 						<div tabIndex={0} role='button' className='m-1 pl-5'>

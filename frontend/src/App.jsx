@@ -7,6 +7,7 @@ import NotificationPage from "./pages/notification/NotificationPage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import SearchPage from "./pages/search/SearchPage";
 import PostPage from "./pages/post/PostPage";
+import MessagesPage from "./pages/messages/MessagesPage";
 
 import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
@@ -54,14 +55,14 @@ function App() {
 			{/* Common component, bc it's not wrapped with Routes */}
 			{authUser && <Sidebar />}
 			<Routes>
-				<Route path='/' element={authUser ? <HomePage /> : <Navigate to='/login' />} />
+				<Route path='/' element={authUser ? <HomePage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to='/' />} />
 				<Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to='/' />} />
-				<Route path='/search' element={authUser ? <SearchPage /> : <Navigate to='/login' />} />
-				<Route path='/posts/:id' element={ <PostPage /> } />
-				{/* <Route path='/search' element={ <SearchPage /> } /> */}
-				<Route path='/notifications' element={authUser ? <NotificationPage /> : <Navigate to='/login' />} />
-				<Route path='/profile/:username' element={authUser ? <ProfilePage /> : <Navigate to='/login' />} />
+				<Route path='/search' element={authUser ? <SearchPage authUser={authUser} /> : <Navigate to='/login' />} />
+				<Route path='/messages' element={authUser ? <MessagesPage authUser={authUser} /> : <Navigate to='/login' />} />
+				<Route path='/posts/:id' element={ <PostPage authUser={authUser} /> } />
+				<Route path='/notifications' element={authUser ? <NotificationPage authUser={authUser} /> : <Navigate to='/login' />} />
+				<Route path='/profile/:username' element={authUser ? <ProfilePage authUser={authUser} /> : <Navigate to='/login' />} />
 			</Routes>
 			{authUser && <RightPanel />}
 			<Toaster />

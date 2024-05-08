@@ -12,7 +12,9 @@
   "dependencies": {
     "@react-google-maps/api": "^2.19.3",
     "@tanstack/react-query": "^5.29.2",
+    "axios": "^1.6.8",
     "dotenv": "^16.4.5",
+    "emoji-picker-react": "^4.9.2",
     "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -20,7 +22,11 @@
     "react-icons": "^5.1.0",
     "react-router-dom": "^6.22.3",
     "scene-scout": "file:..",
-    "twitter-clone": "file:.."
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "styled-components": "^6.1.10",
+    "twitter-clone": "file:..",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

@@ -24,14 +24,16 @@
 
 -   👥 Suggested Users to Follow
 -   ✍️ Creating Posts
--   🗑️ Deleting Posts
 -   💬 Commenting on Posts
 -   ❤️ Liking Posts
--   🔒 Delete Posts (if you are the owner)
+-   🔗 Sharing Posts
+-   🗑️ Delete Posts (if you are the owner)
 -   📝 Edit Profile Info
 -   🖼️ Edit Cover Image and Profile Image
 -   📷 Image Uploads using Cloudinary
 -   🔔 Send Notifications
+-   🔍 Advanced Search Features
+<!-- -   📣 Classifieds Section -->
 -   ⏳ And much more!
 
 

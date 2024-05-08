@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams, Link } from 'react-router-dom';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
-const SearchPage = () => {
+const SearchPage = (authUser) => {
     const [searchParams, setSearchParams] = useState({
         scene: '',  
         searchType: 'posts',
@@ -13,17 +13,6 @@ const SearchPage = () => {
     });
 
     const { username } = useParams(); // Example of how we might dynamically change queries
-
-    const { data: authUser } = useQuery({
-        queryKey: ['authUser'],
-        queryFn: () => fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/user`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then(res => res.json()),
-    });
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['search', searchParams],
@@ -111,6 +100,3 @@ const SearchPage = () => {
 };
 
 export default SearchPage;
-
-
-            

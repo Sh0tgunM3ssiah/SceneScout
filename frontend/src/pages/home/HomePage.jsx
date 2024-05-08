@@ -8,16 +8,7 @@ const HomePage = () => {
     const [selectedSceneId, setSelectedSceneId] = useState('');
     const [selectedSceneName, setSelectedSceneName] = useState('');
 
-    const { data: authUser } = useQuery({
-        queryKey: ['authUser'],
-        queryFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch user info');
-            }
-            return await response.json();
-        }
-    });
+    const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 
     const { data: scenes, isLoading: loadingScenes, error: scenesError } = useQuery({
         queryKey: ['scenes'],
