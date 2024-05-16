@@ -12,6 +12,7 @@ const EditProfileModal = ({ authUser }) => {
 		link: "",
 		newPassword: "",
 		currentPassword: "",
+		genre: "", // Add genre field
 	});
 
 	const organizeScenesByState = (scenes) => {
@@ -21,15 +22,14 @@ const EditProfileModal = ({ authUser }) => {
 			acc[scene.state].push(scene);
 			return acc;
 		}, {});
-	
 		return scenesByState;
 	};
-	
+
 	const [organizedScenes, setOrganizedScenes] = useState({});
 
 	const [scenes, setScenes] = useState([]);
-    const [loadingScenes, setLoadingScenes] = useState(false);
-    const [errorScenes, setErrorScenes] = useState(null);
+	const [loadingScenes, setLoadingScenes] = useState(false);
+	const [errorScenes, setErrorScenes] = useState(null);
 
 	useEffect(() => {
 		const fetchScenes = async () => {
@@ -46,12 +46,11 @@ const EditProfileModal = ({ authUser }) => {
 				setLoadingScenes(false);
 			}
 		};
-	
+
 		fetchScenes();
 	}, []);
 
 	const { updateProfile, isUpdatingProfile } = useUpdateUserProfile();
-	
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
@@ -75,9 +74,11 @@ const EditProfileModal = ({ authUser }) => {
 				sceneName: authUser.sceneName || "",
 				newPassword: "",
 				currentPassword: "",
+				genre: authUser.genre || "", // Initialize genre field
 			});
 		}
 	}, [authUser]);
+
 	return (
 		<>
 			<button
@@ -151,12 +152,32 @@ const EditProfileModal = ({ authUser }) => {
 							/>
 						</div>
 						<textarea
-								placeholder='Bio'
+							placeholder='Bio'
+							className='flex-1 input border border-gray-700 rounded p-2 input-md'
+							value={formData.bio}
+							name='bio'
+							onChange={handleInputChange}
+						/>
+						{authUser.userType === "artist" && ( // Conditionally render genre input
+							<select
+								name='genre'
 								className='flex-1 input border border-gray-700 rounded p-2 input-md'
-								value={formData.bio}
-								name='bio'
+								value={formData.genre}
 								onChange={handleInputChange}
-							/>
+							>
+								<option value="">Select a Genre</option>
+								<option value="Metal">Metal</option>
+								<option value="Rock">Rock</option>
+								<option value="Pop">Pop</option>
+								<option value="Country">Country</option>
+								<option value="Blues">Blues</option>
+								<option value="Hip Hop">Hip Hop</option>
+								<option value="Electronic">Electronic</option>
+								<option value="Jazz">Jazz</option>
+								<option value="Folk">Folk</option>
+								<option value="Other">Other</option>
+							</select>
+						)}
 						<label className='input input-bordered rounded flex items-center gap-2'>
 							<select
 								name="sceneId"
@@ -188,4 +209,5 @@ const EditProfileModal = ({ authUser }) => {
 		</>
 	);
 };
+
 export default EditProfileModal;

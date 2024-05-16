@@ -116,7 +116,7 @@ export const getUsersFollowedByUser = async (req, res) => {
 
 
 export const updateUser = async (req, res) => {
-	const { fullName, email, username, sceneId, sceneName, currentPassword, newPassword, bio, link } = req.body;
+	const { fullName, email, username, sceneId, sceneName, currentPassword, newPassword, bio, link, genre } = req.body;
 	let { profileImg, coverImg } = req.body;
 
 	const userId = req.user._id;
@@ -164,10 +164,15 @@ export const updateUser = async (req, res) => {
 		user.username = username || user.username;
 		user.sceneId = sceneId || user.sceneId;
 		user.sceneName = sceneName || user.sceneName;
-		user.bio = bio || user.bio;
-		user.link = link || user.link;
+		user.bio = bio;
+		user.link = link;
 		user.profileImg = profileImg || user.profileImg;
 		user.coverImg = coverImg || user.coverImg;
+		if (user.userType === "artist") {
+			user.genre = genre;
+		} else {
+			user.genre = ""; // Clear the genre field if the user is not an artist
+		}
 
 		user = await user.save();
 

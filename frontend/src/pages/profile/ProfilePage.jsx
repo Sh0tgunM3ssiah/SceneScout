@@ -4,10 +4,11 @@ import { Link, useParams } from "react-router-dom";
 import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
+import FollowingList from "../../components/common/FollowingList";
 
 import { POSTS } from "../../utils/db/dummy";
 
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaArrowLeft, FaBriefcase, FaMusic } from "react-icons/fa6";
 import { IoCalendarOutline, IoLocationOutline } from "react-icons/io5";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
@@ -94,7 +95,7 @@ const ProfilePage = () => {
 								</Link>
 								<div className='flex flex-col'>
 									<p className='font-bold text-lg'>{user?.fullName}</p>
-									<span className='text-sm text-slate-500'>{POSTS?.length} posts</span>
+									<span className='text-sm text-slate-500'>{user?.sceneName} {user.userType.charAt(0).toUpperCase() + user.userType.slice(1)}</span>
 								</div>
 							</div>
 							{/* COVER IMG */}
@@ -177,19 +178,29 @@ const ProfilePage = () => {
 
 								<div className='flex flex-col gap-2'>
 									<div className='flex gap-2 items-center'>
+										<FaBriefcase className='w-4 h-4 text-slate-500' />
+										<span className='text-sm text-slate-500'>
+											{user.userType.charAt(0).toUpperCase() + user.userType.slice(1)}
+										</span>
 										<IoLocationOutline className='w-4 h-4 text-slate-500' />
 										<span className='text-sm text-slate-500'>{user.sceneName}</span>
 									</div>
+									{user?.genre && (
+										<div className='flex gap-2 items-center'>
+											<FaMusic className="w-4 h-4 text-slate-500" />
+											<span className='text-sm text-slate-500'>{user.genre}</span>
+										</div>
+									)}
 									{user?.link && (
 										<div className='flex gap-1 items-center'>
 											<FaLink className='w-3 h-3 text-slate-500' />
 											<a
-												href='https://youtube.com/@asaprogrammer_'
+												href={user.link}
 												target='_blank'
 												rel='noreferrer'
 												className='text-sm text-blue-500 hover:underline'
 											>
-												{user?.link}
+												{user.link}
 											</a>
 										</div>
 									)}
@@ -211,7 +222,7 @@ const ProfilePage = () => {
 							</div>
 							<div className='flex w-full border-b border-gray-700 mt-4'>
 								<div
-									className='flex justify-center flex-1 p-3 hover:bg-secondary transition duration-300 relative cursor-pointer'
+									className={`flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer ${feedType === "posts" ? "bg-secondary" : ""}`}
 									onClick={() => setFeedType("posts")}
 								>
 									Posts
@@ -220,7 +231,7 @@ const ProfilePage = () => {
 									)}
 								</div>
 								<div
-									className='flex justify-center flex-1 p-3 text-slate-500 hover:bg-secondary transition duration-300 relative cursor-pointer'
+									className={`flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer ${feedType === "likes" ? "bg-secondary" : ""}`}
 									onClick={() => setFeedType("likes")}
 								>
 									Likes
@@ -228,14 +239,28 @@ const ProfilePage = () => {
 										<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary' />
 									)}
 								</div>
+								<div
+									className={`flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer ${feedType === "following" ? "bg-secondary" : ""}`}
+									onClick={() => setFeedType("following")}
+								>
+									Following
+									{feedType === "following" && (
+										<div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary' />
+									)}
+								</div>
 							</div>
 						</>
 					)}
 
-					<Posts feedType={feedType} username={username} userId={user?._id} />
+					{feedType === "following" ? (
+						<FollowingList userId={user?._id} />
+					) : (
+						<Posts feedType={feedType} username={username} userId={user?._id} />
+					)}
 				</div>
 			</div>
 		</>
 	);
 };
+
 export default ProfilePage;

@@ -72,14 +72,15 @@ const LoginPage = () => {
 				/>
 			</div>
 			<div className='flex-1 flex flex-col justify-center items-center'>
-				<form className='flex gap-4 flex-col' onSubmit={handleSubmit}>
+				<form className='flex gap-4 flex-col items-center' onSubmit={handleSubmit}>
 					<img
 						src="/scenescoutLogoScript.png"
 						alt="SceneScout Logo"
 						style={{
 							cursor: "pointer",
 							minWidth: "200px",
-							maxWidth: "250px"
+							maxWidth: "250px",
+							alignSelf: "center"
 						}}
 					/>
 					{/* <h1 className='text-4xl font-extrabold text-white'>{"Let's"} go.</h1> */}
@@ -111,7 +112,7 @@ const LoginPage = () => {
 					</button>
 					{isError && <p className='text-red-500'>{error.message}</p>}
 				</form>
-				<div className='flex flex-col gap-2 mt-4'>
+				<div className='flex flex-col gap-2 mt-4 items-center'>
 					<p className='text-white text-lg'>{"Don't"} have an account?</p>
 					<Link to='/signup'>
 						<button className='btn rounded-full btn-primary text-white btn-outline w-full'>Sign up</button>

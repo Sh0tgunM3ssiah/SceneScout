@@ -88,10 +88,10 @@ const ChatContainer = ({ currentChat, socket, authUser, handleBack }) => {
         <FaArrowLeft className='w-4 h-4 mr-10 cursor-pointer' onClick={handleBack} />
         <div className="user-details">
           <div className="avatar">
-            <img src={currentChat.profileImg || "/avatar-placeholder.png"} alt="Profile" />
+            <a href={`/profile/${currentChat.username}`}><img src={currentChat.profileImg || "/avatar-placeholder.png"} alt="Profile" /></a>
           </div>
           <div className="username">
-            <h3>{currentChat.username}</h3>
+            <a href={`/profile/${currentChat.username}`}><h3>{currentChat.username}</h3></a>
           </div>
           <div className="username">
             <FaLocationDot className="location-icon" /> {/* Icon added before the scene name */}
