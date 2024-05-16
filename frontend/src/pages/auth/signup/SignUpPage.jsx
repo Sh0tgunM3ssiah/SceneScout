@@ -123,7 +123,8 @@ const SignUpPage = () => {
 						style={{
 							cursor: "pointer",
 							minWidth: "200px",
-							maxWidth: "250px"
+							maxWidth: "250px",
+							alignSelf: "center"
 						}}
 					/>
 					<label className='input input-bordered rounded flex items-center gap-2'>
