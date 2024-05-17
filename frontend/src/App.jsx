@@ -8,6 +8,8 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import SearchPage from "./pages/search/SearchPage";
 import PostPage from "./pages/post/PostPage";
 import MessagesPage from "./pages/messages/MessagesPage";
+import ScenePage from "./pages/scenes/ScenePage";
+import ClassifiedAdPage from "./pages/scenes/ClassifiedAdPage";
 
 import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
@@ -59,6 +61,8 @@ function App() {
 				<Route path='/login' element={!authUser ? <LoginPage /> : <Navigate to='/' />} />
 				<Route path='/signup' element={!authUser ? <SignUpPage /> : <Navigate to='/' />} />
 				<Route path='/search' element={authUser ? <SearchPage authUser={authUser} /> : <Navigate to='/login' />} />
+				<Route path='/scenes' element={authUser ? <ScenePage authUser={authUser} /> : <Navigate to='/login' />} />
+				<Route path='/scenes/classifieds/:adId' element={authUser ? <ClassifiedAdPage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/messages' element={authUser ? <MessagesPage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/posts/:id' element={ <PostPage authUser={authUser} /> } />
 				<Route path='/notifications' element={authUser ? <NotificationPage authUser={authUser} /> : <Navigate to='/login' />} />

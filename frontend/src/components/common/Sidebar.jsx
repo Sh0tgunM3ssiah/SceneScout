@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MdHomeFilled } from "react-icons/md";
 import { IoNotifications } from "react-icons/io5";
 import { FaUser, FaSearch } from "react-icons/fa";
-import { FaMessage } from "react-icons/fa6";
+import { FaMessage, FaStar } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -59,7 +59,7 @@ const Sidebar = () => {
 								to='/'
 								className='flex gap-3 items-center hover:bg-stone-900 transition-all rounded-full duration-300 py-2 pl-2 pr-4 max-w-fit cursor-pointer'
 							>
-								<MdHomeFilled className='w-8 h-8' />
+								<MdHomeFilled className='w-6 h-6' />
 								<span className='text-lg hidden md:block'>Home</span>
 							</Link>
 						</li>
@@ -89,6 +89,15 @@ const Sidebar = () => {
 							>
 								<FaMessage className='w-6 h-6' />
 								<span className='text-lg hidden md:block'>Messages</span>
+							</Link>
+						</li>
+						<li className='flex justify-center md:justify-start'>
+							<Link
+								to={`/scenes`}
+								className='flex gap-3 items-center hover:bg-stone-900 transition-all rounded-full duration-300 py-2 pl-2 pr-4 max-w-fit cursor-pointer'
+							>
+								<FaStar className='w-6 h-6' />
+								<span className='text-lg hidden md:block'>Scenes</span>
 							</Link>
 						</li>
 						{/* <li className='flex justify-center md:justify-start'>
@@ -161,6 +170,7 @@ const Sidebar = () => {
                         <Link to='/notifications' className='block px-4 py-2 text-white hover:bg-stone-900' onClick={closeMenu}>Notifications</Link>
                         <Link to={`/profile/${authUser?.username}`} className='block px-4 py-2 text-white hover:bg-stone-900' onClick={closeMenu}>Profile</Link>
 						<Link to={`/messages`} className='block px-4 py-2 text-white hover:bg-stone-900' onClick={closeMenu}>Messages</Link>
+						<Link to={`/scenes`} className='block px-4 py-2 text-white hover:bg-stone-900' onClick={closeMenu}>Scenes</Link>
                         {/* <Link to='/search' className='block px-4 py-2 text-white hover:bg-stone-900' onClick={closeMenu}>Search</Link> */}
                         <button className='text-white hover:bg-stone-900 block w-full text-left px-4 py-2' onClick={() => {
                             logout();

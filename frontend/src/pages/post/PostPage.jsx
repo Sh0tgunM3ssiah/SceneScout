@@ -32,7 +32,7 @@ const PostPage = () => {
 
     return (
         <>
-            <div className='flex-[4_4_0] border-r border-gray-700 min-h-screen pt-16 md:pt-0'>
+            <div className='flex-[4_4_0] border border-gray-700 min-h-screen pt-16 md:pt-0'>
                 <div className='flex justify-between items-center p-4 border-b border-gray-700'>
                     <p className='font-bold'>Post</p>
                 </div>

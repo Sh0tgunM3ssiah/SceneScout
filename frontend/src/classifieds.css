@@ -1,0 +1,83 @@
+.classifieds-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 800px;
+    min-height: 500px;
+    max-height: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #000000;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    overflow-y: auto;
+}
+
+.classifieds-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0eafd6;
+}
+
+.classifieds {
+    flex-grow: 1;
+    margin-bottom: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.no-classifieds {
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.ad {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.message-username {
+    color: #0eafd6;
+    text-decoration: none;
+}
+
+.message-username:hover {
+    text-decoration: underline;
+}
+
+.new-message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: none;
+}
+
+.message-submit-button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background: #0eafd6;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.message-submit-button:hover {
+    background: #0056b3;
+}

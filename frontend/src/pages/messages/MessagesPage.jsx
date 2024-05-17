@@ -57,7 +57,7 @@ const MessagesPage = () => {
 
   return (
     <>
-      <div className='flex-[4_4_0] border-r border-gray-700 min-h-screen pt-16 md:pt-0'>
+      <div className='flex-[4_4_0] border border-gray-700 min-h-screen pt-16 md:pt-0'>
         <div className='flex items-center p-4 border-b border-gray-700'>
           <Link to='/'>
             <FaArrowLeft className='w-4 h-4 mr-10' />

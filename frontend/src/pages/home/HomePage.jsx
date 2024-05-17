@@ -52,7 +52,7 @@ const HomePage = () => {
 
     return (
         <>
-            <div className='flex-[4_4_0] mr-auto border-r border-gray-700 min-h-screen flex flex-col pt-16 md:pt-0'>
+            <div className='flex-[4_4_0] mr-auto border border-gray-700 min-h-screen flex flex-col pt-16 md:pt-0'>
                 <div className='flex w-full border-b border-gray-700 p-3 justify-center'>
                     <div className='flex justify-center items-center gap-4'>
                         <button className={`btn btn-ghost ${feedType === 'forYou' ? 'text-primary font-bold' : ''}`}

@@ -19,6 +19,10 @@ const sceneSchema = new mongoose.Schema(
 		state: {
 			type: String,
 		},
+		coverImg: {
+			type: String,
+			default: "",
+		},
 	},
 	{ timestamps: true }
 );
