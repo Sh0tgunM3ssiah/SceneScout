@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import '../../classifieds.css'; // Assuming you have a separate CSS file for styles
 
 const ClassifiedAdDetail = ({ user }) => {
@@ -78,28 +78,42 @@ const ClassifiedAdDetail = ({ user }) => {
     return (
         <div className="classified-ad-detail-container">
             <h2 className="classified-ad-title">{ad.title}</h2>
+            <span className='text-gray-700 flex gap-1 text-sm text-center mt-2 mb-5'>*Posted By: <Link to={`/profile/${ad?.username}`} className='font-bold'>
+                            @{ad?.username}
+                        </Link></span>
             <p>{ad.description}</p>
             <div className="comments">
-                <h3>Comments</h3>
+                <h3 className="comments-title mt-10">Comments</h3>
                 {comments.length === 0 ? (
-                    <p>No comments yet. Be the first to comment!</p>
+                    <p className="no-comments">No comments yet. Be the first to comment!</p>
                 ) : (
                     comments.map((comment) => (
                         <div key={comment._id} className="comment">
-                            <a href={`/profile/${comment.username}`} className="comment-username"><strong>{comment.username}</strong></a>: {comment.content}
+                            <div className='flex gap-2 items-start'>
+                                <div className='flex flex-col'>
+                                    <div className='flex items-center gap-1'>
+                                        <span className='text-gray-700 text-sm'>
+                                            @{comment.username}
+                                        </span>
+                                    </div>
+                                    <div className='text-sm'>{comment.content}</div>
+                                </div>
+                            </div>
                         </div>
                     ))
                 )}
             </div>
-            <form onSubmit={handleCommentSubmit} className="new-comment-form">
-                <textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Type your comment here..."
-                    className="comment-textarea"
-                />
-                <button type="submit" className="comment-submit-button">Post Comment</button>
-            </form>
+            {user && (
+                <form onSubmit={handleCommentSubmit} className="new-comment-form">
+                    <textarea
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Type your comment here..."
+                        className="comment-textarea"
+                    />
+                    <button type="submit" className="comment-submit-button">Post Comment</button>
+                </form>
+            )}
         </div>
     );
 };

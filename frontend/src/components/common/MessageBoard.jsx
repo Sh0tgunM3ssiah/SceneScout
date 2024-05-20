@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../../messageBoard.css'; // Assuming you have a separate CSS file for styles
 import { formatPostDate } from "../../utils/date";
 
 const MessageBoard = ({ sceneId, user, sceneName }) => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -44,6 +45,12 @@ const MessageBoard = ({ sceneId, user, sceneName }) => {
         }
     };
 
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [messages]);
+
     return (
         <div className="message-board-container">
             <h2 className="message-board-title">{sceneName} Message Board</h2>
@@ -61,6 +68,7 @@ const MessageBoard = ({ sceneId, user, sceneName }) => {
                         </div>
                     ))
                 )}
+                <div ref={messagesEndRef} />
             </div>
             {user.sceneId === sceneId && (
                 <form onSubmit={handleSubmit} className="new-message-form">

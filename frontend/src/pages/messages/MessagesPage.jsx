@@ -5,7 +5,7 @@ import styled from "styled-components";
 import ChatContainer from "../../components/common/ChatContainer";
 import Contacts from "../../components/common/Contacts";
 import { useQuery } from '@tanstack/react-query';
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa6";
 
 const MessagesPage = () => {
   const navigate = useNavigate();
@@ -58,21 +58,25 @@ const MessagesPage = () => {
   return (
     <>
       <div className='flex-[4_4_0] border border-gray-700 min-h-screen pt-16 md:pt-0'>
-        <div className='flex items-center p-4 border-b border-gray-700'>
-          <Link to='/'>
-            <FaArrowLeft className='w-4 h-4 mr-10' />
-          </Link>
-          <p className='font-bold'>Messages</p>
-        </div>
-        <StyledContainer>
-          <div className="container">
-            {!showChat ? (
-              <Contacts contacts={contacts} changeChat={handleChatChange} />
-            ) : (
-              <ChatContainer currentChat={currentChat} socket={socket} authUser={authUser} handleBack={handleBack} />
-            )}
+        <div className='flex flex-col'>
+          <div className='flex gap-10 px-4 py-2 items-center border-b border-gray-700'>
+            <button onClick={() => navigate(-1)}>
+              <FaArrowLeft className='w-4 h-4' />
+            </button>
+            <div className='flex flex-col'>
+              <p className='font-bold text-lg'>Messages</p>
+            </div>
           </div>
-        </StyledContainer>
+          <StyledContainer>
+            <div className="container">
+              {!showChat ? (
+                <Contacts contacts={contacts} changeChat={handleChatChange} />
+              ) : (
+                <ChatContainer currentChat={currentChat} socket={socket} authUser={authUser} handleBack={handleBack} />
+              )}
+            </div>
+          </StyledContainer>
+        </div>
       </div>
     </>
   );

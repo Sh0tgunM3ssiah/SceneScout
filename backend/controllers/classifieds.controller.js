@@ -4,9 +4,21 @@ import ClassifiedAdComment from '../models/classifiedAdComment.model.js';
 
 // Get all ads for a scene
 export const getClassifiedAds = async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+    const sceneId = req.params.sceneId;
+
     try {
-        const ads = await ClassifiedAd.find({ sceneId: req.params.sceneId });
-        res.status(200).json(ads);
+        const totalAds = await ClassifiedAd.countDocuments({ sceneId });
+        const ads = await ClassifiedAd.find({ sceneId })
+            .skip((page - 1) * limit)
+            .limit(Number(limit))
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            ads,
+            currentPage: Number(page),
+            totalPages: Math.ceil(totalAds / limit),
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

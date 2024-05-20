@@ -1,4 +1,128 @@
 .classifieds-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.classifieds-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #0eafd6;
+}
+
+.post-classifieds-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #0eafd6;
+}
+
+.new-ad-form {
+    background: #181818;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.ad-input,
+.ad-textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: none;
+}
+
+.ad-submit-button {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.ad-submit-button:hover {
+    background: #0056b3;
+}
+
+.ads {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ad {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.ad-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.ad-title:hover {
+    text-decoration: underline;
+}
+
+.see-more-link {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.see-more-link:hover {
+    text-decoration: underline;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-button {
+    border: 1px solid #ddd;
+    color: #007bff;
+    padding: 8px 12px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.pagination-button:hover {
+    background: #007bff;
+    color: #fff;
+}
+
+.pagination-button.active {
+    background: #007bff;
+    border: 1px solid #007bff;
+    color: #fff;
+}
+
+.no-ads {
+    text-align: center;
+    color: #777;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+.classifieds-container, .classified-ad-detail-container {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -22,43 +146,51 @@
     color: #0eafd6;
 }
 
-.classifieds {
+.classified-ad-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #0eafd6;
+}
+
+.ads, .comments {
     flex-grow: 1;
     margin-bottom: 20px;
     max-height: 400px;
     overflow-y: auto;
 }
 
-.no-classifieds {
+.no-ads, .no-comments {
     text-align: center;
     color: #777;
     font-size: 16px;
     margin-top: 20px;
 }
 
-.ad {
+.ad, .comment {
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.message-username {
+.ad-title, .comment-username {
     color: #0eafd6;
     text-decoration: none;
+    cursor: pointer;
 }
 
-.message-username:hover {
+.ad-title:hover, .comment-username:hover {
     text-decoration: underline;
 }
 
-.new-message-form {
+.new-ad-form, .new-comment-form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.message-textarea {
+.ad-input, .ad-textarea, .comment-textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -67,7 +199,7 @@
     resize: none;
 }
 
-.message-submit-button {
+.ad-submit-button, .comment-submit-button {
     align-self: flex-end;
     padding: 10px 20px;
     background: #0eafd6;
@@ -78,6 +210,16 @@
     font-size: 14px;
 }
 
-.message-submit-button:hover {
+.ad-submit-button:hover, .comment-submit-button:hover {
     background: #0056b3;
+}
+
+.see-more-link {
+    color: #0eafd6;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.comments-title {
+    color: #0eafd6;
 }

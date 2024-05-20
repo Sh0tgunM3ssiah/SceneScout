@@ -111,9 +111,9 @@ const ScenePage = () => {
                 {!isLoading && !isRefetching && scene && (
                     <>
                         <div className='flex gap-10 px-4 py-2 items-center'>
-                            <Link to='/'>
+                            <button onClick={() => navigate(-1)}>
                                 <FaArrowLeft className='w-4 h-4' />
-                            </Link>
+                            </button>
                             <div className='flex flex-col'>
                                 <p className='font-bold text-lg'>{scene?.name}</p>
                                 <span className='text-sm text-slate-500'>{scene?.description}</span>
