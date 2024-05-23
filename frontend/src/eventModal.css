@@ -1,0 +1,96 @@
+
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form styles */
+.new-ad-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ad-input, .ad-textarea {
+    width: calc(100% - 20px);
+    margin: 0 auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.ad-textarea {
+    resize: vertical;
+}
+
+.artist-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.remove-artist-button {
+    margin-left: 10px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.remove-artist-button:hover {
+    background-color: #c0392b;
+}
+
+.add-artist-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.add-artist-button:hover {
+    background-color: #2980b9;
+}
+
+.ad-submit-button {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.ad-submit-button:hover {
+    background-color: #27ae60;
+}

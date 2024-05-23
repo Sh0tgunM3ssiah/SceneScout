@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatPostDate } from "../../utils/date";
 import '../../classifieds.css'; // Assuming you have a separate CSS file for styles
+import ConfirmationModal from '../../components/common/ConfirmationModal.jsx';
+import { FaRegTrashCan } from 'react-icons/fa6';
 
 const Classifieds = ({ sceneId, user, sceneName }) => {
     const [ads, setAds] = useState([]);
     const [newAd, setNewAd] = useState({ title: '', description: '' });
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+    const [adToDelete, setAdToDelete] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -69,6 +73,25 @@ const Classifieds = ({ sceneId, user, sceneName }) => {
         setCurrentPage(page);
     };
 
+    const handleDeleteClick = (adId) => {
+        setAdToDelete(adId);
+        setIsConfirmationModalOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/classifieds/ad/${adToDelete}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+            setAds(ads.filter(ad => ad._id !== adToDelete));
+            setIsConfirmationModalOpen(false);
+            setAdToDelete(null);
+        } catch (error) {
+            console.error('Failed to delete ad:', error);
+        }
+    };
+
     return (
         <div className="classifieds-container">
             <h2 className="classifieds-title">{sceneName} Classifieds</h2>
@@ -97,10 +120,15 @@ const Classifieds = ({ sceneId, user, sceneName }) => {
                     <p className="no-ads">No ads available. Artists can post ads to get started!</p>
                 ) : (
                     ads.map((ad) => (
-                        <div key={ad._id} className="ad">
+                        <div key={ad._id} className="ad" style={{ position: 'relative' }}>
                             <div className="ad-title" onClick={() => navigate(`/scenes/classifieds/${ad._id}`)}>{ad.title}</div>
                             <span className='text-gray-700 flex text-sm mb-4'>{formatPostDate(new Date(ad.createdAt))}</span>
                             <p>{truncateText(ad.description, ad._id)}</p>
+                            {ad.userId === user._id && (
+                                <button onClick={() => handleDeleteClick(ad._id)} className="delete-icon">
+                                    <FaRegTrashCan />
+                                </button>
+                            )}
                         </div>
                     ))
                 )}
@@ -116,6 +144,12 @@ const Classifieds = ({ sceneId, user, sceneName }) => {
                     </button>
                 ))}
             </div>
+            <ConfirmationModal
+                show={isConfirmationModalOpen}
+                onClose={() => setIsConfirmationModalOpen(false)}
+                onConfirm={handleDeleteConfirm}
+                message="Are you sure you want to delete this ad?"
+            />
         </div>
     );
 };

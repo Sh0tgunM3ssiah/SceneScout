@@ -14,6 +14,7 @@ import notificationRoutes from "./routes/notification.route.js";
 import searchRoutes from "./routes/search.route.js";
 import messageBoardRoutes from "./routes/messageBoard.route.js";
 import classifiedsRoutes from './routes/classifieds.route.js';
+import eventsRoutes from './routes/events.route.js';
 import connectMongoDB from "./db/connectMongoDB.js";
 
 dotenv.config({
@@ -46,6 +47,7 @@ app.use("/api/search", searchRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/messageBoard", messageBoardRoutes);
 app.use("/api/classifieds", classifiedsRoutes);
+app.use("/api/events", eventsRoutes);
 
 app.use(express.static(path.resolve('frontend/dist')));
 

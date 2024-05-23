@@ -10,6 +10,7 @@ import PostPage from "./pages/post/PostPage";
 import MessagesPage from "./pages/messages/MessagesPage";
 import ScenePage from "./pages/scenes/ScenePage";
 import ClassifiedAdPage from "./pages/scenes/ClassifiedAdPage";
+import EventPage from "./pages/scenes/EventPage";
 
 import Sidebar from "./components/common/Sidebar";
 import RightPanel from "./components/common/RightPanel";
@@ -63,6 +64,7 @@ function App() {
 				<Route path='/search' element={authUser ? <SearchPage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/scenes' element={authUser ? <ScenePage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/scenes/classifieds/:adId' element={authUser ? <ClassifiedAdPage authUser={authUser} /> : <Navigate to='/login' />} />
+				<Route path='/scenes/events/:eventId' element={authUser ? <EventPage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/messages' element={authUser ? <MessagesPage authUser={authUser} /> : <Navigate to='/login' />} />
 				<Route path='/posts/:id' element={ <PostPage authUser={authUser} /> } />
 				<Route path='/notifications' element={authUser ? <NotificationPage authUser={authUser} /> : <Navigate to='/login' />} />

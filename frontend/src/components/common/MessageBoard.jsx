@@ -12,12 +12,18 @@ const MessageBoard = ({ sceneId, user, sceneName }) => {
             try {
                 const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/messageBoard/${sceneId}`, {
                     method: 'GET',
-                    // credentials: 'include'
+                    credentials: 'include'
                 });
+
+                if (!res.ok) {
+                    const errorText = await res.text(); // Read the error response as text
+                    throw new Error(`Failed to fetch messages: ${errorText}`);
+                }
+
                 const data = await res.json();
                 setMessages(data);
             } catch (error) {
-                console.error(error);
+                // console.error(error);
             }
         };
 
@@ -37,6 +43,12 @@ const MessageBoard = ({ sceneId, user, sceneName }) => {
                 },
                 body: JSON.stringify({ sceneId: sceneId, userId: user._id, username: user.username, content: newMessage }),
             });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`Failed to post message: ${errorText}`);
+            }
+
             const message = await res.json();
             setMessages([...messages, message]);
             setNewMessage('');

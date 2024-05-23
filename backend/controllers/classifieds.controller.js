@@ -69,3 +69,24 @@ export const postClassifiedAdComment = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const deleteClassifiedAd = async (req, res) => {
+    try {
+        const ad = await ClassifiedAd.findById(req.params.adId);
+
+        if (!ad) {
+            return res.status(404).json({ message: 'Ad not found' });
+        }
+
+        if (ad.userId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'You are not authorized to delete this ad' });
+        }
+
+        await ClassifiedAdComment.deleteMany({ adId: ad._id });
+        await ClassifiedAd.findByIdAndDelete(req.params.adId);
+
+        res.status(200).json({ message: 'Ad and associated comments deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

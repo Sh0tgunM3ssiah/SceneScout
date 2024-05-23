@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import MessageBoard from "../../components/common/MessageBoard";
 import Classifieds from "../../components/common/Classifieds";
+import Events from "../../components/common/Events";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import ClassifiedAdDetail from "../../components/common/ClassifiedAdDetail";
 
-import { FaArrowLeft, FaMusic } from "react-icons/fa6";
+import { FaArrowLeft } from "react-icons/fa";
 import { IoCalendarOutline, IoLocationOutline } from "react-icons/io5";
 
 const ScenePage = () => {
@@ -61,7 +62,6 @@ const ScenePage = () => {
         enabled: !!selectedSceneId,
     });
 
-    // Organize scenes by state
     const organizeScenesByState = (scenes) => {
         const sortedScenes = scenes.sort((a, b) => a.state.localeCompare(b.state));
         const scenesByState = sortedScenes.reduce((acc, scene) => {
@@ -162,6 +162,15 @@ const ScenePage = () => {
                                 )}
                             </div>
                             <div
+                                className={`flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer ${feedType === "events" ? "bg-secondary" : ""}`}
+                                onClick={() => setFeedType("events")}
+                            >
+                                Events
+                                {feedType === "events" && (
+                                    <div className='absolute bottom-0 w-10  h-1 rounded-full bg-primary' />
+                                )}
+                            </div>
+                            <div
                                 className={`flex justify-center flex-1 p-3 transition duration-300 relative cursor-pointer ${feedType === "classifieds" ? "bg-secondary" : ""}`}
                                 onClick={() => setFeedType("classifieds")}
                             >
@@ -180,6 +189,8 @@ const ScenePage = () => {
                         <Route path="/" element={
                             feedType === "messageBoard" ? (
                                 <MessageBoard sceneId={selectedSceneId} user={authUser} sceneName={selectedSceneName} />
+                            ) : feedType === "events" ? (
+                                <Events sceneId={selectedSceneId} user={authUser} sceneName={selectedSceneName} />
                             ) : (
                                 <Classifieds sceneId={selectedSceneId} user={authUser} sceneName={selectedSceneName} />
                             )

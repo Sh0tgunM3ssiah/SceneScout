@@ -5,8 +5,10 @@ import {
     getClassifiedAd,
     postClassifiedAd,
     getClassifiedAdComments,
-    postClassifiedAdComment
+    postClassifiedAdComment,
+    deleteClassifiedAd
 } from '../controllers/classifieds.controller.js';
+import { protectRoute } from "../middleware/protectRoute.js";
 
 const router = express.Router();
 
@@ -17,12 +19,14 @@ router.get('/:sceneId', getClassifiedAds);
 router.get('/ad/:adId', getClassifiedAd);
 
 // Post a new ad
-router.post('/', postClassifiedAd);
+router.post('/', protectRoute, postClassifiedAd);
 
 // Get all comments for an ad
 router.get('/ad/:adId/comments', getClassifiedAdComments);
 
 // Post a new comment on an ad
-router.post('/ad/:adId/comments', postClassifiedAdComment);
+router.post('/ad/:adId/comments', protectRoute, postClassifiedAdComment);
+
+router.delete('/ad/:adId', protectRoute, deleteClassifiedAd);
 
 export default router;
