@@ -327,8 +327,8 @@ const Events = ({ sceneId, user, sceneName }) => {
                     <p className="no-ads">No events available. Artists can create events to get started!</p>
                 ) : (
                     events.map((event) => (
-                        <div key={event._id} className="ad" style={{ position: 'relative' }}>
-                            <div className="ad-title" onClick={() => navigate(`/scenes/events/${event._id}`)}>{event.title}</div>
+                        <div key={event._id} className="ad" style={{ position: 'relative' }} onClick={() => navigate(`/scenes/events/${event._id}`)}>
+                            <div className="ad-title">{event.title}</div>
                             <span className='text-gray-700 flex text-sm mb-4'>{formatDate(event.eventDate)} {formatTime(event.eventTime)}</span> {/* Display event date and time */}
                             {event.picture && (
                                 <img src={event.picture} alt={event.title} className="event-thumbnail mb-5" />
