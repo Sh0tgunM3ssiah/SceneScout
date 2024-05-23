@@ -27,7 +27,7 @@ const EventDetail = ({ user }) => {
 
         const fetchComments = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/events/event/${eventId}/comments`, {
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/events/comments/${eventId}`, {
                     method: 'GET',
                     credentials: 'include',
                 });
