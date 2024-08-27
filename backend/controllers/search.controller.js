@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import Post from "../models/post.model.js";
 
 export const searchItems = async (req, res) => {
-    const { scene, searchType, userType, genre, postType } = req.query;
+    const { scene, searchType, userType, genre } = req.query;
 
     try {
         let results = [];
@@ -16,6 +16,10 @@ export const searchItems = async (req, res) => {
             const query = { sceneId: scene };
 
             results = await Post.find(query).populate('user', '-password');
+        } else if (searchType === 'events') {
+            const query = { sceneId: scene };
+
+            results = await Event.find(query);
         }
 
         res.status(200).json(results);
