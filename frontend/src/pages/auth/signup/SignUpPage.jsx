@@ -106,7 +106,7 @@ const SignUpPage = () => {
 
 	return (
 		<div className='max-w-screen-xl mx-auto flex h-screen px-10'>
-			<div className='flex-1 hidden lg:flex items-center  justify-center'>
+			<div className='flex-1 hidden lg:flex items-center justify-center'>
 				<img
 					src="/mastiffLogo.png"
 					alt="Kylo"
@@ -116,7 +116,7 @@ const SignUpPage = () => {
 				/>
 			</div>
 			<div className='flex-1 flex flex-col justify-center items-center'>
-				<form className='lg:w-2/3  mx-auto md:mx-20 flex gap-4 flex-col' onSubmit={handleSubmit}>
+				<form className='lg:w-2/3 mx-auto md:mx-20 flex gap-4 flex-col' onSubmit={handleSubmit}>
 					<img
 						src="/scenescoutLogoScript.png"
 						alt="SceneScout Logo"
@@ -211,6 +211,12 @@ const SignUpPage = () => {
 							))}
 						</select>
 					</label>
+					<a
+						href="mailto:support@scenescout.io?subject=Request%20to%20Add%20Scene"
+						className="text-blue-500 hover:underline text-sm mt-2"
+					>
+						Don't See Your Scene? Request To Add It Here!
+					</a>
 					{loadingScenes && <p>Loading scenes...</p>}
 					{errorScenes && <p className='text-red-500'>{errorScenes}</p>}
 					<button className='btn rounded-full btn-primary text-white'>
@@ -228,4 +234,5 @@ const SignUpPage = () => {
 		</div>
 	);
 };
+
 export default SignUpPage;
