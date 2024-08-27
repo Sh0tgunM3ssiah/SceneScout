@@ -1,6 +1,6 @@
 import Event from '../models/event.model.js';
 import EventComment from '../models/eventComment.model.js';
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary } from 'cloudinary';
 
 // Get all events for a scene
 export const getEvents = async (req, res) => {
@@ -41,7 +41,7 @@ export const createEvent = async (req, res) => {
         let picture = req.body.picture;
 
         if (!title || !location || !description || !artists || !genre) {
-            return res.status(400).json({ error: "Missing required fields" });
+            return res.status(400).json({ error: 'Missing required fields' });
         }
 
         if (picture) {
@@ -70,11 +70,12 @@ export const createEvent = async (req, res) => {
         await newEvent.save();
         res.status(201).json(newEvent);
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-        console.log("Error in createEvent controller: ", error);
+        res.status(500).json({ error: 'Internal server error' });
+        console.log('Error in createEvent controller: ', error);
     }
 };
 
+// Get comments of a specific event
 export const getEventComments = async (req, res) => {
     try {
         const comments = await EventComment.find({ eventId: req.params.eventId });
@@ -97,6 +98,7 @@ export const postEventComment = async (req, res) => {
     }
 };
 
+// Delete an event
 export const deleteEvent = async (req, res) => {
     try {
         // Ensure req.user is defined
@@ -118,6 +120,12 @@ export const deleteEvent = async (req, res) => {
 
         if (event.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'You are not authorized to delete this event' });
+        }
+
+        // Delete the image from Cloudinary
+        if (event.picture) {
+            const publicId = event.picture.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(publicId);
         }
 
         await EventComment.deleteMany({ eventId: event._id });
