@@ -61,7 +61,7 @@ const NotificationPage = () => {
 	return (
 			<div className='flex-[4_4_0] border border-gray-700 min-h-screen pt-16 md:pt-0'>
 				<div className="flex flex-col">
-					<div className='flex gap-10 px-4 py-2 items-center border-b border-gray-700'>
+					<div className='flex gap-10 px-4 py-6 items-center border-b border-gray-700'>
 						<button onClick={() => navigate(-1)}>
 									<FaArrowLeft className='w-4 h-4' />
 								</button>

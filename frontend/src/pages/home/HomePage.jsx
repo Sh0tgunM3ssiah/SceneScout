@@ -69,7 +69,7 @@ const HomePage = () => {
                 <CreatePost sceneId={selectedSceneId} sceneName={selectedSceneName} userSceneId={authUser.sceneId} userSceneName={authUser.sceneName} />
 
                 {feedType === 'forYou' && (
-					<div className='flex justify-center px-4 py-2'>
+					<div className='flex justify-center px-4 py-6'>
 						<div className='w-full'>
 							<div className='scene-selector'>
 								<label className='scene-label font-bold'>Select A Scene:</label>

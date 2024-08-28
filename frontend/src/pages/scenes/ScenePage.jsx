@@ -110,7 +110,7 @@ const ScenePage = () => {
             <div className='flex flex-col'>
                 {!isLoading && !isRefetching && scene && (
                     <>
-                        <div className='flex gap-10 px-4 py-2 items-center'>
+                        <div className='flex gap-10 px-4 py-6 items-center'>
                             <button onClick={() => navigate(-1)}>
                                 <FaArrowLeft className='w-4 h-4' />
                             </button>

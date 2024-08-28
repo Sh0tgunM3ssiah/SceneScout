@@ -23,7 +23,7 @@ const EventDetailPage = () => {
             <div className='flex flex-col'>
                 {!isLoading && !isRefetching && (
                     <>
-                        <div className='flex gap-10 px-4 py-2 items-center border-b border-gray-700'>
+                        <div className='flex gap-10 px-4 py-6 items-center border-b border-gray-700'>
                             <button onClick={() => navigate(-1)}>
                                 <FaArrowLeft className='w-4 h-4' />
                             </button>
