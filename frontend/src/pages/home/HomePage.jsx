@@ -66,7 +66,7 @@ const HomePage = () => {
                     </div>
                 </div>
 
-                <CreatePost sceneId={selectedSceneId} sceneName={selectedSceneName} userSceneId={authUser.sceneId} userSceneName={authUser.sceneName} />
+                <CreatePost sceneId={selectedSceneId} sceneName={selectedSceneName} userSceneId={authUser.sceneId} userSceneName={authUser.sceneName} avatarUrl={authUser?.profileImg} />
 
                 {feedType === 'forYou' && (
 					<div className='flex justify-center px-4 py-6'>

@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { IoCloseSharp } from "react-icons/io5";
 import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmileFill } from "react-icons/bs";
 
-const CreatePost = ({ sceneId, sceneName, userSceneId, userSceneName }) => { // Receive sceneId as a prop
+const CreatePost = ({ sceneId, sceneName, userSceneId, userSceneName, avatarUrl }) => { // Receive avatarUrl as a prop
     const [text, setText] = useState("");
     const [img, setImg] = useState(null);
     const imgRef = useRef(null);
@@ -60,12 +60,12 @@ const CreatePost = ({ sceneId, sceneName, userSceneId, userSceneName }) => { // 
         <div className='flex p-4 items-start gap-4 border-b border-gray-700'>
             <div className='avatar'>
                 <div className='w-8 rounded-full'>
-                    <img src="/avatar-placeholder.png" alt="Profile Avatar"/>
+                    <img src={avatarUrl || "/avatar-placeholder.png"} alt="Profile Avatar"/> {/* Use avatarUrl prop */}
                 </div>
             </div>
             <form className='flex flex-col gap-2 w-full' onSubmit={handleSubmit}>
                 <textarea
-                    className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none  border-gray-800'
+                    className='textarea w-full p-0 text-lg resize-none border-none focus:outline-none border-gray-800'
                     placeholder='What is happening?!'
                     value={text}
                     onChange={(e) => setText(e.target.value)}
